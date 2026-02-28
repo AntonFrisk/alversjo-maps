@@ -103,8 +103,12 @@ export default function MapViewer({ layers }) {
       if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
 
       try {
-        const res = await fetch(`/data/${name}.json`);
-        if (!res.ok) throw new Error(`${res.status}`);
+        // Try .json first, fall back to .geojson
+        let res = await fetch(`/data/${name}.json`);
+        if (!res.ok) {
+          res = await fetch(`/data/${name}.geojson`);
+          if (!res.ok) throw new Error(`Could not load ${name} (tried .json and .geojson): ${res.status}`);
+        }
         const geojson = await res.json();
 
         map.addSource(SOURCE_ID, { type: 'geojson', data: geojson });
