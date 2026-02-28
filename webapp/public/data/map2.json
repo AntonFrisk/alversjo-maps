@@ -1,0 +1,376 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.924846,
+          57.621763
+        ]
+      },
+      "properties": {
+        "title": "11: Power slope",
+        "description": "Between the big barn and the hills you find a secret spot perfectly surrounded by a big slope of sand. Might be a perfect spot for late night sessions.\n\nClassification: B\n\nCamp in 2023:\u2003  DoET\nCamp in 2024:\u2003  DoET\nProposed upgrade actions:\nCardioid bass array (directional bass avoiding bleeding to the sides)",
+        "marker-color": "#cc1b15"
+      },
+      "id": "1dba3ce8-c069-4304-a095-851e45e9e891"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.925748,
+          57.621947
+        ]
+      },
+      "properties": {
+        "title": "25: Barn Upper floor",
+        "marker-color": "#f1ae29"
+      },
+      "id": "2b68fc44-1d9f-4652-b7a3-41b74592dc0c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.925776,
+          57.621876
+        ]
+      },
+      "properties": {
+        "title": "23: Barn lower floor",
+        "marker-color": "#cc1b15"
+      },
+      "id": "a492eeb7-b32a-45c3-8059-84fa23898010"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "lake-main",
+        "stroke": "#3cc954",
+        "stroke-width": 0.5
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            14.921438,
+            57.620595
+          ],
+          [
+            14.921209,
+            57.620579
+          ],
+          [
+            14.920053,
+            57.621182
+          ],
+          [
+            14.918068,
+            57.619638
+          ],
+          [
+            14.918349,
+            57.618786
+          ],
+          [
+            14.91996,
+            57.618176
+          ],
+          [
+            14.921056,
+            57.61813
+          ],
+          [
+            14.921754,
+            57.617818
+          ],
+          [
+            14.922377,
+            57.617988
+          ],
+          [
+            14.922986,
+            57.618416
+          ],
+          [
+            14.92385,
+            57.618117
+          ],
+          [
+            14.924485,
+            57.618301
+          ],
+          [
+            14.924955,
+            57.618749
+          ],
+          [
+            14.924866,
+            57.618974
+          ],
+          [
+            14.925323,
+            57.619423
+          ],
+          [
+            14.925133,
+            57.619763
+          ],
+          [
+            14.923304,
+            57.619919
+          ],
+          [
+            14.92291,
+            57.620198
+          ],
+          [
+            14.922047,
+            57.620321
+          ],
+          [
+            14.921438,
+            57.620595
+          ]
+        ]
+      },
+      "id": "5cd59838-882a-45cd-b889-f38e11d72142"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "sunny-hills-around",
+        "fill": "#ffcc00",
+        "stroke-width": 0.5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              14.925218,
+              57.621618
+            ],
+            [
+              14.922276,
+              57.621495
+            ],
+            [
+              14.921461,
+              57.620592
+            ],
+            [
+              14.922061,
+              57.620307
+            ],
+            [
+              14.922898,
+              57.620204
+            ],
+            [
+              14.923295,
+              57.619925
+            ],
+            [
+              14.924732,
+              57.619816
+            ],
+            [
+              14.92557,
+              57.620476
+            ],
+            [
+              14.925593,
+              57.620913
+            ],
+            [
+              14.925955,
+              57.620992
+            ],
+            [
+              14.92557,
+              57.621695
+            ],
+            [
+              14.925218,
+              57.621618
+            ]
+          ]
+        ]
+      },
+      "id": "3df8f1d9-595e-4552-b2f7-48b642fc0263"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "sunny-hills-top",
+        "fill": "#3cc954",
+        "stroke-width": 0.5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              14.92514,
+              57.621389
+            ],
+            [
+              14.924677,
+              57.621283
+            ],
+            [
+              14.924307,
+              57.621336
+            ],
+            [
+              14.924068,
+              57.621449
+            ],
+            [
+              14.923546,
+              57.621421
+            ],
+            [
+              14.923294,
+              57.621215
+            ],
+            [
+              14.923129,
+              57.621013
+            ],
+            [
+              14.923135,
+              57.620787
+            ],
+            [
+              14.923618,
+              57.620673
+            ],
+            [
+              14.923764,
+              57.620422
+            ],
+            [
+              14.924214,
+              57.620326
+            ],
+            [
+              14.924784,
+              57.620351
+            ],
+            [
+              14.925056,
+              57.620479
+            ],
+            [
+              14.925042,
+              57.620837
+            ],
+            [
+              14.925506,
+              57.621007
+            ],
+            [
+              14.925334,
+              57.621428
+            ],
+            [
+              14.92514,
+              57.621389
+            ]
+          ]
+        ]
+      },
+      "id": "e28e3245-a411-4fcc-bd20-9f6fbde47aa3"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.925911,
+          57.621515
+        ]
+      },
+      "properties": {
+        "title": "21: Sheep barn",
+        "description": "Sheep barn (lower concrete barn building) \ud83d\udc11 \nClassification: B\nProposed upgrade actions:\nSound-proofing the windows and walls\nKeeping doors and windows closed",
+        "marker-color": "#cc1b15"
+      },
+      "id": "ef537597-a246-4dfa-b6f3-a547b7204ec9"
+    }
+  ],
+  "metadata": {
+    "tileStats": {
+      "layers": [
+        {
+          "layer": "Alversj\u00f6 Sound Source Map",
+          "sourceType": "geojson",
+          "attributes": [
+            {
+              "attribute": "title",
+              "type": "String",
+              "values": [
+                "11: Power slope",
+                "21: Sheep barn",
+                "23: Barn lower floor",
+                "25: Barn Upper floor",
+                "lake-main",
+                "sunny-hills-around",
+                "sunny-hills-top"
+              ]
+            },
+            {
+              "attribute": "description",
+              "type": "String",
+              "values": [
+                "Between the big barn and the hills you find a secret spot perfectly surrounded by a big slope of sand. Might be a perfect spot for late night sessions.\n\nClassification: B\n\nCamp in 2023:\u2003  DoET\nCamp in 2024:\u2003  DoET\nProposed upgrade actions:\nCardioid bass array (directional bass avoiding bleeding to the sides)",
+                "Sheep barn (lower concrete barn building) \ud83d\udc11 \nClassification: B\nProposed upgrade actions:\nSound-proofing the windows and walls\nKeeping doors and windows closed"
+              ]
+            },
+            {
+              "attribute": "marker-color",
+              "type": "String",
+              "values": [
+                "#cc1b15",
+                "#f1ae29"
+              ]
+            },
+            {
+              "attribute": "stroke",
+              "type": "String",
+              "values": [
+                "#3cc954"
+              ]
+            },
+            {
+              "attribute": "stroke-width",
+              "type": "Number",
+              "min": 0.5,
+              "max": 0.5
+            },
+            {
+              "attribute": "fill",
+              "type": "String",
+              "values": [
+                "#3cc954",
+                "#ffcc00"
+              ]
+            }
+          ],
+          "geometry": [
+            "Point",
+            "LineString",
+            "Polygon"
+          ]
+        }
+      ]
+    }
+  }
+}
