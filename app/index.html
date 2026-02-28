@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alversjö Map Viewer</title>
+  <meta name="description" content="Interactive satellite map viewer for Alversjö GeoJSON data" />
+
+  <!-- MapTiler SDK -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@maptiler/sdk@2/dist/maptiler-sdk.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@maptiler/sdk@2/dist/maptiler-sdk.umd.min.js"></script>
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Config (API key) -->
+  <script src="config.js"></script>
+</head>
+<body>
+
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- Layer switcher -->
+  <div class="map-controls">
+    <div class="layer-switcher">
+      <label for="layer-select">Layer</label>
+      <select id="layer-select">
+        <option value="map1">Map 1</option>
+        <option value="map2">Map 2</option>
+        <option value="map3">Map 3</option>
+      </select>
+    </div>
+  </div>
+
+  <script>
+    // ----- Configuration -----
+    const DATA_DIR = '../data/03_ready';
+    const CENTER = [14.923, 57.620];  // Alversjö area
+    const ZOOM = 15.5;
+
+    // Source & layer IDs used on the map
+    const SOURCE_ID = 'geojson-data';
+    const LAYER_IDS = {
+      polygonFill: 'layer-polygon-fill',
+      polygonOutline: 'layer-polygon-outline',
+      line: 'layer-line',
+      point: 'layer-point',
+    };
+
+    // ----- Init MapTiler SDK -----
+    maptilersdk.config.apiKey = MAPTILER_API_KEY;
+
+    const map = new maptilersdk.Map({
+      container: 'map',
+      style: maptilersdk.MapStyle.SATELLITE,
+      center: CENTER,
+      zoom: ZOOM,
+    });
+
+    // ----- Helpers -----
+    async function fetchGeoJSON(name) {
+      const url = `${DATA_DIR}/${name}.json`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
+      return res.json();
+    }
+
+    function clearLayers() {
+      Object.values(LAYER_IDS).forEach((id) => {
+        if (map.getLayer(id)) map.removeLayer(id);
+      });
+      if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
+    }
+
+    function addGeoJSONToMap(geojson) {
+      map.addSource(SOURCE_ID, {
+        type: 'geojson',
+        data: geojson,
+      });
+
+      // --- Polygon fill ---
+      map.addLayer({
+        id: LAYER_IDS.polygonFill,
+        type: 'fill',
+        source: SOURCE_ID,
+        filter: ['==', '$type', 'Polygon'],
+        paint: {
+          'fill-color': ['coalesce', ['get', 'fill'], '#3cc954'],
+          'fill-opacity': 0.35,
+        },
+      });
+
+      // --- Polygon outline ---
+      map.addLayer({
+        id: LAYER_IDS.polygonOutline,
+        type: 'line',
+        source: SOURCE_ID,
+        filter: ['==', '$type', 'Polygon'],
+        paint: {
+          'line-color': ['coalesce', ['get', 'fill'], '#3cc954'],
+          'line-width': ['coalesce', ['get', 'stroke-width'], 1],
+          'line-opacity': 0.7,
+        },
+      });
+
+      // --- LineString ---
+      map.addLayer({
+        id: LAYER_IDS.line,
+        type: 'line',
+        source: SOURCE_ID,
+        filter: ['==', '$type', 'LineString'],
+        paint: {
+          'line-color': ['coalesce', ['get', 'stroke'], '#3cc954'],
+          'line-width': ['coalesce', ['get', 'stroke-width'], 2],
+          'line-opacity': 0.85,
+        },
+      });
+
+      // --- Point (circle markers) ---
+      map.addLayer({
+        id: LAYER_IDS.point,
+        type: 'circle',
+        source: SOURCE_ID,
+        filter: ['==', '$type', 'Point'],
+        paint: {
+          'circle-radius': 8,
+          'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
+    }
+
+    // ----- Popups -----
+    function setupPopups() {
+      // Show pointer on hoverable features
+      const interactiveLayers = [LAYER_IDS.point, LAYER_IDS.polygonFill, LAYER_IDS.line];
+      interactiveLayers.forEach((layerId) => {
+        map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
+      });
+
+      // Click handler for all interactive layers
+      map.on('click', (e) => {
+        // Query all interactive layers at click point
+        const features = map.queryRenderedFeatures(e.point, { layers: interactiveLayers });
+        if (!features.length) return;
+
+        const feat = features[0];
+        const props = feat.properties || {};
+        const title = props.title || '';
+        const description = props.description || '';
+        if (!title && !description) return;
+
+        let html = '';
+        if (title) html += `<div class="popup-title">${escapeHtml(title)}</div>`;
+        if (description) html += `<div class="popup-description">${escapeHtml(description)}</div>`;
+
+        // Determine coordinates for popup
+        let coords;
+        if (feat.geometry.type === 'Point') {
+          coords = feat.geometry.coordinates.slice();
+        } else {
+          coords = [e.lngLat.lng, e.lngLat.lat];
+        }
+
+        new maptilersdk.Popup({ offset: 12, maxWidth: '320px' })
+          .setLngLat(coords)
+          .setHTML(html)
+          .addTo(map);
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ----- Layer switching -----
+    async function loadLayer(name) {
+      try {
+        const geojson = await fetchGeoJSON(name);
+        clearLayers();
+        addGeoJSONToMap(geojson);
+      } catch (err) {
+        console.error(err);
+        alert(`Could not load ${name}.json — file may not exist yet.`);
+      }
+    }
+
+    const select = document.getElementById('layer-select');
+    select.addEventListener('change', () => loadLayer(select.value));
+
+    // ----- Startup -----
+    map.on('load', () => {
+      loadLayer(select.value);
+      setupPopups();
+    });
+  </script>
+</body>
+</html>
