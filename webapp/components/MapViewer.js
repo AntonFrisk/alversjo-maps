@@ -22,6 +22,86 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// Sound class color map
+const SOUND_CLASS_COLORS = {
+  A: '#cc1b15',
+  B: '#cc4515',
+  C: '#f1ae29',
+  D: '#ffcc01',
+  E: '#3cc954',
+};
+
+function buildPopupHTML(props) {
+  const parts = [];
+
+  // Title
+  const title = props.title || '';
+  if (title) {
+    const pointNum = props['point-num'];
+    const prefix = pointNum != null ? `${pointNum}: ` : '';
+    parts.push(`<div class="popup-title">${escapeHtml(prefix + title)}</div>`);
+  }
+
+  // Sound class row: colored letter badge + number
+  const soundClass = props['sound-class'];
+  const soundClassNum = props['sound-class-num'];
+  if (soundClass || soundClassNum != null) {
+    const color = SOUND_CLASS_COLORS[soundClass] || '#888';
+    let row = '<div class="popup-sound-class">';
+    row += '<span class="popup-label">Sound class:</span> ';
+    if (soundClass) {
+      row += `<span class="popup-badge" style="background:${color}">${escapeHtml(soundClass)}</span> `;
+    }
+    if (soundClassNum != null) {
+      row += `<span class="popup-badge-num">(${soundClassNum})</span>`;
+    }
+    row += '</div>';
+    parts.push(row);
+  }
+
+  // Sound direction: arrow + comment
+  const azimuth = props['sound-direction-azimuth'];
+  const dirComment = props['sound-direction-comment'];
+  if (azimuth != null || dirComment) {
+    let row = '<div class="popup-direction">';
+    row += '<span class="popup-label">Direction:</span> ';
+    if (azimuth != null) {
+      row += `<span class="popup-arrow" style="--az:${azimuth}deg">↑</span> `;
+    }
+    if (dirComment) {
+      row += `<span class="popup-dir-text">${escapeHtml(dirComment)}</span>`;
+    }
+    row += '</div>';
+    parts.push(row);
+  }
+
+  // Description
+  const description = props.description || '';
+  if (description) {
+    parts.push(`<div class="popup-description">${escapeHtml(description)}</div>`);
+  }
+
+  // Camp history
+  const camps = [];
+  ['2025', '2024', '2023'].forEach((year) => {
+    const val = props[`camp-in-${year}`];
+    if (val && val !== '-' && val !== 'none') {
+      camps.push(`<div class="popup-camp-row"><span class="popup-camp-year">${year}:</span> ${escapeHtml(val)}</div>`);
+    }
+  });
+  if (camps.length) {
+    parts.push(`<div class="popup-camps">${camps.join('')}</div>`);
+  }
+
+  // Upgrade actions
+  const upgrade = props['upgrade-actions'];
+  if (upgrade) {
+    parts.push(`<div class="popup-upgrade"><span class="popup-label">Upgrade:</span> ${escapeHtml(upgrade)}</div>`);
+  }
+
+  return parts.join('');
+}
+
 export default function MapViewer({ layers }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
@@ -55,20 +135,15 @@ export default function MapViewer({ layers }) {
 
       const feat = features[0];
       const props = feat.properties || {};
-      const title = props.title || '';
-      const description = props.description || '';
-      if (!title && !description) return;
-
-      let html = '';
-      if (title) html += `<div class="popup-title">${escapeHtml(title)}</div>`;
-      if (description) html += `<div class="popup-description">${escapeHtml(description)}</div>`;
+      const html = buildPopupHTML(props);
+      if (!html) return;
 
       const coords =
         feat.geometry.type === 'Point'
           ? feat.geometry.coordinates.slice()
           : [e.lngLat.lng, e.lngLat.lat];
 
-      new maptilersdk.Popup({ offset: 12, maxWidth: '320px' })
+      new maptilersdk.Popup({ offset: 12, maxWidth: '360px' })
         .setLngLat(coords)
         .setHTML(html)
         .addTo(map);
