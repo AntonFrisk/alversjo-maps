@@ -278,6 +278,8 @@ export default function MapViewer({ layers }) {
             'text-rotation-alignment': 'map',
             'text-allow-overlap': true,
             'text-ignore-placement': true,
+            // make text bold
+            'text-font': ['Arial Bold'],
           },
           paint: {
             'text-color': '#ffffff',
