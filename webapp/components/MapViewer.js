@@ -10,8 +10,9 @@ const LAYER_IDS = {
   polygonOutline: 'layer-polygon-outline',
   line: 'layer-line',
   point: 'layer-point',
+  pointArrow: 'layer-point-arrow',
 };
-const INTERACTIVE_LAYERS = [LAYER_IDS.point, LAYER_IDS.polygonFill, LAYER_IDS.line];
+const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.polygonFill, LAYER_IDS.line];
 
 const CENTER = [14.923, 57.620]; // Alversjö
 const ZOOM = 15.5;
@@ -31,6 +32,26 @@ const SOUND_CLASS_COLORS = {
   E: '#3cc954',
 };
 
+// Sound class number color map (0=quiet/green → 10=loud/deep red)
+const SOUND_NUM_COLORS = [
+  '#3cc954', // 0
+  '#6dbf47', // 1
+  '#9eb53a', // 2
+  '#cfab2d', // 3
+  '#f1ae29', // 4
+  '#e89422', // 5
+  '#cc4515', // 6
+  '#cc1b15', // 7
+  '#b5140f', // 8
+  '#9e100c', // 9
+  '#870d09', // 10
+];
+
+function getNumColor(num) {
+  const i = Math.max(0, Math.min(10, Math.round(num)));
+  return SOUND_NUM_COLORS[i] || '#888';
+}
+
 function buildPopupHTML(props) {
   const parts = [];
 
@@ -42,7 +63,7 @@ function buildPopupHTML(props) {
     parts.push(`<div class="popup-title">${escapeHtml(prefix + title)}</div>`);
   }
 
-  // Sound class row: colored letter badge + number
+  // Sound class row: colored letter badge + colored number badge
   const soundClass = props['sound-class'];
   const soundClassNum = props['sound-class-num'];
   if (soundClass || soundClassNum != null) {
@@ -53,7 +74,8 @@ function buildPopupHTML(props) {
       row += `<span class="popup-badge" style="background:${color}">${escapeHtml(soundClass)}</span> `;
     }
     if (soundClassNum != null) {
-      row += `<span class="popup-badge-num">(${soundClassNum})</span>`;
+      const numColor = getNumColor(soundClassNum);
+      row += `<span class="popup-badge" style="background:${numColor}">${soundClassNum}</span>`;
     }
     row += '</div>';
     parts.push(row);
@@ -226,17 +248,39 @@ export default function MapViewer({ layers }) {
           },
         });
 
-        // Points
+        // Points (circle background)
         map.addLayer({
           id: LAYER_IDS.point,
           type: 'circle',
           source: SOURCE_ID,
           filter: ['==', '$type', 'Point'],
           paint: {
-            'circle-radius': 8,
+            'circle-radius': 12,
             'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
             'circle-stroke-width': 2,
             'circle-stroke-color': '#ffffff',
+          },
+        });
+
+        // Point direction arrows (symbol on top of circles)
+        map.addLayer({
+          id: LAYER_IDS.pointArrow,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['all',
+            ['==', '$type', 'Point'],
+            ['has', 'sound-direction-azimuth'],
+          ],
+          layout: {
+            'text-field': '↑',
+            'text-size': 16,
+            'text-rotate': ['get', 'sound-direction-azimuth'],
+            'text-rotation-alignment': 'map',
+            'text-allow-overlap': true,
+            'text-ignore-placement': true,
+          },
+          paint: {
+            'text-color': '#ffffff',
           },
         });
       } catch (err) {
