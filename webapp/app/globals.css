@@ -212,6 +212,11 @@ html, body {
   color: #bbb;
 }
 
+.popup-dir-deg {
+  font-size: 11px;
+  color: #777;
+}
+
 /* Description */
 .popup-description {
   font-size: 13px;
@@ -259,7 +264,7 @@ html, body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
-  color: #666;
-  font-size: 14px;
+  color: #b7b3b3;
+  font-size: 24px;
   letter-spacing: 0.05em;
 }

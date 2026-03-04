@@ -82,13 +82,17 @@ function buildPopupHTML(props) {
   }
 
   // Sound direction: arrow + comment
-  const azimuth = props['sound-direction-azimuth'];
+  const azimuthRaw = props['sound-direction-azimuth'];
   const dirComment = props['sound-direction-comment'];
-  if (azimuth != null || dirComment) {
+  // azimuth can be 0 (North) which is valid — only skip if truly missing/null
+  const hasAzimuth = azimuthRaw !== null && azimuthRaw !== undefined && azimuthRaw !== '';
+  const azimuth = hasAzimuth ? Number(azimuthRaw) : null;
+  if (hasAzimuth || dirComment) {
     let row = '<div class="popup-direction">';
     row += '<span class="popup-label">Direction:</span> ';
-    if (azimuth != null) {
+    if (hasAzimuth) {
       row += `<span class="popup-arrow" style="--az:${azimuth}deg">↑</span> `;
+      row += `<span class="popup-dir-text popup-dir-deg">${azimuth}°</span> `;
     }
     if (dirComment) {
       row += `<span class="popup-dir-text">${escapeHtml(dirComment)}</span>`;
@@ -143,10 +147,31 @@ export default function MapViewer({ layers }) {
       zoom: ZOOM,
     });
 
-    map.on('load', () => {
-      mapRef.current = map;
-      setMapReady(true);
-    });
+    // map.on('load', () => {
+    //   // Register the arrow image synchronously using raw canvas pixel data.
+    //   // map.loadImage('/path') resolves against MapTiler servers, not localhost.
+    //   // Using the { width, height, data } form with ImageData is reliable and synchronous.
+    //   const size = 32;
+    //   const offCanvas = document.createElement('canvas');
+    //   offCanvas.width = size;
+    //   offCanvas.height = size;
+    //   const ctx = offCanvas.getContext('2d');
+    //   // Draw upward-pointing black triangle (black is visible on any colored background)
+    //   ctx.fillStyle = '#ffffffff';
+    //   ctx.beginPath();
+    //   ctx.moveTo(size / 2, 2);
+    //   ctx.lineTo(size - 3, size - 2);
+    //   ctx.lineTo(3, size - 2);
+    //   ctx.closePath();
+    //   ctx.fill();
+    //   const rawData = ctx.getImageData(0, 0, size, size);
+    //   // MapLibre GL accepts { width, height, data: Uint8ClampedArray }
+    //   if (!map.hasImage('arrow-icon')) {
+    //     map.addImage('arrow-icon', { width: size, height: size, data: rawData.data });
+    //   }
+    //   mapRef.current = map;
+    //   setMapReady(true);
+    // });
 
     // --- Popups ---
     map.on('click', (e) => {
@@ -255,7 +280,7 @@ export default function MapViewer({ layers }) {
           source: SOURCE_ID,
           filter: ['==', '$type', 'Point'],
           paint: {
-            'circle-radius': 12,
+            'circle-radius': 14,
             'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
             'circle-stroke-width': 2,
             'circle-stroke-color': '#ffffff',
@@ -267,22 +292,27 @@ export default function MapViewer({ layers }) {
           id: LAYER_IDS.pointArrow,
           type: 'symbol',
           source: SOURCE_ID,
-          filter: ['all',
-            ['==', '$type', 'Point'],
-            ['has', 'sound-direction-azimuth'],
-          ],
+          filter: ['has', 'sound-direction-azimuth'],
           layout: {
+            // 'icon-image': 'arrow-icon',
+            // 'icon-size': 0.8,
+            // 'icon-rotate': ['get', 'sound-direction-azimuth'],
+            // 'icon-rotation-alignment': 'viewport',
+            // 'icon-pitch-alignment': 'viewport',
+            // 'icon-allow-overlap': true,
+            // 'icon-ignore-placement': true,
             'text-field': '↑',
             'text-size': 16,
             'text-rotate': ['get', 'sound-direction-azimuth'],
             'text-rotation-alignment': 'map',
             'text-allow-overlap': true,
             'text-ignore-placement': true,
-            // make text bold
             'text-font': ['Arial Bold'],
           },
           paint: {
+            // 'icon-opacity': 1,
             'text-color': '#ffffff',
+
           },
         });
       } catch (err) {
