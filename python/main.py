@@ -1,4 +1,4 @@
-import src.maptiler as maptiler
+import maptiler
 
 
 def main():
@@ -7,7 +7,6 @@ def main():
 
     path = maptiler.save_geojson(geojson)
     print(f"Saved to {path}")
-
 
 
 if __name__ == "__main__":

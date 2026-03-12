@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
-import * as maptilersdk from '@maptiler/sdk';
-import '@maptiler/sdk/dist/maptiler-sdk.css';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 const SOURCE_ID = 'geojson-data';
 const LAYER_IDS = {
@@ -16,6 +16,29 @@ const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.pol
 
 const CENTER = [14.923, 57.620]; // Alversjö
 const ZOOM = 15.5;
+
+// Local satellite tile style — no external API calls
+const LOCAL_SATELLITE_STYLE = {
+  version: 8,
+  // Free MapLibre glyph server — needed for text symbol layers (direction arrows)
+  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+  sources: {
+    satellite: {
+      type: 'raster',
+      tiles: ['/tiles/satellite/{z}/{x}/{y}.jpg'],
+      tileSize: 256,
+      minzoom: 13,
+      maxzoom: 17,
+    },
+  },
+  layers: [
+    {
+      id: 'satellite-layer',
+      type: 'raster',
+      source: 'satellite',
+    },
+  ],
+};
 
 function escapeHtml(str) {
   const div = document.createElement('div');
@@ -138,40 +161,17 @@ export default function MapViewer({ layers }) {
   useEffect(() => {
     if (mapRef.current) return;
 
-    maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_API_KEY;
-
-    const map = new maptilersdk.Map({
+    const map = new maplibregl.Map({
       container: mapContainer.current,
-      style: maptilersdk.MapStyle.SATELLITE,
+      style: LOCAL_SATELLITE_STYLE,
       center: CENTER,
       zoom: ZOOM,
     });
 
-    // map.on('load', () => {
-    //   // Register the arrow image synchronously using raw canvas pixel data.
-    //   // map.loadImage('/path') resolves against MapTiler servers, not localhost.
-    //   // Using the { width, height, data } form with ImageData is reliable and synchronous.
-    //   const size = 32;
-    //   const offCanvas = document.createElement('canvas');
-    //   offCanvas.width = size;
-    //   offCanvas.height = size;
-    //   const ctx = offCanvas.getContext('2d');
-    //   // Draw upward-pointing black triangle (black is visible on any colored background)
-    //   ctx.fillStyle = '#ffffffff';
-    //   ctx.beginPath();
-    //   ctx.moveTo(size / 2, 2);
-    //   ctx.lineTo(size - 3, size - 2);
-    //   ctx.lineTo(3, size - 2);
-    //   ctx.closePath();
-    //   ctx.fill();
-    //   const rawData = ctx.getImageData(0, 0, size, size);
-    //   // MapLibre GL accepts { width, height, data: Uint8ClampedArray }
-    //   if (!map.hasImage('arrow-icon')) {
-    //     map.addImage('arrow-icon', { width: size, height: size, data: rawData.data });
-    //   }
-    //   mapRef.current = map;
-    //   setMapReady(true);
-    // });
+    map.on('load', () => {
+      mapRef.current = map;
+      setMapReady(true);
+    });
 
     // --- Popups ---
     map.on('click', (e) => {
@@ -190,7 +190,7 @@ export default function MapViewer({ layers }) {
           ? feat.geometry.coordinates.slice()
           : [e.lngLat.lng, e.lngLat.lat];
 
-      new maptilersdk.Popup({ offset: 12, maxWidth: '360px' })
+      new maplibregl.Popup({ offset: 12, maxWidth: '360px' })
         .setLngLat(coords)
         .setHTML(html)
         .addTo(map);
@@ -294,25 +294,16 @@ export default function MapViewer({ layers }) {
           source: SOURCE_ID,
           filter: ['has', 'sound-direction-azimuth'],
           layout: {
-            // 'icon-image': 'arrow-icon',
-            // 'icon-size': 0.8,
-            // 'icon-rotate': ['get', 'sound-direction-azimuth'],
-            // 'icon-rotation-alignment': 'viewport',
-            // 'icon-pitch-alignment': 'viewport',
-            // 'icon-allow-overlap': true,
-            // 'icon-ignore-placement': true,
-            'text-field': '↑',
-            'text-size': 16,
+            'text-field': '^', //↑
+            'text-size': 14,
             'text-rotate': ['get', 'sound-direction-azimuth'],
             'text-rotation-alignment': 'map',
             'text-allow-overlap': true,
             'text-ignore-placement': true,
-            'text-font': ['Arial Bold'],
+            'text-font': ['Open Sans bold'],
           },
           paint: {
-            // 'icon-opacity': 1,
             'text-color': '#ffffff',
-
           },
         });
       } catch (err) {
