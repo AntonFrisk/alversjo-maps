@@ -1,16 +1,16 @@
 {
   "map1": {
-    "name": "Alversjö Sound Map 2023",
-    "description": "Original sound classification map for Alversjö. Sound zone ratings from the 2023 Borderland camp.",
+    "name": "Alversjö Evergreen Sound Makers Map",
+    "description": "Shows the best places to make loud noise in Alversjö. This map is updated every year to reflect the places which contain sound well, eg. buildings or natural formations. Sound class is on a scale 1-10 where 10 means the best place to be louds.",
     "ext": "json"
   },
   "map2": {
-    "name": "Alversjö Sound Map 2024",
-    "description": "Updated sound classification map including 2024 camp data and revised zone boundaries.",
+    "name": "Borderland 2026 - Sound Makers Map (WIP!!!)",
+    "description": "The sound map for making sound at borderland 2026. Work in progress! This map does not show the experienced sound levels, only the best places to make sound without spreading it.",
     "ext": "json"
   },
   "map3": {
-    "name": "Alversjö Sound Map 2025",
+    "name": "Backup map for development",
     "description": "Current sound classification map with full zone detail, sound direction, and camp history through 2025.",
     "ext": "geojson"
   }
