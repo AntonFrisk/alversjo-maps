@@ -243,19 +243,20 @@
                 ]
             },
             "properties": {
-                "fill": "#a1a1a1",
+                "fill": "#9e100c",
                 "fill-opacity": 0.3,
                 "stroke-width": "0",
                 "title": "Sheep barn",
                 "description": "Sheep barn (lower concrete barn building) 🐑 \nClassification: B\nProposed upgrade actions:\nSound-proofing the windows and walls\nKeeping doors and windows closed",
                 "sound-class": "A",
                 "sound-class-num": 9,
-                "sound-direction-azimuth": 0,
                 "point-num": 21,
                 "sound-direction-comment": "Any",
                 "camp-in-2024": "just storage space",
                 "camp-in-2025": "just storage space",
-                "upgrade-actions": "sound proof windows"
+                "upgrade-actions": "sound proof windows",
+                "sound-direction-azimuth": 180,
+                "marker-color": "#9e100c"
             },
             "id": "ef537597-a246-4dfa-b6f3-a547b7204ec9"
         },
@@ -878,13 +879,13 @@
             "id": "8b6fd742-31fd-4a92-9136-22bd190447dc",
             "type": "Feature",
             "properties": {
-                "fill": "#f1ae29",
+                "fill": "#e89422",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields7",
-                "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#f1ae29"
+                "sound-class-num": 5,
+                "sound-class": "B",
+                "marker-color": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3399,9 +3400,11 @@
                 "camp-in-2023": "?",
                 "point-num": 9,
                 "sound-class": "A",
-                "sound-class-num": 7,
+                "sound-class-num": 8,
                 "sound-direction-comment": "north or north-west",
-                "sound-direction-azimuth": 345
+                "sound-direction-azimuth": 345,
+                "marker-color": "#b5140f",
+                "fill": "#b5140f"
             },
             "geometry": {
                 "coordinates": [
@@ -3531,12 +3534,14 @@
                 "camp-in-2023": "church",
                 "camp-in-2024": "church",
                 "camp-in-2025": "church",
-                "sound-class-num": 4,
-                "sound-class": "C",
+                "sound-class-num": 5,
+                "sound-class": "B",
                 "upgrade-actions": "Sound block needed: Insulate the walls, mainly to the north and east. ",
                 "description": "Wooden building with a basement (concrete). Renovated in 2023 & 2024. Poor sound proofing of the walls. Elevated postition means more sound spread",
                 "sound-direction-comment": "West. ",
-                "sound-direction-azimuth": 270
+                "sound-direction-azimuth": 270,
+                "marker-color": "#e89422",
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3575,12 +3580,14 @@
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none",
-                "sound-class-num": 5,
-                "sound-class": "B",
+                "sound-class-num": 7,
+                "sound-class": "A",
                 "point-num": 16,
                 "sound-direction-azimuth": 120,
                 "sound-direction-comment": "E-SE",
-                "upgrade-actions": "dir subs"
+                "upgrade-actions": "dir subs",
+                "marker-color": "#cc1b15",
+                "fill": "#cc1b15"
             },
             "geometry": {
                 "coordinates": [
@@ -3597,12 +3604,14 @@
                 "point-num": 15,
                 "camp-in-2024": "galyxen",
                 "camp-in-2025": "-",
-                "sound-class-num": 4,
-                "sound-class": "C",
+                "sound-class-num": 6,
+                "sound-class": "B",
                 "description": "By the woods to the east. Playing into the steep hill in the forest. Good sunset spot. Ground was dry in 2024.",
                 "title": "clint eastwood",
                 "sound-direction-azimuth": 130,
-                "sound-direction-comment": "East"
+                "sound-direction-comment": "East",
+                "marker-color": "#cc4515",
+                "fill": "#cc4515"
             },
             "geometry": {
                 "coordinates": [
@@ -3642,12 +3651,14 @@
                 "camp-in-2023": "Plutonia",
                 "camp-in-2025": "Plutonia",
                 "description": "Indoor area in a concrete building. concrete walls muffels sound nicely. windows have been sound proofed. Door open mean sound leaks. Acoustic challenge inside.",
-                "sound-class-num": 6,
+                "sound-class-num": 8,
                 "sound-class": "A",
                 "upgrade-actions": "Doors closed. Sound proofing entrances better.",
                 "point-num": 20,
-                "sound-direction-azimuth": 0,
-                "sound-direction-comment": "Any"
+                "sound-direction-comment": "Any",
+                "sound-direction-azimuth": 240,
+                "marker-color": "#b5140f",
+                "fill": "#b5140f"
             },
             "geometry": {
                 "coordinates": [
