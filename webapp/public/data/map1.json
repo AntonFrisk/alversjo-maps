@@ -1803,7 +1803,9 @@
         {
             "id": "a0b7940d-bcbf-4cef-9f7e-15c4df3aa13a",
             "type": "Feature",
-            "properties": {},
+            "properties": {
+                "title": "forest parking NW3"
+            },
             "geometry": {
                 "coordinates": [
                     [
@@ -1839,7 +1841,8 @@
                 "sound-class-num": 0,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "fill": "#3cc954",
+                "title": "field parking"
             },
             "geometry": {
                 "coordinates": [
@@ -1888,7 +1891,8 @@
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "fill": "#9eb53a",
+                "title": "valley top"
             },
             "geometry": {
                 "coordinates": [
@@ -1929,7 +1933,8 @@
                 "sound-class-num": 6,
                 "sound-class": "B",
                 "marker-color": "#cc4515",
-                "fill": "#cc4515"
+                "fill": "#cc4515",
+                "title": "valley-NW"
             },
             "geometry": {
                 "coordinates": [
@@ -1974,7 +1979,9 @@
         {
             "id": "4483cbbf-936a-46ad-a6b9-db5922d2a8a8",
             "type": "Feature",
-            "properties": {},
+            "properties": {
+                "title": "forest parking NW2"
+            },
             "geometry": {
                 "coordinates": [
                     [
@@ -2006,7 +2013,9 @@
         {
             "id": "0fd89434-d76c-48b5-8597-5aaf00ce7485",
             "type": "Feature",
-            "properties": {},
+            "properties": {
+                "title": "forest parking NW"
+            },
             "geometry": {
                 "coordinates": [
                     [
@@ -2046,7 +2055,9 @@
         {
             "id": "178009ee-eda8-4ab3-a532-426077e19c1c",
             "type": "Feature",
-            "properties": {},
+            "properties": {
+                "title": "valley NE2"
+            },
             "geometry": {
                 "coordinates": [
                     [
@@ -2136,7 +2147,8 @@
                 "sound-class": "B",
                 "marker-color": "#cc4515",
                 "fill": "#cc4515",
-                "sound-direction-azimuth": 170
+                "sound-direction-azimuth": 170,
+                "title": "valley NE"
             },
             "geometry": {
                 "coordinates": [
@@ -2174,7 +2186,8 @@
                 "sound-class": "A",
                 "marker-color": "#b5140f",
                 "fill": "#b5140f",
-                "sound-direction-azimuth": 160
+                "sound-direction-azimuth": 160,
+                "title": "valley SE"
             },
             "geometry": {
                 "coordinates": [
@@ -2220,7 +2233,8 @@
                 "sound-class-num": 8,
                 "sound-class": "A",
                 "marker-color": "#b5140f",
-                "fill": "#b5140f"
+                "fill": "#b5140f",
+                "title": "valley-SW"
             },
             "geometry": {
                 "coordinates": [
@@ -2265,7 +2279,8 @@
                 "sound-class-num": 4,
                 "sound-class": "C",
                 "marker-color": "#f1ae29",
-                "fill": "#f1ae29"
+                "fill": "#f1ae29",
+                "title": "valley middle"
             },
             "geometry": {
                 "coordinates": [
