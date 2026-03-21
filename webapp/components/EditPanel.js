@@ -7,15 +7,17 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
   const props = feature.properties || {};
 
   function set(key, value) {
-    const updated = { ...props, [key]: value };
-    if (key === 'sound-class-num') {
-      const n = Number(value);
-      if (!isNaN(n)) {
-        const { soundClass, featureColor } = deriveFromNum(n);
-        updated['sound-class'] = soundClass;
-        updated['marker-color'] = featureColor;
-        updated['fill'] = featureColor;
-      }
+    const updated = { ...props };
+    if (value === undefined || value === '') {
+      delete updated[key];
+    } else {
+      updated[key] = value;
+    }
+    if (key === 'sound-class-num' && value !== undefined && value !== '') {
+      const { soundClass, featureColor } = deriveFromNum(Number(value));
+      updated['sound-class'] = soundClass;
+      updated['marker-color'] = featureColor;
+      updated['fill'] = featureColor;
     }
     onUpdate(feature.id, updated);
   }
@@ -33,11 +35,23 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
 
       <div className="edit-panel-body">
         <div className="edit-field">
+          <label className="edit-label">Point number</label>
+          <input
+            type="number"
+            min={0}
+            value={props['point-num'] ?? ''}
+            onChange={(e) => set('point-num', e.target.value === '' ? undefined : Number(e.target.value))}
+            placeholder="e.g. 11"
+          />
+        </div>
+
+        <div className="edit-field">
           <label className="edit-label">Title</label>
           <input
             type="text"
             value={props.title || ''}
             onChange={(e) => set('title', e.target.value)}
+            placeholder="e.g. Power slope"
           />
         </div>
 
@@ -47,6 +61,7 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
             rows={3}
             value={props.description || ''}
             onChange={(e) => set('description', e.target.value)}
+            placeholder="Describe the location or zone…"
           />
         </div>
 
@@ -67,6 +82,7 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
               value={soundClassNum}
               onChange={(e) => set('sound-class-num', Number(e.target.value))}
               className="edit-num-input"
+              placeholder="0–10"
             />
             <input
               type="range"
@@ -86,7 +102,8 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
             min={0}
             max={359}
             value={props['sound-direction-azimuth'] ?? ''}
-            onChange={(e) => set('sound-direction-azimuth', Number(e.target.value))}
+            onChange={(e) => set('sound-direction-azimuth', e.target.value === '' ? undefined : Number(e.target.value))}
+            placeholder="e.g. 180"
           />
         </div>
 
@@ -96,6 +113,7 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
             type="text"
             value={props['sound-direction-comment'] || ''}
             onChange={(e) => set('sound-direction-comment', e.target.value)}
+            placeholder="e.g. S/SW/W. Not N."
           />
         </div>
 
@@ -105,6 +123,7 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
             type="text"
             value={props['camp-in-2025'] || ''}
             onChange={(e) => set('camp-in-2025', e.target.value)}
+            placeholder="Camp or act name"
           />
         </div>
 
@@ -114,6 +133,7 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
             rows={2}
             value={props['upgrade-actions'] || ''}
             onChange={(e) => set('upgrade-actions', e.target.value)}
+            placeholder="Sound proofing, directional arrays, etc."
           />
         </div>
 

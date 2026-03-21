@@ -181,8 +181,13 @@ export default function MapViewer({ layers }) {
       const feat = features[0];
 
       // In edit mode: open EditPanel for the clicked feature (no popup)
-      if (editMode) {
-        if (feat.id != null) setSelectedFeatureId(feat.id);
+      // Use ref here — editMode is captured at mount time (stale closure), editModeRef.current is always fresh
+      if (editModeRef.current) {
+        // feat.id is the numeric array index assigned by generateId:true on the source.
+        // Use it to look up the feature's real UUID from our in-memory GeoJSON.
+        const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+        const match = base?.features[feat.id];
+        if (match) setSelectedFeatureId(match.id ?? feat.id);
         return;
       }
 
@@ -248,7 +253,9 @@ export default function MapViewer({ layers }) {
       }
 
       originalGeoJSONRef.current = geojson;
-      map.addSource(SOURCE_ID, { type: 'geojson', data: geojson });
+      // generateId: true assigns sequential numeric IDs (0, 1, 2…) matching the features array index.
+      // This is the reliable way to identify clicked features since MapLibre doesn't support UUID string IDs.
+      map.addSource(SOURCE_ID, { type: 'geojson', data: geojson, generateId: true });
 
       map.addLayer({
         id: LAYER_IDS.polygonFill, type: 'fill', source: SOURCE_ID,
