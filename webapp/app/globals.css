@@ -268,3 +268,545 @@ html, body {
   font-size: 24px;
   letter-spacing: 0.05em;
 }
+
+/* ===== Edit toggle button ===== */
+.edit-toggle-btn {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: #ddd;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 6px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.edit-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.edit-toggle-btn.is-editing {
+  background: rgba(80, 160, 255, 0.18);
+  border-color: rgba(80, 160, 255, 0.5);
+  color: #7ec8ff;
+}
+.layer-switcher.edit-mode-active {
+  border-color: rgba(80, 160, 255, 0.35);
+}
+
+/* ===== Auth widget ===== */
+.auth-widget {
+  background: rgba(10, 10, 18, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #f0f0f0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+.auth-loading {
+  color: #666;
+  font-size: 13px;
+}
+.auth-signed-out {
+  display: flex;
+  align-items: center;
+}
+.auth-signin-btn {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #ddd;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.auth-signin-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.auth-signed-in {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.auth-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+.auth-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #eee;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.auth-editor-badge {
+  background: rgba(80, 160, 255, 0.22);
+  border: 1px solid rgba(80, 160, 255, 0.4);
+  color: #7ec8ff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 2px 7px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.auth-signout-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+.auth-signout-btn:hover { color: #bbb; }
+
+/* ===== Map info card ===== */
+.map-info-card {
+  background: rgba(10, 10, 18, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #f0f0f0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  max-width: 260px;
+}
+.map-info-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.map-info-desc {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.map-info-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.map-info-version-btn {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  font-family: monospace;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.map-info-version-btn:hover { background: rgba(255,255,255,0.1); color: #ccc; }
+.map-info-version-btn:disabled { opacity: 0.5; cursor: default; }
+.map-info-historical {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.map-info-viewing-badge {
+  background: rgba(255, 180, 0, 0.15);
+  border: 1px solid rgba(255, 180, 0, 0.3);
+  color: #e8a800;
+  font-size: 11px;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+.map-info-back-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  color: #5b9ff8;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.map-info-back-btn:hover { color: #88c0ff; }
+
+/* Version history dropdown */
+.map-version-list {
+  margin-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.map-version-item {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: baseline;
+  gap: 6px;
+  appearance: none;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.map-version-item:hover { background: rgba(255,255,255,0.06); }
+.map-version-item.is-active { background: rgba(80,160,255,0.1); }
+.map-version-sha {
+  font-family: monospace;
+  font-size: 11px;
+  color: #5b9ff8;
+}
+.map-version-msg {
+  font-size: 12px;
+  color: #bbb;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.map-version-date {
+  font-size: 11px;
+  color: #666;
+  white-space: nowrap;
+}
+.map-version-empty {
+  font-size: 12px;
+  color: #666;
+  padding: 6px 0;
+  text-align: center;
+}
+
+/* ===== Auth panel overlay ===== */
+.auth-panel-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.auth-panel-card {
+  position: relative;
+  background: rgba(14, 14, 22, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 28px 32px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.auth-panel-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  appearance: none;
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.auth-panel-close:hover { color: #fff; }
+.auth-panel-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+.auth-panel-text {
+  font-size: 13px;
+  color: #aaa;
+  margin: 0;
+}
+.auth-panel-signin-btn {
+  appearance: none;
+  background: #24292e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.auth-panel-signin-btn:hover { background: #3a3f46; }
+.auth-panel-help {
+  font-size: 12px;
+  color: #777;
+  margin: 0;
+  line-height: 1.6;
+}
+.auth-panel-help code {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: monospace;
+  color: #aaa;
+}
+
+/* ===== Edit panel ===== */
+.edit-panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  width: 290px;
+  background: rgba(10, 10, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+}
+.edit-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+.edit-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7ec8ff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.edit-panel-close {
+  appearance: none;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.edit-panel-close:hover { color: #fff; }
+.edit-panel-body {
+  padding: 14px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Edit fields */
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.edit-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #777;
+}
+.edit-class-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+.edit-field input[type='text'],
+.edit-field input[type='number'],
+.edit-field textarea {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #f0f0f0;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 7px 10px;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s, background 0.2s;
+}
+.edit-field input:focus,
+.edit-field textarea:focus {
+  border-color: rgba(80, 160, 255, 0.5);
+  background: rgba(255, 255, 255, 0.07);
+}
+.edit-sound-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.edit-num-input {
+  width: 60px !important;
+  flex-shrink: 0;
+}
+.edit-slider {
+  flex: 1;
+  accent-color: #5b9ff8;
+  cursor: pointer;
+}
+.edit-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 10px;
+  color: #555;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: monospace;
+  flex-wrap: wrap;
+}
+
+/* ===== Edit mode hint ===== */
+.edit-hint {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(10, 10, 18, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(80, 160, 255, 0.2);
+  border-radius: 20px;
+  color: #7ec8ff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ===== Commit bar ===== */
+.commit-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: rgba(10, 10, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.5);
+}
+.commit-count {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.commit-msg-input {
+  flex: 1;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #f0f0f0;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 7px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+.commit-msg-input:focus { border-color: rgba(80, 160, 255, 0.5); }
+.commit-btn {
+  appearance: none;
+  background: rgba(80, 160, 255, 0.2);
+  border: 1px solid rgba(80, 160, 255, 0.4);
+  border-radius: 8px;
+  color: #7ec8ff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+.commit-btn:hover { background: rgba(80, 160, 255, 0.3); border-color: rgba(80, 160, 255, 0.6); }
+.commit-btn:disabled { opacity: 0.5; cursor: default; }
+.commit-cancel-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 7px 10px;
+  transition: color 0.15s;
+}
+.commit-cancel-btn:hover { color: #bbb; }
+.discard-btn {
+  appearance: none;
+  background: rgba(255, 60, 60, 0.1);
+  border: 1px solid rgba(255, 60, 60, 0.25);
+  border-radius: 8px;
+  color: #f08080;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+  margin-left: auto;
+}
+.discard-btn:hover { background: rgba(255, 60, 60, 0.18); border-color: rgba(255, 60, 60, 0.4); color: #ff9090; }

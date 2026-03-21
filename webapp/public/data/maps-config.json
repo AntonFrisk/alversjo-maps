@@ -1,0 +1,17 @@
+{
+  "map1": {
+    "name": "Alversjö Sound Map 2023",
+    "description": "Original sound classification map for Alversjö. Sound zone ratings from the 2023 Borderland camp.",
+    "ext": "json"
+  },
+  "map2": {
+    "name": "Alversjö Sound Map 2024",
+    "description": "Updated sound classification map including 2024 camp data and revised zone boundaries.",
+    "ext": "json"
+  },
+  "map3": {
+    "name": "Alversjö Sound Map 2025",
+    "description": "Current sound classification map with full zone detail, sound direction, and camp history through 2025.",
+    "ext": "geojson"
+  }
+}

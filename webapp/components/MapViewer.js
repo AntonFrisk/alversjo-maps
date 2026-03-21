@@ -1,8 +1,13 @@
 'use client';
 
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { useSession, signIn } from 'next-auth/react';
+import { SOUND_NUM_COLORS, SOUND_CLASS_COLORS } from '@/lib/sound-class';
+import AuthButton from '@/components/AuthButton';
+import MapInfoCard from '@/components/MapInfoCard';
+import EditPanel from '@/components/EditPanel';
 
 const SOURCE_ID = 'geojson-data';
 const LAYER_IDS = {
@@ -17,10 +22,8 @@ const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.pol
 const CENTER = [14.923, 57.620]; // Alversjö
 const ZOOM = 15.5;
 
-// Local satellite tile style — no external API calls
 const LOCAL_SATELLITE_STYLE = {
   version: 8,
-  // Free MapLibre glyph server — needed for text symbol layers (direction arrows)
   glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
   sources: {
     satellite: {
@@ -31,13 +34,7 @@ const LOCAL_SATELLITE_STYLE = {
       maxzoom: 17,
     },
   },
-  layers: [
-    {
-      id: 'satellite-layer',
-      type: 'raster',
-      source: 'satellite',
-    },
-  ],
+  layers: [{ id: 'satellite-layer', type: 'raster', source: 'satellite' }],
 };
 
 function escapeHtml(str) {
@@ -46,39 +43,13 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// Sound class color map
-const SOUND_CLASS_COLORS = {
-  A: '#cc1b15',
-  B: '#cc4515',
-  C: '#f1ae29',
-  D: '#ffcc01',
-  E: '#3cc954',
-};
-
-// Sound class number color map (0=quiet/green → 10=loud/deep red)
-const SOUND_NUM_COLORS = [
-  '#3cc954', // 0
-  '#6dbf47', // 1
-  '#9eb53a', // 2
-  '#cfab2d', // 3
-  '#f1ae29', // 4
-  '#e89422', // 5
-  '#cc4515', // 6
-  '#cc1b15', // 7
-  '#b5140f', // 8
-  '#9e100c', // 9
-  '#870d09', // 10
-];
-
 function getNumColor(num) {
-  const i = Math.max(0, Math.min(10, Math.round(num)));
-  return SOUND_NUM_COLORS[i] || '#888';
+  return SOUND_NUM_COLORS[Math.max(0, Math.min(10, Math.round(num)))] || '#888';
 }
 
 function buildPopupHTML(props) {
   const parts = [];
 
-  // Title
   const title = props.title || '';
   if (title) {
     const pointNum = props['point-num'];
@@ -86,28 +57,22 @@ function buildPopupHTML(props) {
     parts.push(`<div class="popup-title">${escapeHtml(prefix + title)}</div>`);
   }
 
-  // Sound class row: colored letter badge + colored number badge
   const soundClass = props['sound-class'];
   const soundClassNum = props['sound-class-num'];
   if (soundClass || soundClassNum != null) {
     const color = SOUND_CLASS_COLORS[soundClass] || '#888';
     let row = '<div class="popup-sound-class">';
     row += '<span class="popup-label">Sound class:</span> ';
-    if (soundClass) {
-      row += `<span class="popup-badge" style="background:${color}">${escapeHtml(soundClass)}</span> `;
-    }
+    if (soundClass) row += `<span class="popup-badge" style="background:${color}">${escapeHtml(soundClass)}</span> `;
     if (soundClassNum != null) {
-      const numColor = getNumColor(soundClassNum);
-      row += `<span class="popup-badge" style="background:${numColor}">${soundClassNum}</span>`;
+      row += `<span class="popup-badge" style="background:${getNumColor(soundClassNum)}">${soundClassNum}</span>`;
     }
     row += '</div>';
     parts.push(row);
   }
 
-  // Sound direction: arrow + comment
   const azimuthRaw = props['sound-direction-azimuth'];
   const dirComment = props['sound-direction-comment'];
-  // azimuth can be 0 (North) which is valid — only skip if truly missing/null
   const hasAzimuth = azimuthRaw !== null && azimuthRaw !== undefined && azimuthRaw !== '';
   const azimuth = hasAzimuth ? Number(azimuthRaw) : null;
   if (hasAzimuth || dirComment) {
@@ -117,20 +82,15 @@ function buildPopupHTML(props) {
       row += `<span class="popup-arrow" style="--az:${azimuth}deg">↑</span> `;
       row += `<span class="popup-dir-text popup-dir-deg">${azimuth}°</span> `;
     }
-    if (dirComment) {
-      row += `<span class="popup-dir-text">${escapeHtml(dirComment)}</span>`;
-    }
+    if (dirComment) row += `<span class="popup-dir-text">${escapeHtml(dirComment)}</span>`;
     row += '</div>';
     parts.push(row);
   }
 
-  // Description
-  const description = props.description || '';
-  if (description) {
-    parts.push(`<div class="popup-description">${escapeHtml(description)}</div>`);
+  if (props.description) {
+    parts.push(`<div class="popup-description">${escapeHtml(props.description)}</div>`);
   }
 
-  // Camp history
   const camps = [];
   ['2025', '2024', '2023'].forEach((year) => {
     const val = props[`camp-in-${year}`];
@@ -138,14 +98,10 @@ function buildPopupHTML(props) {
       camps.push(`<div class="popup-camp-row"><span class="popup-camp-year">${year}:</span> ${escapeHtml(val)}</div>`);
     }
   });
-  if (camps.length) {
-    parts.push(`<div class="popup-camps">${camps.join('')}</div>`);
-  }
+  if (camps.length) parts.push(`<div class="popup-camps">${camps.join('')}</div>`);
 
-  // Upgrade actions
-  const upgrade = props['upgrade-actions'];
-  if (upgrade) {
-    parts.push(`<div class="popup-upgrade"><span class="popup-label">Upgrade:</span> ${escapeHtml(upgrade)}</div>`);
+  if (props['upgrade-actions']) {
+    parts.push(`<div class="popup-upgrade"><span class="popup-label">Upgrade:</span> ${escapeHtml(props['upgrade-actions'])}</div>`);
   }
 
   return parts.join('');
@@ -154,8 +110,51 @@ function buildPopupHTML(props) {
 export default function MapViewer({ layers }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
+  const originalGeoJSONRef = useRef(null);
+  const editedGeoJSONRef = useRef(null);
+
   const [mapReady, setMapReady] = useState(false);
   const [activeLayer, setActiveLayer] = useState(layers[0]);
+  const [mapsConfig, setMapsConfig] = useState(null);
+
+  // Edit mode state
+  const [editMode, setEditMode] = useState(false);
+  const [editedGeoJSON, setEditedGeoJSON] = useState(null);
+  const [selectedFeatureId, setSelectedFeatureId] = useState(null);
+  const [dirtyFeatureIds, setDirtyFeatureIds] = useState(new Set());
+  const [viewingRef, setViewingRef] = useState(null);
+
+  // Commit bar state
+  const [showCommitInput, setShowCommitInput] = useState(false);
+  const [commitMsg, setCommitMsg] = useState('');
+  const [commitLoading, setCommitLoading] = useState(false);
+
+  // Auth panel state
+  const [showAuthPanel, setShowAuthPanel] = useState(false);
+
+  const { data: session } = useSession();
+  const dirty = dirtyFeatureIds.size > 0;
+
+  const selectedFeature = useMemo(() => {
+    if (!selectedFeatureId || !editedGeoJSON) return null;
+    return editedGeoJSON.features.find((f) => f.id === selectedFeatureId) ?? null;
+  }, [selectedFeatureId, editedGeoJSON]);
+
+  // Fetch maps config once
+  useEffect(() => {
+    fetch('/data/maps-config.json')
+      .then((r) => r.json())
+      .then(setMapsConfig)
+      .catch(() => {});
+  }, []);
+
+  // Warn before navigating away with unsaved changes
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (e) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [dirty]);
 
   // Initialize map once
   useEffect(() => {
@@ -173,7 +172,6 @@ export default function MapViewer({ layers }) {
       setMapReady(true);
     });
 
-    // --- Popups ---
     map.on('click', (e) => {
       const features = map.queryRenderedFeatures(e.point, {
         layers: INTERACTIVE_LAYERS.filter((id) => map.getLayer(id)),
@@ -181,6 +179,14 @@ export default function MapViewer({ layers }) {
       if (!features.length) return;
 
       const feat = features[0];
+
+      // In edit mode: open EditPanel for the clicked feature (no popup)
+      if (editMode) {
+        if (feat.id != null) setSelectedFeatureId(feat.id);
+        return;
+      }
+
+      // In view mode: show popup
       const props = feat.properties || {};
       const html = buildPopupHTML(props);
       if (!html) return;
@@ -196,150 +202,321 @@ export default function MapViewer({ layers }) {
         .addTo(map);
     });
 
-    // Cursor
     INTERACTIVE_LAYERS.forEach((layerId) => {
-      map.on('mouseenter', layerId, () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-      map.on('mouseleave', layerId, () => {
-        map.getCanvas().style.cursor = '';
-      });
+      map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
     });
 
     return () => {
       map.remove();
       mapRef.current = null;
     };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // editMode changes after map init — update click handler via closure-captured ref
+  // (we re-register via a separate flag ref to avoid re-mounting the map)
+  const editModeRef = useRef(false);
+  useEffect(() => { editModeRef.current = editMode; }, [editMode]);
+
+  const loadGeoJSON = useCallback(async (name, ref = null) => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Reset edit state on every load
+    setEditMode(false);
+    setSelectedFeatureId(null);
+    setDirtyFeatureIds(new Set());
+    setEditedGeoJSON(null);
+    editedGeoJSONRef.current = null;
+    setShowCommitInput(false);
+    setCommitMsg('');
+
+    Object.values(LAYER_IDS).forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
+    if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
+
+    try {
+      let geojson;
+      if (ref) {
+        const res = await fetch(`/api/github/file?map=${name}&ref=${encodeURIComponent(ref)}`);
+        if (!res.ok) throw new Error(`Failed to load version ${ref}`);
+        geojson = await res.json();
+      } else {
+        let res = await fetch(`/data/${name}.json`);
+        if (!res.ok) res = await fetch(`/data/${name}.geojson`);
+        if (!res.ok) throw new Error(`Could not load ${name}`);
+        geojson = await res.json();
+      }
+
+      originalGeoJSONRef.current = geojson;
+      map.addSource(SOURCE_ID, { type: 'geojson', data: geojson });
+
+      map.addLayer({
+        id: LAYER_IDS.polygonFill, type: 'fill', source: SOURCE_ID,
+        filter: ['==', '$type', 'Polygon'],
+        paint: { 'fill-color': ['coalesce', ['get', 'fill'], '#3cc954'], 'fill-opacity': 0.35 },
+      });
+      map.addLayer({
+        id: LAYER_IDS.polygonOutline, type: 'line', source: SOURCE_ID,
+        filter: ['==', '$type', 'Polygon'],
+        paint: {
+          'line-color': ['coalesce', ['get', 'fill'], '#3cc954'],
+          'line-width': ['coalesce', ['get', 'stroke-width'], 1],
+          'line-opacity': 0.7,
+        },
+      });
+      map.addLayer({
+        id: LAYER_IDS.line, type: 'line', source: SOURCE_ID,
+        filter: ['==', '$type', 'LineString'],
+        paint: {
+          'line-color': ['coalesce', ['get', 'stroke'], '#3cc954'],
+          'line-width': ['coalesce', ['get', 'stroke-width'], 2],
+          'line-opacity': 0.85,
+        },
+      });
+      map.addLayer({
+        id: LAYER_IDS.point, type: 'circle', source: SOURCE_ID,
+        filter: ['==', '$type', 'Point'],
+        paint: {
+          'circle-radius': 14,
+          'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
+      map.addLayer({
+        id: LAYER_IDS.pointArrow, type: 'symbol', source: SOURCE_ID,
+        filter: ['has', 'sound-direction-azimuth'],
+        layout: {
+          'text-field': '^',
+          'text-size': 14,
+          'text-rotate': ['get', 'sound-direction-azimuth'],
+          'text-rotation-alignment': 'map',
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
+          'text-font': ['Open Sans bold'],
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+    } catch (err) {
+      console.error(`Failed to load ${name}:`, err);
+    }
   }, []);
 
-  // Load GeoJSON when layer changes
-  const loadGeoJSON = useCallback(
-    async (name) => {
-      const map = mapRef.current;
-      if (!map) return;
-
-      // Clear old layers
-      Object.values(LAYER_IDS).forEach((id) => {
-        if (map.getLayer(id)) map.removeLayer(id);
-      });
-      if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
-
-      try {
-        // Try .json first, fall back to .geojson
-        let res = await fetch(`/data/${name}.json`);
-        if (!res.ok) {
-          res = await fetch(`/data/${name}.geojson`);
-          if (!res.ok) throw new Error(`Could not load ${name} (tried .json and .geojson): ${res.status}`);
-        }
-        const geojson = await res.json();
-
-        map.addSource(SOURCE_ID, { type: 'geojson', data: geojson });
-
-        // Polygon fill
-        map.addLayer({
-          id: LAYER_IDS.polygonFill,
-          type: 'fill',
-          source: SOURCE_ID,
-          filter: ['==', '$type', 'Polygon'],
-          paint: {
-            'fill-color': ['coalesce', ['get', 'fill'], '#3cc954'],
-            'fill-opacity': 0.35,
-          },
-        });
-
-        // Polygon outline
-        map.addLayer({
-          id: LAYER_IDS.polygonOutline,
-          type: 'line',
-          source: SOURCE_ID,
-          filter: ['==', '$type', 'Polygon'],
-          paint: {
-            'line-color': ['coalesce', ['get', 'fill'], '#3cc954'],
-            'line-width': ['coalesce', ['get', 'stroke-width'], 1],
-            'line-opacity': 0.7,
-          },
-        });
-
-        // Lines
-        map.addLayer({
-          id: LAYER_IDS.line,
-          type: 'line',
-          source: SOURCE_ID,
-          filter: ['==', '$type', 'LineString'],
-          paint: {
-            'line-color': ['coalesce', ['get', 'stroke'], '#3cc954'],
-            'line-width': ['coalesce', ['get', 'stroke-width'], 2],
-            'line-opacity': 0.85,
-          },
-        });
-
-        // Points (circle background)
-        map.addLayer({
-          id: LAYER_IDS.point,
-          type: 'circle',
-          source: SOURCE_ID,
-          filter: ['==', '$type', 'Point'],
-          paint: {
-            'circle-radius': 14,
-            'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
-            'circle-stroke-width': 2,
-            'circle-stroke-color': '#ffffff',
-          },
-        });
-
-        // Point direction arrows (symbol on top of circles)
-        map.addLayer({
-          id: LAYER_IDS.pointArrow,
-          type: 'symbol',
-          source: SOURCE_ID,
-          filter: ['has', 'sound-direction-azimuth'],
-          layout: {
-            'text-field': '^', //↑
-            'text-size': 14,
-            'text-rotate': ['get', 'sound-direction-azimuth'],
-            'text-rotation-alignment': 'map',
-            'text-allow-overlap': true,
-            'text-ignore-placement': true,
-            'text-font': ['Open Sans bold'],
-          },
-          paint: {
-            'text-color': '#ffffff',
-          },
-        });
-      } catch (err) {
-        console.error(`Failed to load ${name}.json:`, err);
-      }
-    },
-    []
-  );
-
-  // Trigger load when map ready or layer changes
   useEffect(() => {
-    if (mapReady) loadGeoJSON(activeLayer);
-  }, [mapReady, activeLayer, loadGeoJSON]);
+    if (mapReady) loadGeoJSON(activeLayer, viewingRef);
+  }, [mapReady, activeLayer, viewingRef, loadGeoJSON]);
+
+  // --- Edit mode helpers ---
+
+  function handleEditClick() {
+    if (!session) { setShowAuthPanel(true); return; }
+    if (!session.user?.isEditor) { setShowAuthPanel(true); return; }
+    if (editMode) {
+      if (dirty) {
+        alert('Please commit or discard your changes before exiting edit mode.');
+        return;
+      }
+      setEditMode(false);
+      setSelectedFeatureId(null);
+      return;
+    }
+    const clone = JSON.parse(JSON.stringify(originalGeoJSONRef.current));
+    editedGeoJSONRef.current = clone;
+    setEditedGeoJSON(clone);
+    setEditMode(true);
+  }
+
+  function handleFeatureUpdate(featureId, newProps) {
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const updated = {
+      ...base,
+      features: base.features.map((f) =>
+        f.id === featureId ? { ...f, properties: newProps } : f
+      ),
+    };
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, featureId]));
+  }
+
+  function handleDiscard() {
+    if (!window.confirm('Discard all unsaved changes?')) return;
+    const original = originalGeoJSONRef.current;
+    editedGeoJSONRef.current = null;
+    setEditedGeoJSON(null);
+    setDirtyFeatureIds(new Set());
+    setSelectedFeatureId(null);
+    setShowCommitInput(false);
+    mapRef.current?.getSource(SOURCE_ID)?.setData(original);
+  }
+
+  async function handleCommit() {
+    const geojsonToCommit = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const message = commitMsg.trim() || `Edit ${activeLayer}`;
+    setCommitLoading(true);
+    try {
+      const res = await fetch('/api/github/commit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ map: activeLayer, geojson: geojsonToCommit, message }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Commit failed');
+      }
+      originalGeoJSONRef.current = geojsonToCommit;
+      editedGeoJSONRef.current = null;
+      setEditedGeoJSON(null);
+      setDirtyFeatureIds(new Set());
+      setEditMode(false);
+      setSelectedFeatureId(null);
+      setShowCommitInput(false);
+      setCommitMsg('');
+    } catch (err) {
+      alert(`Failed to commit: ${err.message}`);
+    } finally {
+      setCommitLoading(false);
+    }
+  }
+
+  function handleLayerChange(e) {
+    if (dirty) {
+      alert('You have unsaved changes. Please commit or discard before switching maps.');
+      return;
+    }
+    setActiveLayer(e.target.value);
+    setViewingRef(null);
+  }
 
   return (
     <div className="map-wrap">
       <div ref={mapContainer} className="map-container" />
-
       {!mapReady && <div className="map-loading">Loading map…</div>}
 
+      {/* Top-right controls */}
       <div className="map-controls">
-        <div className="layer-switcher">
+        <div className={`layer-switcher ${editMode ? 'edit-mode-active' : ''}`}>
           <label htmlFor="layer-select">Layer</label>
           <select
             id="layer-select"
             value={activeLayer}
-            onChange={(e) => setActiveLayer(e.target.value)}
+            onChange={handleLayerChange}
+            title={dirty ? 'Commit or discard changes before switching layers' : undefined}
           >
             {layers.map((name) => (
-              <option key={name} value={name}>
-                {name.replace('map', 'Map ')}
-              </option>
+              <option key={name} value={name}>{name.replace('map', 'Map ')}</option>
             ))}
           </select>
+
+          {!viewingRef && (
+            <button
+              className={`edit-toggle-btn ${editMode ? 'is-editing' : ''}`}
+              onClick={handleEditClick}
+              title={editMode ? 'Exit edit mode' : 'Edit this map'}
+            >
+              {editMode ? '✎ Editing' : '✎ Edit'}
+            </button>
+          )}
         </div>
+
+        <AuthButton />
+
+        {mapsConfig && (
+          <MapInfoCard
+            mapName={activeLayer}
+            mapsConfig={mapsConfig}
+            viewingRef={viewingRef}
+            onLoadRef={(ref) => { setViewingRef(ref); }}
+            onBackToLatest={() => setViewingRef(null)}
+          />
+        )}
       </div>
+
+      {/* Auth / access panel */}
+      {showAuthPanel && (
+        <div className="auth-panel-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowAuthPanel(false); }}>
+          <div className="auth-panel-card">
+            <button className="auth-panel-close" onClick={() => setShowAuthPanel(false)}>×</button>
+            {!session ? (
+              <>
+                <h3 className="auth-panel-title">Sign in to edit</h3>
+                <p className="auth-panel-text">You need a GitHub account to edit the map.</p>
+                <button className="auth-panel-signin-btn" onClick={() => signIn('github')}>
+                  Sign in with GitHub
+                </button>
+                <p className="auth-panel-help">
+                  To request editor access, contact <strong>Frisky</strong> on the Borderland Discord in{' '}
+                  <code>#sound</code>.
+                </p>
+              </>
+            ) : (
+              <>
+                <h3 className="auth-panel-title">Editor access required</h3>
+                <p className="auth-panel-text">
+                  You are signed in as <strong>{session.user.name}</strong> but do not have editor access.
+                </p>
+                <p className="auth-panel-help">
+                  Contact <strong>Frisky</strong> on the Borderland Discord in <code>#sound</code> to be
+                  added as an editor.
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Edit panel */}
+      {editMode && selectedFeature && (
+        <EditPanel
+          feature={selectedFeature}
+          onUpdate={handleFeatureUpdate}
+          onClose={() => setSelectedFeatureId(null)}
+        />
+      )}
+
+      {/* Edit mode hint (when in edit mode but no feature selected) */}
+      {editMode && !selectedFeature && (
+        <div className="edit-hint">Click a zone or point to edit it</div>
+      )}
+
+      {/* Commit / discard bar */}
+      {dirty && (
+        <div className="commit-bar">
+          <span className="commit-count">
+            {dirtyFeatureIds.size} feature{dirtyFeatureIds.size !== 1 ? 's' : ''} edited
+          </span>
+
+          {showCommitInput ? (
+            <>
+              <input
+                type="text"
+                className="commit-msg-input"
+                value={commitMsg}
+                onChange={(e) => setCommitMsg(e.target.value)}
+                placeholder={`Edit ${activeLayer}`}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleCommit(); }}
+                autoFocus
+              />
+              <button className="commit-btn" onClick={handleCommit} disabled={commitLoading}>
+                {commitLoading ? 'Committing…' : 'Commit'}
+              </button>
+              <button className="commit-cancel-btn" onClick={() => setShowCommitInput(false)}>
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              className="commit-btn"
+              onClick={() => { setCommitMsg(`Edit ${activeLayer}`); setShowCommitInput(true); }}
+            >
+              Commit changes
+            </button>
+          )}
+
+          <button className="discard-btn" onClick={handleDiscard}>Discard</button>
+        </div>
+      )}
     </div>
   );
 }
