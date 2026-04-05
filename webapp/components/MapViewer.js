@@ -252,20 +252,8 @@ export default function MapViewer({ layers }) {
         filter: ['all', ['==', '$type', 'Point'], ['==', ['get', 'snap'], true]],
         paint: { 'circle-radius': 9, 'circle-color': 'rgba(0,220,255,0.25)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });
 
-      // Node-edit source + layers
+      // Node-edit source (layers added in loadGeoJSON to stay on top)
       map.addSource(NODE_SOURCE_ID, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
-      map.addLayer({ id: 'node-handles', type: 'circle', source: NODE_SOURCE_ID,
-        paint: {
-          'circle-radius': ['case', ['boolean', ['feature-state', 'hover'], false], 8, 6],
-          'circle-color': '#fff',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#333',
-        },
-      });
-      // Snap ring for node editing
-      map.addLayer({ id: 'node-snap', type: 'circle', source: NODE_SOURCE_ID,
-        filter: ['==', ['get', 'snap'], true],
-        paint: { 'circle-radius': 11, 'circle-color': 'rgba(0,220,255,0.2)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });
 
       // Drag handling for node editing
       map.on('mousedown', 'node-handles', (e) => {
@@ -617,6 +605,7 @@ export default function MapViewer({ layers }) {
     setShowCommitInput(false);
     setCommitMsg('');
 
+    map.getSource(NODE_SOURCE_ID)?.setData({ type: 'FeatureCollection', features: [] });
     Object.values(LAYER_IDS).forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
     if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
 
@@ -685,6 +674,16 @@ export default function MapViewer({ layers }) {
         },
         paint: { 'text-color': '#ffffff' },
       });
+      // Node-edit layers — must be added last so they render above polygon fill/outline
+      if (map.getLayer('node-handles')) map.removeLayer('node-handles');
+      if (map.getLayer('node-snap')) map.removeLayer('node-snap');
+      map.addLayer({ id: 'node-handles', type: 'circle', source: NODE_SOURCE_ID,
+        filter: ['!=', ['get', 'snap'], true],
+        paint: { 'circle-radius': 6, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#333' } });
+      map.addLayer({ id: 'node-snap', type: 'circle', source: NODE_SOURCE_ID,
+        filter: ['==', ['get', 'snap'], true],
+        paint: { 'circle-radius': 11, 'circle-color': 'rgba(0,220,255,0.2)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });
+
       // Re-apply global line width (layers were just recreated)
       map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-width', globalLineWidthRef.current);
       // Re-apply visibility (layers were just recreated)
@@ -722,6 +721,8 @@ export default function MapViewer({ layers }) {
       return;
     }
     const clone = JSON.parse(JSON.stringify(originalGeoJSONRef.current));
+    // Ensure every feature has a stable UUID so node-edit and selection can find them by id
+    clone.features = clone.features.map((f) => f.id ? f : { ...f, id: crypto.randomUUID() });
     editedGeoJSONRef.current = clone;
     setEditedGeoJSON(clone);
     setEditMode(true);
