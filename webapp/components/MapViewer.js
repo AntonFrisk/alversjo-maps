@@ -132,6 +132,19 @@ export default function MapViewer({ layers }) {
   // Auth panel state
   const [showAuthPanel, setShowAuthPanel] = useState(false);
 
+  // Hamburger menu state
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Pattern (B&W dot) mode
+  const [patternMode, setPatternMode] = useState(false);
+  const patternModeRef = useRef(false);
+
+  // Feature type visibility
+  const [showPolygons, setShowPolygons] = useState(true);
+  const [showPoints, setShowPoints] = useState(true);
+  const showPolygonsRef = useRef(true);
+  const showPointsRef = useRef(true);
+
   const { data: session } = useSession();
   const dirty = dirtyFeatureIds.size > 0;
 
@@ -168,6 +181,34 @@ export default function MapViewer({ layers }) {
     });
 
     map.on('load', () => {
+      // Generate dot-density pattern images for B&W mode
+      // 5 levels: index 0 (sparsest) → 4 (densest)
+      const PATTERN_SIZE = 16;
+      const dotConfigs = [
+        { radius: 1.2, spacing: 8 },   // dots-0: very sparse
+        { radius: 1.6, spacing: 6 },   // dots-1
+        { radius: 2.0, spacing: 5 },   // dots-2
+        { radius: 2.4, spacing: 4 },   // dots-3
+        { radius: 2.8, spacing: 4 },   // dots-4: dense
+      ];
+      dotConfigs.forEach(({ radius, spacing }, i) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = PATTERN_SIZE;
+        canvas.height = PATTERN_SIZE;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, PATTERN_SIZE, PATTERN_SIZE);
+        ctx.fillStyle = '#000';
+        for (let x = spacing / 2; x < PATTERN_SIZE; x += spacing) {
+          for (let y = spacing / 2; y < PATTERN_SIZE; y += spacing) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        const imgData = ctx.getImageData(0, 0, PATTERN_SIZE, PATTERN_SIZE);
+        map.addImage(`dots-${i}`, { width: PATTERN_SIZE, height: PATTERN_SIZE, data: imgData.data });
+      });
+
       mapRef.current = map;
       setMapReady(true);
     });
@@ -219,9 +260,49 @@ export default function MapViewer({ layers }) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // editMode changes after map init — update click handler via closure-captured ref
-  // (we re-register via a separate flag ref to avoid re-mounting the map)
   const editModeRef = useRef(false);
   useEffect(() => { editModeRef.current = editMode; }, [editMode]);
+
+  // Apply / remove pattern mode on polygon fill layer
+  useEffect(() => {
+    patternModeRef.current = patternMode;
+    const map = mapRef.current;
+    if (!map || !map.getLayer(LAYER_IDS.polygonFill)) return;
+    if (patternMode) {
+      // sound-class-num 0–10 → density bucket 0–4
+      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-pattern', [
+        'case',
+        ['has', 'sound-class-num'],
+        ['concat', 'dots-', ['to-string', ['min', 4, ['floor', ['/', ['coalesce', ['get', 'sound-class-num'], 5], 2.1]]]]],
+        'dots-2',
+      ]);
+      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-opacity', 1);
+      map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-color', '#000');
+      map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-opacity', 0.6);
+    } else {
+      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-pattern', null);
+      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-color', ['coalesce', ['get', 'fill'], '#3cc954']);
+      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-opacity', 0.35);
+      map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-color', ['coalesce', ['get', 'fill'], '#3cc954']);
+      map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-opacity', 0.7);
+    }
+  }, [patternMode, mapReady]);
+
+  // Sync polygon/point visibility to map layers
+  useEffect(() => {
+    showPolygonsRef.current = showPolygons;
+    showPointsRef.current = showPoints;
+    const map = mapRef.current;
+    if (!map) return;
+    const polyVis = showPolygons ? 'visible' : 'none';
+    const pointVis = showPoints ? 'visible' : 'none';
+    [LAYER_IDS.polygonFill, LAYER_IDS.polygonOutline].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', polyVis);
+    });
+    [LAYER_IDS.point, LAYER_IDS.pointArrow].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', pointVis);
+    });
+  }, [showPolygons, showPoints, mapReady]);
 
   const loadGeoJSON = useCallback(async (name, ref = null) => {
     const map = mapRef.current;
@@ -304,6 +385,27 @@ export default function MapViewer({ layers }) {
         },
         paint: { 'text-color': '#ffffff' },
       });
+      // Re-apply visibility (layers were just recreated)
+      if (!showPolygonsRef.current) {
+        map.setLayoutProperty(LAYER_IDS.polygonFill, 'visibility', 'none');
+        map.setLayoutProperty(LAYER_IDS.polygonOutline, 'visibility', 'none');
+      }
+      if (!showPointsRef.current) {
+        map.setLayoutProperty(LAYER_IDS.point, 'visibility', 'none');
+        map.setLayoutProperty(LAYER_IDS.pointArrow, 'visibility', 'none');
+      }
+      // Re-apply pattern mode if active (layers were just recreated)
+      if (patternModeRef.current) {
+        map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-pattern', [
+          'case',
+          ['has', 'sound-class-num'],
+          ['concat', 'dots-', ['to-string', ['min', 4, ['floor', ['/', ['coalesce', ['get', 'sound-class-num'], 5], 2.1]]]]],
+          'dots-2',
+        ]);
+        map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-opacity', 1);
+        map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-color', '#000');
+        map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-opacity', 0.6);
+      }
     } catch (err) {
       console.error(`Failed to load ${name}:`, err);
     }
@@ -415,30 +517,68 @@ export default function MapViewer({ layers }) {
               <option key={name} value={name}>{name.replace('map', 'Map ')}</option>
             ))}
           </select>
-
-          {!viewingRef && (
-            <button
-              className={`edit-toggle-btn ${editMode ? 'is-editing' : ''}`}
-              onClick={handleEditClick}
-              title={editMode ? 'Exit edit mode' : 'Edit this map'}
-            >
-              {editMode ? '✎ Editing' : '✎ Edit'}
-            </button>
-          )}
         </div>
 
-        <AuthButton />
-
-        {mapsConfig && (
-          <MapInfoCard
-            mapName={activeLayer}
-            mapsConfig={mapsConfig}
-            viewingRef={viewingRef}
-            onLoadRef={(ref) => { setViewingRef(ref); }}
-            onBackToLatest={() => setViewingRef(null)}
-          />
-        )}
+        <button
+          className={`hamburger-btn ${menuOpen ? 'is-open' : ''}`}
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Menu"
+        >
+          <span /><span /><span />
+        </button>
       </div>
+
+      {/* Hamburger menu dropdown */}
+      {menuOpen && (
+        <div className="hamburger-menu">
+          <div className="menu-visibility-row">
+            <span className="menu-visibility-label">Show</span>
+            <button
+              className={`visibility-toggle-btn ${showPolygons ? 'is-on' : ''}`}
+              onClick={() => setShowPolygons((v) => !v)}
+              title={showPolygons ? 'Hide polygons' : 'Show polygons'}
+            >
+              ▭ Polygons
+            </button>
+            <button
+              className={`visibility-toggle-btn ${showPoints ? 'is-on' : ''}`}
+              onClick={() => setShowPoints((v) => !v)}
+              title={showPoints ? 'Hide points' : 'Show points'}
+            >
+              ● Points
+            </button>
+          </div>
+
+          <div className="menu-auth-row">
+            <button
+              className={`edit-toggle-btn ${patternMode ? 'is-editing' : ''}`}
+              onClick={() => setPatternMode((v) => !v)}
+              title={patternMode ? 'Switch to colour mode' : 'Switch to B&W dot mode'}
+            >
+              {patternMode ? '◉ B&W' : '◉ B&W'}
+            </button>
+            {!viewingRef && (
+              <button
+                className={`edit-toggle-btn ${editMode ? 'is-editing' : ''}`}
+                onClick={handleEditClick}
+                title={editMode ? 'Exit edit mode' : 'Edit this map'}
+              >
+                {editMode ? '✎ Editing' : '✎ Edit'}
+              </button>
+            )}
+            <AuthButton />
+          </div>
+          {mapsConfig && (
+            <MapInfoCard
+              mapName={activeLayer}
+              mapsConfig={mapsConfig}
+              viewingRef={viewingRef}
+              onLoadRef={(ref) => { setViewingRef(ref); setMenuOpen(false); }}
+              onBackToLatest={() => { setViewingRef(null); }}
+            />
+          )}
+        </div>
+      )}
 
       {/* Auth / access panel */}
       {showAuthPanel && (

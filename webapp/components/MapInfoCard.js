@@ -10,6 +10,7 @@ export default function MapInfoCard({ mapName, mapsConfig, viewingRef, onLoadRef
   const [commits, setCommits] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDesc, setShowDesc] = useState(true);
 
   // Reset when switching maps
   useEffect(() => {
@@ -40,8 +41,13 @@ export default function MapInfoCard({ mapName, mapsConfig, viewingRef, onLoadRef
 
   return (
     <div className="map-info-card">
-      <div className="map-info-name">{config.name}</div>
-      <div className="map-info-desc">{config.description}</div>
+      <div className="map-info-header">
+        <div className="map-info-name">{config.name}</div>
+        <button className="map-info-toggle-btn" onClick={() => setShowDesc((v) => !v)} title={showDesc ? 'Hide description' : 'Show description'}>
+          {showDesc ? '▲' : '▼'}
+        </button>
+      </div>
+      {showDesc && <div className="map-info-desc">{config.description}</div>}
 
       <div className="map-info-footer">
         {viewingRef ? (
