@@ -10,6 +10,7 @@ import MapInfoCard from '@/components/MapInfoCard';
 import EditPanel from '@/components/EditPanel';
 
 const SOURCE_ID = 'geojson-data';
+const DRAW_SOURCE_ID = 'draw-preview';
 const LAYER_IDS = {
   polygonFill: 'layer-polygon-fill',
   polygonOutline: 'layer-polygon-outline',
@@ -124,6 +125,12 @@ export default function MapViewer({ layers }) {
   const [dirtyFeatureIds, setDirtyFeatureIds] = useState(new Set());
   const [viewingRef, setViewingRef] = useState(null);
 
+  // Draw polygon state
+  const [drawingPolygon, setDrawingPolygon] = useState(false);
+  const [drawNodes, setDrawNodes] = useState([]); // [[lng,lat], ...]
+  const drawNodesRef = useRef([]);
+  const drawingPolygonRef = useRef(false);
+
   // Commit bar state
   const [showCommitInput, setShowCommitInput] = useState(false);
   const [commitMsg, setCommitMsg] = useState('');
@@ -218,11 +225,45 @@ export default function MapViewer({ layers }) {
         ctx.beginPath(); ctx.moveTo(0, sz); ctx.lineTo(sz, 0); ctx.stroke();
       }));
 
+      // Draw-preview source + layers (empty initially)
+      map.addSource(DRAW_SOURCE_ID, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      map.addLayer({ id: 'draw-fill', type: 'fill', source: DRAW_SOURCE_ID,
+        paint: { 'fill-color': '#fff', 'fill-opacity': 0.15 } });
+      map.addLayer({ id: 'draw-outline', type: 'line', source: DRAW_SOURCE_ID,
+        paint: { 'line-color': '#fff', 'line-width': 2, 'line-dasharray': [4, 3] } });
+      map.addLayer({ id: 'draw-nodes', type: 'circle', source: DRAW_SOURCE_ID,
+        filter: ['==', '$type', 'Point'],
+        paint: { 'circle-radius': 5, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#333' } });
+
       mapRef.current = map;
       setMapReady(true);
     });
 
     map.on('click', (e) => {
+      // Draw mode: add node or close polygon
+      if (drawingPolygonRef.current) {
+        const nodes = drawNodesRef.current;
+        const [lng, lat] = [e.lngLat.lng, e.lngLat.lat];
+
+        // Check if clicking near first node to close (need ≥3 nodes already)
+        if (nodes.length >= 3) {
+          const first = map.project(nodes[0]);
+          const click = map.project([lng, lat]);
+          const dx = first.x - click.x, dy = first.y - click.y;
+          if (Math.sqrt(dx * dx + dy * dy) < 12) {
+            // Close polygon
+            finishPolygonRef.current();
+            return;
+          }
+        }
+
+        const next = [...nodes, [lng, lat]];
+        drawNodesRef.current = next;
+        setDrawNodes(next);
+        updateDrawPreview(map, next);
+        return;
+      }
+
       const features = map.queryRenderedFeatures(e.point, {
         layers: INTERACTIVE_LAYERS.filter((id) => map.getLayer(id)),
       });
@@ -230,18 +271,14 @@ export default function MapViewer({ layers }) {
 
       const feat = features[0];
 
-      // In edit mode: open EditPanel for the clicked feature (no popup)
-      // Use ref here — editMode is captured at mount time (stale closure), editModeRef.current is always fresh
       if (editModeRef.current) {
-        // feat.id is the numeric array index assigned by generateId:true on the source.
-        // Use it to look up the feature's real UUID from our in-memory GeoJSON.
         const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
         const match = base?.features[feat.id];
         if (match) setSelectedFeatureId(match.id ?? feat.id);
         return;
       }
 
-      // In view mode: show popup
+      // View mode: popup
       const props = feat.properties || {};
       const html = buildPopupHTML(props);
       if (!html) return;
@@ -271,6 +308,86 @@ export default function MapViewer({ layers }) {
   // editMode changes after map init — update click handler via closure-captured ref
   const editModeRef = useRef(false);
   useEffect(() => { editModeRef.current = editMode; }, [editMode]);
+
+  // Keep draw refs in sync
+  useEffect(() => { drawingPolygonRef.current = drawingPolygon; }, [drawingPolygon]);
+  useEffect(() => { drawNodesRef.current = drawNodes; }, [drawNodes]);
+
+  // Cursor: crosshair while drawing
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.getCanvas().style.cursor = drawingPolygon ? 'crosshair' : '';
+  }, [drawingPolygon]);
+
+  function updateDrawPreview(map, nodes) {
+    if (!map.getSource(DRAW_SOURCE_ID)) return;
+    const features = [];
+    if (nodes.length >= 2) {
+      features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: [...nodes, nodes[0]] } });
+    }
+    nodes.forEach((c) => features.push({ type: 'Feature', geometry: { type: 'Point', coordinates: c } }));
+    map.getSource(DRAW_SOURCE_ID).setData({ type: 'FeatureCollection', features });
+  }
+
+  function clearDrawPreview(map) {
+    map?.getSource(DRAW_SOURCE_ID)?.setData({ type: 'FeatureCollection', features: [] });
+  }
+
+  // Stable ref so the map click handler can call finishPolygon without a stale closure
+  const finishPolygonRef = useRef(null);
+  finishPolygonRef.current = function finishPolygon() {
+    const nodes = drawNodesRef.current;
+    if (nodes.length < 3) return;
+    const map = mapRef.current;
+
+    const newFeature = {
+      type: 'Feature',
+      id: crypto.randomUUID(),
+      properties: {},
+      geometry: { type: 'Polygon', coordinates: [[...nodes, nodes[0]]] },
+    };
+
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const updated = { ...base, features: [...base.features, newFeature] };
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    map.getSource(SOURCE_ID)?.setData(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, newFeature.id]));
+
+    // Clear draw state
+    drawNodesRef.current = [];
+    setDrawNodes([]);
+    setDrawingPolygon(false);
+    clearDrawPreview(map);
+    setSelectedFeatureId(newFeature.id);
+  };
+
+  function startDrawing() {
+    setSelectedFeatureId(null);
+    drawNodesRef.current = [];
+    setDrawNodes([]);
+    clearDrawPreview(mapRef.current);
+    setDrawingPolygon(true);
+  }
+
+  function cancelDrawing() {
+    drawNodesRef.current = [];
+    setDrawNodes([]);
+    setDrawingPolygon(false);
+    clearDrawPreview(mapRef.current);
+  }
+
+  function handleFeatureDelete(featureId) {
+    if (!window.confirm('Delete this polygon? This cannot be undone until discarded.')) return;
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const updated = { ...base, features: base.features.filter((f) => f.id !== featureId) };
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    setDirtyFeatureIds((prev) => { const s = new Set(prev); s.add(featureId); return s; });
+    setSelectedFeatureId(null);
+  }
 
   // Build a data-driven fill-pattern expression for the given prefix ('dots'|'grid'|'stripes')
   function patternExpr(prefix) {
@@ -637,12 +754,24 @@ export default function MapViewer({ layers }) {
           feature={selectedFeature}
           onUpdate={handleFeatureUpdate}
           onClose={() => setSelectedFeatureId(null)}
+          onDelete={selectedFeature.geometry?.type === 'Polygon' ? handleFeatureDelete : null}
         />
       )}
 
-      {/* Edit mode hint (when in edit mode but no feature selected) */}
-      {editMode && !selectedFeature && (
-        <div className="edit-hint">Click a zone or point to edit it</div>
+      {/* Edit mode toolbar */}
+      {editMode && !selectedFeature && !drawingPolygon && (
+        <div className="edit-hint">
+          Click a zone or point to edit it
+          <button className="draw-polygon-btn" onClick={startDrawing}>+ Draw polygon</button>
+        </div>
+      )}
+      {editMode && drawingPolygon && (
+        <div className="edit-hint drawing-active">
+          {drawNodes.length < 3
+            ? `Click to place node ${drawNodes.length + 1} (need 3+)`
+            : `${drawNodes.length} nodes — click first node to close`}
+          <button className="draw-cancel-btn" onClick={cancelDrawing}>Cancel</button>
+        </div>
       )}
 
       {/* Commit / discard bar */}

@@ -1,7 +1,7 @@
 'use client';
 import { deriveFromNum, SOUND_CLASS_COLORS } from '@/lib/sound-class';
 
-export default function EditPanel({ feature, onUpdate, onClose }) {
+export default function EditPanel({ feature, onUpdate, onClose, onDelete }) {
   if (!feature) return null;
 
   const props = feature.properties || {};
@@ -141,6 +141,12 @@ export default function EditPanel({ feature, onUpdate, onClose }) {
           <span>ID: {String(feature.id).slice(0, 18)}…</span>
           <span>{feature.geometry?.type}</span>
         </div>
+
+        {onDelete && (
+          <button className="edit-delete-btn" onClick={() => onDelete(feature.id)}>
+            Delete polygon
+          </button>
+        )}
       </div>
     </div>
   );

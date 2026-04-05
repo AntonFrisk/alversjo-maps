@@ -839,6 +839,27 @@ html, body {
   flex-wrap: wrap;
 }
 
+.edit-delete-btn {
+  appearance: none;
+  width: 100%;
+  margin-top: 10px;
+  background: rgba(200, 50, 50, 0.15);
+  border: 1px solid rgba(200, 50, 50, 0.35);
+  border-radius: 8px;
+  color: #e08080;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 0;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.edit-delete-btn:hover {
+  background: rgba(200, 50, 50, 0.3);
+  border-color: rgba(200, 50, 50, 0.55);
+  color: #ffaaaa;
+}
+
 /* ===== Edit mode hint ===== */
 .edit-hint {
   position: absolute;
@@ -856,7 +877,43 @@ html, body {
   padding: 8px 18px;
   pointer-events: none;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
 }
+.drawing-active {
+  border-color: rgba(255, 200, 60, 0.4);
+  color: #ffd966;
+}
+.draw-polygon-btn {
+  appearance: none;
+  background: rgba(80, 160, 255, 0.18);
+  border: 1px solid rgba(80, 160, 255, 0.4);
+  border-radius: 10px;
+  color: #7ec8ff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 4px 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.draw-polygon-btn:hover { background: rgba(80, 160, 255, 0.3); }
+.draw-cancel-btn {
+  appearance: none;
+  background: rgba(255, 80, 80, 0.18);
+  border: 1px solid rgba(255, 80, 80, 0.35);
+  border-radius: 10px;
+  color: #ff9090;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 4px 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.draw-cancel-btn:hover { background: rgba(255, 80, 80, 0.3); }
 
 /* ===== Commit bar ===== */
 .commit-bar {
