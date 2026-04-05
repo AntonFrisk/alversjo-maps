@@ -135,9 +135,9 @@ export default function MapViewer({ layers }) {
   // Hamburger menu state
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Pattern (B&W dot) mode
-  const [patternMode, setPatternMode] = useState(false);
-  const patternModeRef = useRef(false);
+  // Pattern (B&W) mode — null = off, 'dots' | 'grid' | 'stripes'
+  const [patternType, setPatternType] = useState(null);
+  const patternTypeRef = useRef(null);
 
   // Feature type visibility
   const [showPolygons, setShowPolygons] = useState(true);
@@ -181,33 +181,42 @@ export default function MapViewer({ layers }) {
     });
 
     map.on('load', () => {
-      // Generate dot-density pattern images for B&W mode
-      // 5 levels: index 0 (sparsest) → 4 (densest)
-      const PATTERN_SIZE = 16;
-      const dotConfigs = [
-        { radius: 1.2, spacing: 8 },   // dots-0: very sparse
-        { radius: 1.6, spacing: 6 },   // dots-1
-        { radius: 2.0, spacing: 5 },   // dots-2
-        { radius: 2.4, spacing: 4 },   // dots-3
-        { radius: 2.8, spacing: 4 },   // dots-4: dense
-      ];
-      dotConfigs.forEach(({ radius, spacing }, i) => {
+      const addPattern = (name, sz, draw) => {
         const canvas = document.createElement('canvas');
-        canvas.width = PATTERN_SIZE;
-        canvas.height = PATTERN_SIZE;
+        canvas.width = sz; canvas.height = sz;
         const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, PATTERN_SIZE, PATTERN_SIZE);
+        ctx.clearRect(0, 0, sz, sz);
+        draw(ctx, sz);
+        const { data } = ctx.getImageData(0, 0, sz, sz);
+        map.addImage(name, { width: sz, height: sz, data });
+      };
+
+      // Dots: tile = sp×sp, single dot at center → seamless
+      [
+        { r: 1.5, sp: 12 },
+        { r: 1.5, sp: 9 },
+        { r: 2.0, sp: 7 },
+        { r: 2.0, sp: 5 },
+        { r: 2.5, sp: 4 },
+      ].forEach(({ r, sp }, i) => addPattern(`dots-${i}`, sp, (ctx, sz) => {
         ctx.fillStyle = '#000';
-        for (let x = spacing / 2; x < PATTERN_SIZE; x += spacing) {
-          for (let y = spacing / 2; y < PATTERN_SIZE; y += spacing) {
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-        const imgData = ctx.getImageData(0, 0, PATTERN_SIZE, PATTERN_SIZE);
-        map.addImage(`dots-${i}`, { width: PATTERN_SIZE, height: PATTERN_SIZE, data: imgData.data });
-      });
+        ctx.beginPath(); ctx.arc(sz / 2, sz / 2, r, 0, Math.PI * 2); ctx.fill();
+      }));
+
+      // Grid: tile = sp×sp, lines along top and left edges → seamless grid
+      [14, 10, 7, 5, 3].forEach((sp, i) => addPattern(`grid-${i}`, sp, (ctx, sz) => {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(sz, 0); ctx.stroke(); // top
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, sz); ctx.stroke(); // left
+      }));
+
+      // Diagonal stripes: tile = sp×sp, line from bottom-left to top-right → seamless 45°
+      [14, 10, 7, 5, 3].forEach((sp, i) => addPattern(`stripes-${i}`, sp, (ctx, sz) => {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, sz); ctx.lineTo(sz, 0); ctx.stroke();
+      }));
 
       mapRef.current = map;
       setMapReady(true);
@@ -263,19 +272,20 @@ export default function MapViewer({ layers }) {
   const editModeRef = useRef(false);
   useEffect(() => { editModeRef.current = editMode; }, [editMode]);
 
-  // Apply / remove pattern mode on polygon fill layer
-  useEffect(() => {
-    patternModeRef.current = patternMode;
-    const map = mapRef.current;
-    if (!map || !map.getLayer(LAYER_IDS.polygonFill)) return;
-    if (patternMode) {
-      // sound-class-num 0–10 → density bucket 0–4
-      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-pattern', [
-        'case',
-        ['has', 'sound-class-num'],
-        ['concat', 'dots-', ['to-string', ['min', 4, ['floor', ['/', ['coalesce', ['get', 'sound-class-num'], 5], 2.1]]]]],
-        'dots-2',
-      ]);
+  // Build a data-driven fill-pattern expression for the given prefix ('dots'|'grid'|'stripes')
+  function patternExpr(prefix) {
+    // sound-class-num 0–10 → bucket 0–4
+    return ['case',
+      ['has', 'sound-class-num'],
+      ['concat', `${prefix}-`, ['to-string', ['min', 4, ['floor', ['/', ['coalesce', ['get', 'sound-class-num'], 5], 2.1]]]]],
+      `${prefix}-2`,
+    ];
+  }
+
+  function applyPatternToMap(map, type) {
+    if (!map.getLayer(LAYER_IDS.polygonFill)) return;
+    if (type) {
+      map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-pattern', patternExpr(type));
       map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-opacity', 1);
       map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-color', '#000');
       map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-opacity', 0.6);
@@ -286,7 +296,14 @@ export default function MapViewer({ layers }) {
       map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-color', ['coalesce', ['get', 'fill'], '#3cc954']);
       map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-opacity', 0.7);
     }
-  }, [patternMode, mapReady]);
+  }
+
+  // Apply / remove pattern mode on polygon fill layer
+  useEffect(() => {
+    patternTypeRef.current = patternType;
+    const map = mapRef.current;
+    if (map) applyPatternToMap(map, patternType);
+  }, [patternType, mapReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Sync polygon/point visibility to map layers
   useEffect(() => {
@@ -395,17 +412,7 @@ export default function MapViewer({ layers }) {
         map.setLayoutProperty(LAYER_IDS.pointArrow, 'visibility', 'none');
       }
       // Re-apply pattern mode if active (layers were just recreated)
-      if (patternModeRef.current) {
-        map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-pattern', [
-          'case',
-          ['has', 'sound-class-num'],
-          ['concat', 'dots-', ['to-string', ['min', 4, ['floor', ['/', ['coalesce', ['get', 'sound-class-num'], 5], 2.1]]]]],
-          'dots-2',
-        ]);
-        map.setPaintProperty(LAYER_IDS.polygonFill, 'fill-opacity', 1);
-        map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-color', '#000');
-        map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-opacity', 0.6);
-      }
+      if (patternTypeRef.current) applyPatternToMap(map, patternTypeRef.current);
     } catch (err) {
       console.error(`Failed to load ${name}:`, err);
     }
@@ -549,14 +556,25 @@ export default function MapViewer({ layers }) {
             </button>
           </div>
 
+          <div className="menu-pattern-row">
+            <span className="menu-visibility-label">B&W</span>
+            {[
+              { type: 'dots',    label: '· Dots' },
+              { type: 'grid',    label: '# Grid' },
+              { type: 'stripes', label: '/ Stripes' },
+            ].map(({ type, label }) => (
+              <button
+                key={type}
+                className={`visibility-toggle-btn ${patternType === type ? 'is-on' : ''}`}
+                onClick={() => setPatternType((v) => v === type ? null : type)}
+                title={patternType === type ? 'Turn off B&W mode' : `B&W: ${label}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div className="menu-auth-row">
-            <button
-              className={`edit-toggle-btn ${patternMode ? 'is-editing' : ''}`}
-              onClick={() => setPatternMode((v) => !v)}
-              title={patternMode ? 'Switch to colour mode' : 'Switch to B&W dot mode'}
-            >
-              {patternMode ? '◉ B&W' : '◉ B&W'}
-            </button>
             {!viewingRef && (
               <button
                 className={`edit-toggle-btn ${editMode ? 'is-editing' : ''}`}
