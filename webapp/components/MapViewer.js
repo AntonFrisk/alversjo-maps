@@ -11,6 +11,7 @@ import EditPanel from '@/components/EditPanel';
 
 const SOURCE_ID = 'geojson-data';
 const DRAW_SOURCE_ID = 'draw-preview';
+const NODE_SOURCE_ID = 'node-edit';
 const LAYER_IDS = {
   polygonFill: 'layer-polygon-fill',
   polygonOutline: 'layer-polygon-outline',
@@ -134,6 +135,10 @@ export default function MapViewer({ layers }) {
   const [snapDistance, setSnapDistance] = useState(12); // pixels
   const snapDistanceRef = useRef(12);
 
+  // Node editing state
+  const draggingNodeIdxRef = useRef(null); // index into ring[0] being dragged
+  const draggingPolygonIdRef = useRef(null); // feature id of polygon being node-edited
+
   // Commit bar state
   const [showCommitInput, setShowCommitInput] = useState(false);
   const [commitMsg, setCommitMsg] = useState('');
@@ -247,11 +252,57 @@ export default function MapViewer({ layers }) {
         filter: ['all', ['==', '$type', 'Point'], ['==', ['get', 'snap'], true]],
         paint: { 'circle-radius': 9, 'circle-color': 'rgba(0,220,255,0.25)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });
 
+      // Node-edit source + layers
+      map.addSource(NODE_SOURCE_ID, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      map.addLayer({ id: 'node-handles', type: 'circle', source: NODE_SOURCE_ID,
+        paint: {
+          'circle-radius': ['case', ['boolean', ['feature-state', 'hover'], false], 8, 6],
+          'circle-color': '#fff',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#333',
+        },
+      });
+      // Snap ring for node editing
+      map.addLayer({ id: 'node-snap', type: 'circle', source: NODE_SOURCE_ID,
+        filter: ['==', ['get', 'snap'], true],
+        paint: { 'circle-radius': 11, 'circle-color': 'rgba(0,220,255,0.2)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });
+
+      // Drag handling for node editing
+      map.on('mousedown', 'node-handles', (e) => {
+        if (!editModeRef.current) return;
+        e.preventDefault();
+        const nodeIdx = e.features[0]?.properties?.nodeIdx;
+        if (nodeIdx == null) return;
+        draggingNodeIdxRef.current = nodeIdx;
+        draggingPolygonIdRef.current = e.features[0]?.properties?.polygonId;
+        map.dragPan.disable();
+        map.getCanvas().style.cursor = 'grabbing';
+      });
+
+      map.on('mouseup', () => {
+        if (draggingNodeIdxRef.current == null) return;
+        draggingNodeIdxRef.current = null;
+        draggingPolygonIdRef.current = null;
+        map.dragPan.enable();
+        map.getCanvas().style.cursor = '';
+      });
+
+      map.on('mouseenter', 'node-handles', () => { map.getCanvas().style.cursor = 'grab'; });
+      map.on('mouseleave', 'node-handles', () => { map.getCanvas().style.cursor = ''; });
+
       mapRef.current = map;
       setMapReady(true);
     });
 
     map.on('mousemove', (e) => {
+      // Node drag
+      if (draggingNodeIdxRef.current != null) {
+        const snap = findSnapTarget(map, e.lngLat, e.originalEvent.shiftKey, draggingPolygonIdRef.current);
+        const coord = (!e.originalEvent.shiftKey && snap) ? snap : [e.lngLat.lng, e.lngLat.lat];
+        moveNodeRef.current(draggingPolygonIdRef.current, draggingNodeIdxRef.current, coord, snap);
+        return;
+      }
+      // Draw preview
       if (!drawingPolygonRef.current) return;
       const snap = findSnapTarget(map, e.lngLat, e.originalEvent.shiftKey);
       snapTargetRef.current = snap;
@@ -340,27 +391,27 @@ export default function MapViewer({ layers }) {
     map.getCanvas().style.cursor = drawingPolygon ? 'crosshair' : '';
   }, [drawingPolygon]);
 
-  // Collect all polygon node coordinates from current GeoJSON
-  function getAllPolygonNodes() {
+  // Collect polygon node coordinates, optionally excluding one polygon by id
+  function getAllPolygonNodes(excludePolygonId = null) {
     const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
     if (!base) return [];
     const coords = [];
     for (const f of base.features) {
-      if (f.geometry?.type === 'Polygon') {
-        for (const ring of f.geometry.coordinates)
-          for (const c of ring) coords.push(c);
-      }
+      if (f.geometry?.type !== 'Polygon') continue;
+      if (f.id === excludePolygonId) continue;
+      for (const ring of f.geometry.coordinates)
+        for (const c of ring) coords.push(c);
     }
     return coords;
   }
 
   // Find nearest polygon node within snapDistance pixels; returns [lng,lat] or null
-  function findSnapTarget(map, lngLat, shiftKey) {
+  function findSnapTarget(map, lngLat, shiftKey, excludePolygonId = null) {
     if (shiftKey) return null;
     const threshold = snapDistanceRef.current;
     const click = map.project(lngLat);
     let best = null, bestDist = Infinity;
-    for (const c of getAllPolygonNodes()) {
+    for (const c of getAllPolygonNodes(excludePolygonId)) {
       const p = map.project(c);
       const d = Math.hypot(p.x - click.x, p.y - click.y);
       if (d < threshold && d < bestDist) { bestDist = d; best = c; }
@@ -444,6 +495,57 @@ export default function MapViewer({ layers }) {
     setDirtyFeatureIds((prev) => { const s = new Set(prev); s.add(featureId); return s; });
     setSelectedFeatureId(null);
   }
+
+  // --- Node editing helpers ---
+
+  function nodeSourceData(feature, snapCoord = null) {
+    if (!feature || feature.geometry?.type !== 'Polygon') return { type: 'FeatureCollection', features: [] };
+    const ring = feature.geometry.coordinates[0];
+    // Exclude the closing duplicate coord
+    const open = ring.slice(0, -1);
+    const features = open.map((c, i) => ({
+      type: 'Feature',
+      id: i,
+      properties: { nodeIdx: i, polygonId: feature.id },
+      geometry: { type: 'Point', coordinates: c },
+    }));
+    if (snapCoord) features.push({
+      type: 'Feature',
+      properties: { snap: true },
+      geometry: { type: 'Point', coordinates: snapCoord },
+    });
+    return { type: 'FeatureCollection', features };
+  }
+
+  // Sync node handles whenever the selected feature changes
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map?.getSource(NODE_SOURCE_ID)) return;
+    map.getSource(NODE_SOURCE_ID).setData(nodeSourceData(selectedFeature));
+  }, [selectedFeature]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Stable ref so the mousemove handler (stale closure) can call it
+  const moveNodeRef = useRef(null);
+  moveNodeRef.current = function moveNode(polygonId, nodeIdx, coord, snapCoord) {
+    const map = mapRef.current;
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const feat = base.features.find((f) => f.id === polygonId);
+    if (!feat || feat.geometry?.type !== 'Polygon') return;
+
+    const ring = feat.geometry.coordinates[0].slice(0, -1);
+    ring[nodeIdx] = coord;
+    const newRing = [...ring, ring[0]]; // re-close
+    const updatedFeat = { ...feat, geometry: { ...feat.geometry, coordinates: [newRing] } };
+    const updated = { ...base, features: base.features.map((f) => f.id === polygonId ? updatedFeat : f) };
+
+    editedGeoJSONRef.current = updated;
+    map.getSource(SOURCE_ID)?.setData(updated);
+    // Update node handles live (without going through React state for perf)
+    map.getSource(NODE_SOURCE_ID)?.setData(nodeSourceData(updatedFeat, snapCoord));
+    // Commit to React state (debounced via the mouseup)
+    setEditedGeoJSON(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, polygonId]));
+  };
 
   // Build a data-driven fill-pattern expression for the given prefix ('dots'|'grid'|'stripes')
   function patternExpr(prefix) {
