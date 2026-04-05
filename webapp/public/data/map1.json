@@ -3910,7 +3910,12 @@
         {
             "type": "Feature",
             "id": "9058101a-0b82-4420-846a-6488484b1c26",
-            "properties": {},
+            "properties": {
+                "sound-class-num": 2,
+                "sound-class": "D",
+                "marker-color": "#9eb53a",
+                "fill": "#9eb53a"
+            },
             "geometry": {
                 "type": "Polygon",
                 "coordinates": [
@@ -3950,7 +3955,12 @@
         {
             "type": "Feature",
             "id": "00089f6d-a31f-48fa-a882-3d072b56eb09",
-            "properties": {},
+            "properties": {
+                "sound-class-num": 2,
+                "sound-class": "D",
+                "marker-color": "#9eb53a",
+                "fill": "#9eb53a"
+            },
             "geometry": {
                 "type": "Polygon",
                 "coordinates": [
@@ -3978,6 +3988,43 @@
                         [
                             14.927342310220155,
                             57.62355607016076
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "01a199c5-9fa5-4ec4-8018-1a104a812c76",
+            "properties": {
+                "sound-class-num": 2,
+                "sound-class": "D",
+                "marker-color": "#9eb53a",
+                "fill": "#9eb53a"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            14.928167945807843,
+                            57.62340275607363
+                        ],
+                        [
+                            14.929225990570245,
+                            57.62420529744111
+                        ],
+                        [
+                            14.931580086034302,
+                            57.62385216505203
+                        ],
+                        [
+                            14.929879258636902,
+                            57.623003159000405
+                        ],
+                        [
+                            14.928167945807843,
+                            57.62340275607363
                         ]
                     ]
                 ]
