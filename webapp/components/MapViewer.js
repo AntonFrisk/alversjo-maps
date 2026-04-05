@@ -130,6 +130,9 @@ export default function MapViewer({ layers }) {
   const [drawNodes, setDrawNodes] = useState([]); // [[lng,lat], ...]
   const drawNodesRef = useRef([]);
   const drawingPolygonRef = useRef(false);
+  const snapTargetRef = useRef(null); // snapped coord [lng,lat] or null
+  const [snapDistance, setSnapDistance] = useState(12); // pixels
+  const snapDistanceRef = useRef(12);
 
   // Commit bar state
   const [showCommitInput, setShowCommitInput] = useState(false);
@@ -151,6 +154,10 @@ export default function MapViewer({ layers }) {
   const [showPoints, setShowPoints] = useState(true);
   const showPolygonsRef = useRef(true);
   const showPointsRef = useRef(true);
+
+  // Global polygon border width
+  const [globalLineWidth, setGlobalLineWidth] = useState(1);
+  const globalLineWidthRef = useRef(1);
 
   const { data: session } = useSession();
   const dirty = dirtyFeatureIds.size > 0;
@@ -231,36 +238,48 @@ export default function MapViewer({ layers }) {
         paint: { 'fill-color': '#fff', 'fill-opacity': 0.15 } });
       map.addLayer({ id: 'draw-outline', type: 'line', source: DRAW_SOURCE_ID,
         paint: { 'line-color': '#fff', 'line-width': 2, 'line-dasharray': [4, 3] } });
+      // Regular nodes
       map.addLayer({ id: 'draw-nodes', type: 'circle', source: DRAW_SOURCE_ID,
-        filter: ['==', '$type', 'Point'],
+        filter: ['all', ['==', '$type', 'Point'], ['!=', ['get', 'snap'], true]],
         paint: { 'circle-radius': 5, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#333' } });
+      // Snap indicator: cyan ring
+      map.addLayer({ id: 'draw-snap', type: 'circle', source: DRAW_SOURCE_ID,
+        filter: ['all', ['==', '$type', 'Point'], ['==', ['get', 'snap'], true]],
+        paint: { 'circle-radius': 9, 'circle-color': 'rgba(0,220,255,0.25)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });
 
       mapRef.current = map;
       setMapReady(true);
+    });
+
+    map.on('mousemove', (e) => {
+      if (!drawingPolygonRef.current) return;
+      const snap = findSnapTarget(map, e.lngLat, e.originalEvent.shiftKey);
+      snapTargetRef.current = snap;
+      updateDrawPreview(map, drawNodesRef.current, snap);
     });
 
     map.on('click', (e) => {
       // Draw mode: add node or close polygon
       if (drawingPolygonRef.current) {
         const nodes = drawNodesRef.current;
-        const [lng, lat] = [e.lngLat.lng, e.lngLat.lat];
+        const snap = snapTargetRef.current;
+        const coord = (!e.originalEvent.shiftKey && snap) ? snap : [e.lngLat.lng, e.lngLat.lat];
 
         // Check if clicking near first node to close (need ≥3 nodes already)
         if (nodes.length >= 3) {
           const first = map.project(nodes[0]);
-          const click = map.project([lng, lat]);
+          const click = map.project(coord);
           const dx = first.x - click.x, dy = first.y - click.y;
           if (Math.sqrt(dx * dx + dy * dy) < 12) {
-            // Close polygon
             finishPolygonRef.current();
             return;
           }
         }
 
-        const next = [...nodes, [lng, lat]];
+        const next = [...nodes, coord];
         drawNodesRef.current = next;
         setDrawNodes(next);
-        updateDrawPreview(map, next);
+        updateDrawPreview(map, next, snap);
         return;
       }
 
@@ -312,6 +331,7 @@ export default function MapViewer({ layers }) {
   // Keep draw refs in sync
   useEffect(() => { drawingPolygonRef.current = drawingPolygon; }, [drawingPolygon]);
   useEffect(() => { drawNodesRef.current = drawNodes; }, [drawNodes]);
+  useEffect(() => { snapDistanceRef.current = snapDistance; }, [snapDistance]);
 
   // Cursor: crosshair while drawing
   useEffect(() => {
@@ -320,13 +340,49 @@ export default function MapViewer({ layers }) {
     map.getCanvas().style.cursor = drawingPolygon ? 'crosshair' : '';
   }, [drawingPolygon]);
 
-  function updateDrawPreview(map, nodes) {
+  // Collect all polygon node coordinates from current GeoJSON
+  function getAllPolygonNodes() {
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    if (!base) return [];
+    const coords = [];
+    for (const f of base.features) {
+      if (f.geometry?.type === 'Polygon') {
+        for (const ring of f.geometry.coordinates)
+          for (const c of ring) coords.push(c);
+      }
+    }
+    return coords;
+  }
+
+  // Find nearest polygon node within snapDistance pixels; returns [lng,lat] or null
+  function findSnapTarget(map, lngLat, shiftKey) {
+    if (shiftKey) return null;
+    const threshold = snapDistanceRef.current;
+    const click = map.project(lngLat);
+    let best = null, bestDist = Infinity;
+    for (const c of getAllPolygonNodes()) {
+      const p = map.project(c);
+      const d = Math.hypot(p.x - click.x, p.y - click.y);
+      if (d < threshold && d < bestDist) { bestDist = d; best = c; }
+    }
+    return best;
+  }
+
+  function updateDrawPreview(map, nodes, snapCoord = null) {
     if (!map.getSource(DRAW_SOURCE_ID)) return;
     const features = [];
     if (nodes.length >= 2) {
       features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: [...nodes, nodes[0]] } });
     }
     nodes.forEach((c) => features.push({ type: 'Feature', geometry: { type: 'Point', coordinates: c } }));
+    // Snap indicator: larger highlighted node
+    if (snapCoord) {
+      features.push({
+        type: 'Feature',
+        properties: { snap: true },
+        geometry: { type: 'Point', coordinates: snapCoord },
+      });
+    }
     map.getSource(DRAW_SOURCE_ID).setData({ type: 'FeatureCollection', features });
   }
 
@@ -438,6 +494,14 @@ export default function MapViewer({ layers }) {
     });
   }, [showPolygons, showPoints, mapReady]);
 
+  // Sync global line width to polygon outline layer
+  useEffect(() => {
+    globalLineWidthRef.current = globalLineWidth;
+    const map = mapRef.current;
+    if (!map?.getLayer(LAYER_IDS.polygonOutline)) return;
+    map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-width', globalLineWidth);
+  }, [globalLineWidth, mapReady]);
+
   const loadGeoJSON = useCallback(async (name, ref = null) => {
     const map = mapRef.current;
     if (!map) return;
@@ -519,6 +583,8 @@ export default function MapViewer({ layers }) {
         },
         paint: { 'text-color': '#ffffff' },
       });
+      // Re-apply global line width (layers were just recreated)
+      map.setPaintProperty(LAYER_IDS.polygonOutline, 'line-width', globalLineWidthRef.current);
       // Re-apply visibility (layers were just recreated)
       if (!showPolygonsRef.current) {
         map.setLayoutProperty(LAYER_IDS.polygonFill, 'visibility', 'none');
@@ -703,6 +769,38 @@ export default function MapViewer({ layers }) {
             )}
             <AuthButton />
           </div>
+
+          {editMode && session?.user?.isEditor && (
+            <div className="menu-global-settings">
+              <div className="menu-global-title">Global settings</div>
+              <div className="menu-global-row">
+                <label className="menu-global-label" htmlFor="line-width-input">
+                  Border width
+                  <span className="menu-global-value">{globalLineWidth}px</span>
+                </label>
+                <input
+                  id="line-width-input"
+                  type="range" min={0} max={8} step={0.5}
+                  value={globalLineWidth}
+                  onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
+                  className="menu-global-slider"
+                />
+              </div>
+              <div className="menu-global-row">
+                <label className="menu-global-label" htmlFor="snap-dist-input">
+                  Snap distance
+                  <span className="menu-global-value">{snapDistance}px</span>
+                </label>
+                <input
+                  id="snap-dist-input"
+                  type="range" min={4} max={40} step={1}
+                  value={snapDistance}
+                  onChange={(e) => setSnapDistance(Number(e.target.value))}
+                  className="menu-global-slider"
+                />
+              </div>
+            </div>
+          )}
           {mapsConfig && (
             <MapInfoCard
               mapName={activeLayer}
