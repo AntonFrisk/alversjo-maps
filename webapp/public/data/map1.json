@@ -4179,6 +4179,25 @@
                     57.631347403527
                 ]
             }
+        },
+        {
+            "type": "Feature",
+            "id": "530641b9-c9fb-4c34-98bd-f9580c4aa2c8",
+            "properties": {
+                "sound-class-num": 0,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "title": "Neighbour Lodges South-West",
+                "description": "A few dozen lodges\n1750 m from the Hills"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.90232732355102,
+                    57.61080576432994
+                ]
+            }
         }
     ],
     "metadata": {
