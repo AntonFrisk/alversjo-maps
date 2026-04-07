@@ -4085,6 +4085,24 @@
                     ]
                 ]
             }
+        },
+        {
+            "type": "Feature",
+            "id": "1a044a62-3c3d-48c8-b357-e214d07f9d98",
+            "properties": {
+                "sound-class-num": 0,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "title": "Neighbor 1500 m West"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.89923571819341,
+                    57.621997029538676
+                ]
+            }
         }
     ],
     "metadata": {
