@@ -4113,7 +4113,7 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "title": "Neighbour Community",
+                "title": "Neighbour Community East",
                 "description": "500 m East from Hidden Meadow\n1000 m East from the Slope"
             },
             "geometry": {
@@ -4151,7 +4151,8 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "description": "750 m North from the Hidden Meadow\n1000 North by North East from the Slope\nObs! Behind Långanäsasjön which may carry sound."
+                "description": "750 m North from the Hidden Meadow\n1000 North by North East from the Slope\nObs! Behind Långanäsasjön which may carry sound.",
+                "title": "Neighbour Dwellings North by North-East"
             },
             "geometry": {
                 "type": "Point",
