@@ -393,12 +393,12 @@
             "id": "60ab5f00-410e-4675-a800-4ee317f5368e",
             "type": "Feature",
             "properties": {
-                "fill": "#f1ae29",
+                "fill": "#e89422",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#f1ae29",
+                "sound-class": "B",
+                "marker-color": "#e89422",
                 "title": "forest-cave",
                 "sound-direction-azimuth": 290
             },
@@ -1170,7 +1170,11 @@
         {
             "id": "b0d2b76f-c2a8-4cb4-b848-0796e9dd0a7d",
             "type": "Feature",
-            "properties": {},
+            "properties": {
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9"
+            },
             "geometry": {
                 "coordinates": [
                     [
@@ -1275,8 +1279,8 @@
             "properties": {
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29",
+                "marker-color": "#e75480",
+                "fill": "#e75480",
                 "title": "slope-times",
                 "sound-direction-azimuth": 255
             },
@@ -1321,9 +1325,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 1,
-                "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
                 "title": "highland-plateau"
             },
             "geometry": {
@@ -1469,9 +1473,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 1,
-                "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1507,9 +1511,9 @@
             "properties": {
                 "title": "artctic-chill",
                 "sound-class-num": 1,
-                "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1552,9 +1556,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 0,
-                "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1650,9 +1654,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 0,
-                "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1721,9 +1725,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 0,
-                "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9",
                 "title": "field parking"
             },
             "geometry": {
@@ -3602,9 +3606,9 @@
             "id": "baf42007-4041-4dc7-8fc8-40b93493d349",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
                 "sound-direction-azimuth": 255
             },
             "geometry": {
@@ -3644,9 +3648,9 @@
             "id": "c84f164c-bcad-4b33-aa40-c3a0b8ee18cc",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
                 "sound-direction-azimuth": 240
             },
             "geometry": {
@@ -3744,8 +3748,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "marker-color": "#e75480",
+                "fill": "#e75480"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3792,9 +3796,9 @@
             "id": "6aa415b6-61c5-4c38-b0eb-f853a1b61d05",
             "properties": {
                 "sound-class-num": 2,
-                "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "sound-class": "C",
+                "marker-color": "#e75480",
+                "fill": "#e75480"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3846,8 +3850,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "marker-color": "#e75480",
+                "fill": "#e75480"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3980,9 +3984,9 @@
             "id": "01a199c5-9fa5-4ec4-8018-1a104a812c76",
             "properties": {
                 "sound-class-num": 2,
-                "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4371,9 +4375,9 @@
             "id": "cda4428b-fcb3-435a-86b6-f9ee0508a6fa",
             "properties": {
                 "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29"
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422"
             },
             "geometry": {
                 "type": "Polygon",
