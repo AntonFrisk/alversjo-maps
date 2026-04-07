@@ -34,7 +34,7 @@ yarn-error.log*
 .env*
 
 # downloaded satellite tiles (regenerate with: node scripts/download_tiles.mjs)
-/public/tiles/
+# /public/tiles/
 
 # vercel
 .vercel
