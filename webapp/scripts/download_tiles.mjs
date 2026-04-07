@@ -18,9 +18,9 @@ const API_KEY = 'ggrNEhS6ufFFsGzNwRzy';
 const CENTER_LON = 14.923;
 const CENTER_LAT = 57.620;
 
-// Padding in degrees (~0.012° ≈ 1 km at this latitude)
-const PAD_LON = 0.012;
-const PAD_LAT = 0.008;
+// Padding in degrees (~0.024° ≈ 2 km at this latitude)
+const PAD_LON = 0.024;
+const PAD_LAT = 0.016;
 
 const ZOOM_MIN = 13;
 const ZOOM_MAX = 17;

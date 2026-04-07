@@ -6,7 +6,8 @@
       "Bash(python3 -c ':*)",
       "Bash(node -e ':*)",
       "Bash(git add:*)",
-      "Bash(git commit -m ':*)"
+      "Bash(git commit -m ':*)",
+      "Bash(node scripts/download_tiles.mjs)"
     ],
     "additionalDirectories": [
       "\\tmp"
