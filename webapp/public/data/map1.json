@@ -4094,13 +4094,33 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "title": "Neighbor 1500 m West"
+                "title": "Neighbor Farm West",
+                "description": "1000 m West from the Moomin Valley\n1500 m West from the Hills"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
                     14.89923571819341,
                     57.621997029538676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "f5bf0dbf-0d77-4c3a-bc58-28e59d26ebe9",
+            "properties": {
+                "sound-class-num": 0,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "title": "Neighbor Community",
+                "description": "500 m East from Hidden Meadow\n1000 m East from the Slope"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.944902613677783,
+                    57.627340407498565
                 ]
             }
         }
