@@ -2042,9 +2042,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29",
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
                 "sound-direction-azimuth": 160,
                 "title": "valley NE"
             },
@@ -2081,9 +2081,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 6,
-                "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "sound-class": "A",
+                "marker-color": "#cc1b15",
+                "fill": "#cc1b15",
                 "sound-direction-azimuth": 160,
                 "title": "valley SE"
             },
@@ -2129,9 +2129,9 @@
             "properties": {
                 "sound-direction-azimuth": 250,
                 "sound-class-num": 6,
-                "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "sound-class": "A",
+                "marker-color": "#cc1b15",
+                "fill": "#cc1b15",
                 "title": "valley-SW"
             },
             "geometry": {
@@ -2175,9 +2175,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "sound-class": "D",
+                "marker-color": "#ffcc01",
+                "fill": "#ffcc01",
                 "title": "valley middle"
             },
             "geometry": {
