@@ -18,9 +18,9 @@ const API_KEY = 'ggrNEhS6ufFFsGzNwRzy';
 const CENTER_LON = 14.923;
 const CENTER_LAT = 57.620;
 
-// Padding in degrees (~0.024° ≈ 2 km at this latitude)
-const PAD_LON = 0.024;
-const PAD_LAT = 0.016;
+// Padding in degrees — larger for overview zooms, original size for detail zooms
+const PAD_LON = (z) => z <= 15 ? 0.024 : 0.012;
+const PAD_LAT = (z) => z <= 15 ? 0.016 : 0.008;
 
 const ZOOM_MIN = 13;
 const ZOOM_MAX = 17;
@@ -80,15 +80,15 @@ function sleep(ms) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const bboxWest = CENTER_LON - PAD_LON;
-  const bboxEast = CENTER_LON + PAD_LON;
-  const bboxSouth = CENTER_LAT - PAD_LAT;
-  const bboxNorth = CENTER_LAT + PAD_LAT;
-
   let total = 0;
   let downloaded = 0;
 
   for (let z = ZOOM_MIN; z <= ZOOM_MAX; z++) {
+    const bboxWest = CENTER_LON - PAD_LON(z);
+    const bboxEast = CENTER_LON + PAD_LON(z);
+    const bboxSouth = CENTER_LAT - PAD_LAT(z);
+    const bboxNorth = CENTER_LAT + PAD_LAT(z);
+
     const xMin = lonToTileX(bboxWest, z);
     const xMax = lonToTileX(bboxEast, z);
     const yMin = latToTileY(bboxNorth, z); // y is inverted
