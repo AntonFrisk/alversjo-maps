@@ -750,7 +750,7 @@ export default function MapViewer({ layers }) {
         id: LAYER_IDS.point, type: 'circle', source: SOURCE_ID,
         filter: ['==', '$type', 'Point'],
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 13, 6, 15.5, 14, 18, 18],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 13, 6, 15.5, 14, 18, 16],
           'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
           'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 15.5, 2, 18, 3],
           'circle-stroke-color': '#ffffff',
