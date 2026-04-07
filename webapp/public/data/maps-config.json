@@ -26,5 +26,11 @@
     "description": "A proposed zoning layout dividing the site into day and night territories, with night-land zones allowing louder and later sound activity.",
     "ext": "json",
     "soundMode": "letter"
+  },
+  "map6": {
+    "name": "Sound Makers Map - Proposal #3: Double Night Lands",
+    "description": "A proposed zoning layout with nighttime sound zones in both the north and the south of the site, creating two distinct areas where louder and later sound activity is permitted.",
+    "ext": "json",
+    "soundMode": "letter"
   }
 }
