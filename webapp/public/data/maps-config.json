@@ -1,34 +1,40 @@
 {
   "map1": {
     "name": "Alversjö Evergreen Sound Makers Map",
+    "shortName": "Alversjö Evergreen SMM",
     "description": "Shows the best places to make loud noise in Alversjö. This map is updated every year to reflect the places which contain sound well, eg. buildings or natural formations. Sound class is on a scale 1-10 where 10 means the best place to be louds.",
     "ext": "json",
     "soundMode": "num"
   },
   "map2": {
     "name": "Borderland 2026 - Sound Makers Map (WIP!!!)",
-    "description": "The sound map for making sound at borderland 2026. Work in progress! This map does not show the experienced sound levels, only the best places to make sound without spreading it.",
+    "shortName": "Borderland 2026 SMM",
+    "description": "The sound map for making sound at borderland 2026. Work in progress! See the proposal maps below in the meantime!",
     "ext": "json"
   },
   "map3": {
     "name": "Backup map for development",
+    "shortName": "(work in progress)",
     "description": "Current sound classification map with full zone detail, sound direction, and camp history through 2025.",
     "ext": "geojson"
   },
   "map4": {
     "name": "Sound Makers Map - Proposal #1: Quiet North & Dirty South",
+    "shortName": "BL26 Proposal #1",
     "description": "A proposed zoning layout where loud sound-making is concentrated in the southern part of the site, keeping the northern areas quieter and more ambient.",
     "ext": "json",
     "soundMode": "letter"
   },
   "map5": {
     "name": "Sound Makers Map - Proposal #2: Day Land & Night Land",
+    "shortName": "BL26 Proposal #2",
     "description": "A proposed zoning layout dividing the site into day and night territories, with night-land zones allowing louder and later sound activity.",
     "ext": "json",
     "soundMode": "letter"
   },
   "map6": {
     "name": "Sound Makers Map - Proposal #3: Double Night Lands",
+    "shortName": "BL26 Proposal #3",
     "description": "A proposed zoning layout with nighttime sound zones in both the north and the south of the site, creating two distinct areas where louder and later sound activity is permitted.",
     "ext": "json",
     "soundMode": "letter"

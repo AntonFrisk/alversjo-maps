@@ -953,7 +953,7 @@ export default function MapViewer({ layers }) {
             title={dirty ? 'Commit or discard changes before switching layers' : undefined}
           >
             {layers.map((name) => (
-              <option key={name} value={name}>{name.replace('map', 'Map ')}</option>
+              <option key={name} value={name}>{mapsConfig?.[name]?.shortName || name.replace('map', 'Map ')}</option>
             ))}
           </select>
         </div>
