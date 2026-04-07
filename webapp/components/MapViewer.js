@@ -508,7 +508,6 @@ export default function MapViewer({ layers }) {
     setDrawNodes([]);
     setDrawingPolygon(false);
     clearDrawPreview(map);
-    setSelectedFeatureId(newFeature.id);
   };
 
   // Place a new point feature at the given coordinate
@@ -528,7 +527,6 @@ export default function MapViewer({ layers }) {
     map.getSource(SOURCE_ID)?.setData(updated);
     setDirtyFeatureIds((prev) => new Set([...prev, newFeature.id]));
     setPlacingPoint(false);
-    setSelectedFeatureId(newFeature.id);
   };
 
   // Move an existing point feature to a new coordinate
