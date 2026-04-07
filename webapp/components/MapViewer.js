@@ -750,9 +750,9 @@ export default function MapViewer({ layers }) {
         id: LAYER_IDS.point, type: 'circle', source: SOURCE_ID,
         filter: ['==', '$type', 'Point'],
         paint: {
-          'circle-radius': 14,
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 13, 6, 15.5, 14, 18, 18],
           'circle-color': ['coalesce', ['get', 'marker-color'], '#cc1b15'],
-          'circle-stroke-width': 2,
+          'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 15.5, 2, 18, 3],
           'circle-stroke-color': '#ffffff',
         },
       });
@@ -761,7 +761,7 @@ export default function MapViewer({ layers }) {
         filter: ['has', 'sound-direction-azimuth'],
         layout: {
           'text-field': '^',
-          'text-size': 14,
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 6, 15.5, 14, 18, 18],
           'text-rotate': ['get', 'sound-direction-azimuth'],
           'text-rotation-alignment': 'map',
           'text-allow-overlap': true,
