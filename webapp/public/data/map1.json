@@ -4133,13 +4133,13 @@
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
                 "title": "Neighbour Dwellings North-East",
-                "description": "500 m NE from Hidden Meadow\n1000 m NE from the Slope\nObs! Behind Långanäsasjön which may carry sound."
+                "description": "500 m NE from Hidden Meadow\n1000 m NE from the Slope\nObs! Behind Långanäsasjön which may carry sound. The North shore is pretty much inhabited (detached houses)."
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    14.93923058944955,
-                    57.63275683850813
+                    14.939190846671863,
+                    57.63271686444767
                 ]
             }
         },
@@ -4151,7 +4151,7 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "description": "750 m North from the Hidden Meadow\n1000 North by North East from the Slope\nObs! Behind Långanäsasjön which may carry sound.",
+                "description": "750 m North from the Hidden Meadow\n1000 North by North East from the Slope\nObs! Behind Långanäsasjön which may carry sound. The North shore is pretty much inhabited (detached houses).",
                 "title": "Neighbour Dwellings North by North-East"
             },
             "geometry": {
@@ -4215,6 +4215,24 @@
                 "coordinates": [
                     14.933552567149718,
                     57.61288882849391
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "6b49737a-eefe-4aa9-9320-6c4db35e7569",
+            "properties": {
+                "sound-class-num": 0,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "description": "1250 m NE from Hidden Meadow\n1750 m NE from the Slope\nObs! Behind Långanäsasjön which may carry sound. The North shore is pretty much inhabited (detached houses)."
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.946800842566688,
+                    57.63339585311209
                 ]
             }
         }
