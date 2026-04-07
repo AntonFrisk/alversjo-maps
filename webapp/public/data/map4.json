@@ -4602,6 +4602,24 @@
                     ]
                 ]
             }
+        },
+        {
+            "type": "Feature",
+            "id": "577348c6-df7f-4a85-a2e2-6f2e4f8a60d5",
+            "properties": {
+                "sound-class": "F",
+                "marker-color": "#4a90d9",
+                "fill": "#4a90d9",
+                "title": "Neighbour Lodges",
+                "description": "1750 m South West from the Hills"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.902994224788728,
+                    57.6106063372886
+                ]
+            }
         }
     ],
     "metadata": {
