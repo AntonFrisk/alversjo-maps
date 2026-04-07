@@ -474,21 +474,21 @@
             "id": "1c775f11-96ac-4d94-9bb2-f0b3242e2bb7",
             "type": "Feature",
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#3cc954",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields1",
                 "sound-class-num": 6,
-                "sound-class": "B",
-                "marker-color": "#cc4515",
+                "sound-class": "E",
+                "marker-color": "#3cc954",
                 "sound-direction-azimuth": 100
             },
             "geometry": {
                 "coordinates": [
                     [
                         [
-                            14.93075346157201,
-                            57.620043886973065
+                            14.93091129059195,
+                            57.61958415752693
                         ],
                         [
                             14.93035268041055,
@@ -511,8 +511,8 @@
                             57.6200397675338
                         ],
                         [
-                            14.93075346157201,
-                            57.620043886973065
+                            14.93091129059195,
+                            57.61958415752693
                         ]
                     ]
                 ],
@@ -523,13 +523,13 @@
             "id": "c155e6c4-7db8-4da7-8b69-9ec33dd6e2bb",
             "type": "Feature",
             "properties": {
-                "fill": "#cfab2d",
+                "fill": "#ffcc01",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields3",
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d"
+                "sound-class": "D",
+                "marker-color": "#ffcc01"
             },
             "geometry": {
                 "coordinates": [
@@ -669,13 +669,13 @@
             "id": "28208be2-1e0d-4791-82b5-0e8e725f0188",
             "type": "Feature",
             "properties": {
-                "fill": "#6dbf47",
+                "fill": "#3cc954",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields6",
                 "sound-class-num": 1,
-                "sound-class": "D",
-                "marker-color": "#6dbf47"
+                "sound-class": "E",
+                "marker-color": "#3cc954"
             },
             "geometry": {
                 "coordinates": [
@@ -717,13 +717,13 @@
             "id": "8b6fd742-31fd-4a92-9136-22bd190447dc",
             "type": "Feature",
             "properties": {
-                "fill": "#e89422",
+                "fill": "#3cc954",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields7",
                 "sound-class-num": 5,
-                "sound-class": "B",
-                "marker-color": "#e89422",
+                "sound-class": "E",
+                "marker-color": "#3cc954",
                 "sound-direction-azimuth": 110
             },
             "geometry": {
@@ -850,13 +850,13 @@
             "id": "28ca31d3-4fb6-4090-ac5e-c431d1ef417b",
             "type": "Feature",
             "properties": {
-                "fill": "#f1ae29",
+                "fill": "#3cc954",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-direction-azimuth": 180,
                 "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#f1ae29"
+                "sound-class": "E",
+                "marker-color": "#3cc954"
             },
             "geometry": {
                 "coordinates": [
@@ -1278,9 +1278,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#e75480",
-                "fill": "#e75480",
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
                 "title": "slope-times",
                 "sound-direction-azimuth": 255
             },
@@ -2042,9 +2042,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29",
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
                 "sound-direction-azimuth": 160,
                 "title": "valley NE"
             },
@@ -2081,9 +2081,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 6,
-                "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "sound-class": "A",
+                "marker-color": "#cc1b15",
+                "fill": "#cc1b15",
                 "sound-direction-azimuth": 160,
                 "title": "valley SE"
             },
@@ -2129,9 +2129,9 @@
             "properties": {
                 "sound-direction-azimuth": 250,
                 "sound-class-num": 6,
-                "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "sound-class": "A",
+                "marker-color": "#cc1b15",
+                "fill": "#cc1b15",
                 "title": "valley-SW"
             },
             "geometry": {
@@ -2175,9 +2175,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "sound-class": "D",
+                "marker-color": "#ffcc01",
+                "fill": "#ffcc01",
                 "title": "valley middle"
             },
             "geometry": {
@@ -3278,8 +3278,8 @@
             },
             "geometry": {
                 "coordinates": [
-                    14.923169373874288,
-                    57.62144595963031
+                    14.931759469491993,
+                    57.621633708842296
                 ],
                 "type": "Point"
             }
@@ -3620,12 +3620,12 @@
                             57.62075392337033
                         ],
                         [
-                            14.93075346157201,
-                            57.620043886973065
+                            14.929917926089416,
+                            57.62049219429167
                         ],
                         [
-                            14.93035268041055,
-                            57.61941345624561
+                            14.92868794398234,
+                            57.61950760618245
                         ],
                         [
                             14.926750556803995,
@@ -4601,6 +4601,46 @@
                         [
                             14.918761571146717,
                             57.62665161539002
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "b5bbeec3-d2af-454d-bff3-c343f26c567e",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            14.92868794398234,
+                            57.61950760618245
+                        ],
+                        [
+                            14.929917926089416,
+                            57.62049219429167
+                        ],
+                        [
+                            14.93075346157201,
+                            57.620043886973065
+                        ],
+                        [
+                            14.931427103900631,
+                            57.6200397675338
+                        ],
+                        [
+                            14.93091129059195,
+                            57.61958415752693
+                        ],
+                        [
+                            14.93035268041055,
+                            57.61941345624561
+                        ],
+                        [
+                            14.92868794398234,
+                            57.61950760618245
                         ]
                     ]
                 ]
