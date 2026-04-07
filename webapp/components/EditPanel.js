@@ -1,7 +1,9 @@
 'use client';
-import { deriveFromNum, SOUND_CLASS_COLORS } from '@/lib/sound-class';
+import { deriveFromNum, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/sound-class';
 
-export default function EditPanel({ feature, onUpdate, onClose, onDelete }) {
+const LETTER_OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundMode }) {
   if (!feature) return null;
 
   const props = feature.properties || {};
@@ -19,12 +21,17 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete }) {
       updated['marker-color'] = featureColor;
       updated['fill'] = featureColor;
     }
+    if (key === 'sound-class' && soundMode === 'letter') {
+      const color = SOUND_LETTER_COLORS[value] || '#888';
+      updated['marker-color'] = color;
+      updated['fill'] = color;
+    }
     onUpdate(feature.id, updated);
   }
 
   const soundClassNum = props['sound-class-num'] ?? '';
   const soundClass = props['sound-class'] || '';
-  const letterColor = SOUND_CLASS_COLORS[soundClass] || '#888';
+  const letterColor = (soundMode === 'letter' ? SOUND_LETTER_COLORS : SOUND_CLASS_COLORS)[soundClass] || '#888';
 
   return (
     <div className="edit-panel">
@@ -65,35 +72,57 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete }) {
           />
         </div>
 
-        <div className="edit-field">
-          <label className="edit-label">
-            Sound class number (0–10)
-            {soundClass && (
-              <span className="edit-class-badge" style={{ background: letterColor }}>
-                {soundClass}
-              </span>
-            )}
-          </label>
-          <div className="edit-sound-row">
-            <input
-              type="number"
-              min={0}
-              max={10}
-              value={soundClassNum}
-              onChange={(e) => set('sound-class-num', Number(e.target.value))}
-              className="edit-num-input"
-              placeholder="0–10"
-            />
-            <input
-              type="range"
-              min={0}
-              max={10}
-              value={soundClassNum === '' ? 0 : soundClassNum}
-              onChange={(e) => set('sound-class-num', Number(e.target.value))}
-              className="edit-slider"
-            />
+        {soundMode === 'letter' ? (
+          <div className="edit-field">
+            <label className="edit-label">
+              Sound class
+              {soundClass && (
+                <span className="edit-class-badge" style={{ background: letterColor }}>
+                  {soundClass}
+                </span>
+              )}
+            </label>
+            <select
+              value={soundClass}
+              onChange={(e) => set('sound-class', e.target.value || undefined)}
+            >
+              <option value="">— none —</option>
+              {LETTER_OPTIONS.map((l) => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
           </div>
-        </div>
+        ) : (
+          <div className="edit-field">
+            <label className="edit-label">
+              Sound class number (0–10)
+              {soundMode !== 'num' && soundClass && (
+                <span className="edit-class-badge" style={{ background: letterColor }}>
+                  {soundClass}
+                </span>
+              )}
+            </label>
+            <div className="edit-sound-row">
+              <input
+                type="number"
+                min={0}
+                max={10}
+                value={soundClassNum}
+                onChange={(e) => set('sound-class-num', Number(e.target.value))}
+                className="edit-num-input"
+                placeholder="0–10"
+              />
+              <input
+                type="range"
+                min={0}
+                max={10}
+                value={soundClassNum === '' ? 0 : soundClassNum}
+                onChange={(e) => set('sound-class-num', Number(e.target.value))}
+                className="edit-slider"
+              />
+            </div>
+          </div>
+        )}
 
         <div className="edit-field">
           <label className="edit-label">Azimuth (0–359°)</label>

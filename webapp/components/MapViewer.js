@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSession, signIn } from 'next-auth/react';
-import { SOUND_NUM_COLORS, SOUND_CLASS_COLORS } from '@/lib/sound-class';
+import { SOUND_NUM_COLORS, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/sound-class';
 import AuthButton from '@/components/AuthButton';
 import MapInfoCard from '@/components/MapInfoCard';
 import EditPanel from '@/components/EditPanel';
@@ -49,7 +49,7 @@ function getNumColor(num) {
   return SOUND_NUM_COLORS[Math.max(0, Math.min(10, Math.round(num)))] || '#888';
 }
 
-function buildPopupHTML(props) {
+function buildPopupHTML(props, soundMode = null) {
   const parts = [];
 
   const title = props.title || '';
@@ -61,12 +61,15 @@ function buildPopupHTML(props) {
 
   const soundClass = props['sound-class'];
   const soundClassNum = props['sound-class-num'];
-  if (soundClass || soundClassNum != null) {
-    const color = SOUND_CLASS_COLORS[soundClass] || '#888';
+  const showLetter = soundMode !== 'num' && soundClass;
+  const showNum = soundMode !== 'letter' && soundClassNum != null;
+  if (showLetter || showNum) {
+    const letterColors = soundMode === 'letter' ? SOUND_LETTER_COLORS : SOUND_CLASS_COLORS;
+    const color = letterColors[soundClass] || '#888';
     let row = '<div class="popup-sound-class">';
     row += '<span class="popup-label">Sound class:</span> ';
-    if (soundClass) row += `<span class="popup-badge" style="background:${color}">${escapeHtml(soundClass)}</span> `;
-    if (soundClassNum != null) {
+    if (showLetter) row += `<span class="popup-badge" style="background:${color}">${escapeHtml(soundClass)}</span> `;
+    if (showNum) {
       row += `<span class="popup-badge" style="background:${getNumColor(soundClassNum)}">${soundClassNum}</span>`;
     }
     row += '</div>';
@@ -176,6 +179,11 @@ export default function MapViewer({ layers }) {
 
   const { data: session } = useSession();
   const dirty = dirtyFeatureIds.size > 0;
+
+  // soundMode: 'num' = only show number, 'letter' = only show letter, undefined = show both
+  const soundMode = mapsConfig?.[activeLayer]?.soundMode || null;
+  const soundModeRef = useRef(null);
+  useEffect(() => { soundModeRef.current = soundMode; }, [soundMode]);
 
   const selectedFeature = useMemo(() => {
     if (!selectedFeatureId || !editedGeoJSON) return null;
@@ -382,7 +390,7 @@ export default function MapViewer({ layers }) {
 
       // View mode: popup
       const props = feat.properties || {};
-      const html = buildPopupHTML(props);
+      const html = buildPopupHTML(props, soundModeRef.current);
       if (!html) return;
 
       const coords =
@@ -1063,6 +1071,7 @@ export default function MapViewer({ layers }) {
           onUpdate={handleFeatureUpdate}
           onClose={() => setSelectedFeatureId(null)}
           onDelete={handleFeatureDelete}
+          soundMode={soundMode}
         />
       )}
 

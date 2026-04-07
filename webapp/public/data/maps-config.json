@@ -2,7 +2,8 @@
   "map1": {
     "name": "Alversjö Evergreen Sound Makers Map",
     "description": "Shows the best places to make loud noise in Alversjö. This map is updated every year to reflect the places which contain sound well, eg. buildings or natural formations. Sound class is on a scale 1-10 where 10 means the best place to be louds.",
-    "ext": "json"
+    "ext": "json",
+    "soundMode": "num"
   },
   "map2": {
     "name": "Borderland 2026 - Sound Makers Map (WIP!!!)",
@@ -13,5 +14,17 @@
     "name": "Backup map for development",
     "description": "Current sound classification map with full zone detail, sound direction, and camp history through 2025.",
     "ext": "geojson"
+  },
+  "map4": {
+    "name": "Sound Makers Map - Letter Class (Copy 1)",
+    "description": "Copy of Map 1 using letter-based sound classes (A–F) instead of numeric scale.",
+    "ext": "json",
+    "soundMode": "letter"
+  },
+  "map5": {
+    "name": "Sound Makers Map - Letter Class (Copy 2)",
+    "description": "Copy of Map 1 using letter-based sound classes (A–F) instead of numeric scale.",
+    "ext": "json",
+    "soundMode": "letter"
   }
 }
