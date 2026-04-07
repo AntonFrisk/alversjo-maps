@@ -135,9 +135,16 @@ export default function MapViewer({ layers }) {
   const [snapDistance, setSnapDistance] = useState(12); // pixels
   const snapDistanceRef = useRef(12);
 
+  // Place point state
+  const [placingPoint, setPlacingPoint] = useState(false);
+  const placingPointRef = useRef(false);
+
   // Node editing state
   const draggingNodeIdxRef = useRef(null); // index into ring[0] being dragged
   const draggingPolygonIdRef = useRef(null); // feature id of polygon being node-edited
+
+  // Point dragging state
+  const draggingPointIdRef = useRef(null); // feature id of point being dragged
 
   // Commit bar state
   const [showCommitInput, setShowCommitInput] = useState(false);
@@ -278,6 +285,28 @@ export default function MapViewer({ layers }) {
       map.on('mouseenter', 'node-handles', () => { map.getCanvas().style.cursor = 'grab'; });
       map.on('mouseleave', 'node-handles', () => { map.getCanvas().style.cursor = ''; });
 
+      // Point dragging: mousedown on point layer starts drag
+      map.on('mousedown', LAYER_IDS.point, (e) => {
+        if (!editModeRef.current) return;
+        const feat = e.features[0];
+        if (!feat || feat.geometry?.type !== 'Point') return;
+        const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+        const match = base?.features[feat.id];
+        if (!match || match.geometry?.type !== 'Point') return;
+        e.preventDefault();
+        draggingPointIdRef.current = match.id;
+        map.dragPan.disable();
+        map.getCanvas().style.cursor = 'grabbing';
+      });
+
+      map.on('mouseup', () => {
+        if (draggingPointIdRef.current != null) {
+          draggingPointIdRef.current = null;
+          map.dragPan.enable();
+          map.getCanvas().style.cursor = '';
+        }
+      });
+
       mapRef.current = map;
       setMapReady(true);
     });
@@ -290,6 +319,11 @@ export default function MapViewer({ layers }) {
         moveNodeRef.current(draggingPolygonIdRef.current, draggingNodeIdxRef.current, coord, snap);
         return;
       }
+      // Point drag
+      if (draggingPointIdRef.current != null) {
+        movePointRef.current(draggingPointIdRef.current, [e.lngLat.lng, e.lngLat.lat]);
+        return;
+      }
       // Draw preview
       if (!drawingPolygonRef.current) return;
       const snap = findSnapTarget(map, e.lngLat, e.originalEvent.shiftKey);
@@ -298,6 +332,13 @@ export default function MapViewer({ layers }) {
     });
 
     map.on('click', (e) => {
+      // Place point mode: single click to create a new point
+      if (placingPointRef.current) {
+        const coord = [e.lngLat.lng, e.lngLat.lat];
+        placePointRef.current(coord);
+        return;
+      }
+
       // Draw mode: add node or close polygon
       if (drawingPolygonRef.current) {
         const nodes = drawNodesRef.current;
@@ -369,15 +410,16 @@ export default function MapViewer({ layers }) {
 
   // Keep draw refs in sync
   useEffect(() => { drawingPolygonRef.current = drawingPolygon; }, [drawingPolygon]);
+  useEffect(() => { placingPointRef.current = placingPoint; }, [placingPoint]);
   useEffect(() => { drawNodesRef.current = drawNodes; }, [drawNodes]);
   useEffect(() => { snapDistanceRef.current = snapDistance; }, [snapDistance]);
 
-  // Cursor: crosshair while drawing
+  // Cursor: crosshair while drawing/placing
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    map.getCanvas().style.cursor = drawingPolygon ? 'crosshair' : '';
-  }, [drawingPolygon]);
+    map.getCanvas().style.cursor = (drawingPolygon || placingPoint) ? 'crosshair' : '';
+  }, [drawingPolygon, placingPoint]);
 
   // Collect polygon node coordinates, optionally excluding one polygon by id
   function getAllPolygonNodes(excludePolygonId = null) {
@@ -458,6 +500,50 @@ export default function MapViewer({ layers }) {
     setSelectedFeatureId(newFeature.id);
   };
 
+  // Place a new point feature at the given coordinate
+  const placePointRef = useRef(null);
+  placePointRef.current = function placePoint(coord) {
+    const map = mapRef.current;
+    const newFeature = {
+      type: 'Feature',
+      id: crypto.randomUUID(),
+      properties: {},
+      geometry: { type: 'Point', coordinates: coord },
+    };
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const updated = { ...base, features: [...base.features, newFeature] };
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    map.getSource(SOURCE_ID)?.setData(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, newFeature.id]));
+    setPlacingPoint(false);
+    setSelectedFeatureId(newFeature.id);
+  };
+
+  // Move an existing point feature to a new coordinate
+  const movePointRef = useRef(null);
+  movePointRef.current = function movePoint(pointId, coord) {
+    const map = mapRef.current;
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const feat = base.features.find((f) => f.id === pointId);
+    if (!feat || feat.geometry?.type !== 'Point') return;
+    const updatedFeat = { ...feat, geometry: { ...feat.geometry, coordinates: coord } };
+    const updated = { ...base, features: base.features.map((f) => f.id === pointId ? updatedFeat : f) };
+    editedGeoJSONRef.current = updated;
+    map.getSource(SOURCE_ID)?.setData(updated);
+    setEditedGeoJSON(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, pointId]));
+  };
+
+  function startPlacingPoint() {
+    setSelectedFeatureId(null);
+    setPlacingPoint(true);
+  }
+
+  function cancelPlacingPoint() {
+    setPlacingPoint(false);
+  }
+
   function startDrawing() {
     setSelectedFeatureId(null);
     drawNodesRef.current = [];
@@ -474,7 +560,7 @@ export default function MapViewer({ layers }) {
   }
 
   function handleFeatureDelete(featureId) {
-    if (!window.confirm('Delete this polygon? This cannot be undone until discarded.')) return;
+    if (!window.confirm('Delete this feature? This cannot be undone until discarded.')) return;
     const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
     const updated = { ...base, features: base.features.filter((f) => f.id !== featureId) };
     editedGeoJSONRef.current = updated;
@@ -955,15 +1041,16 @@ export default function MapViewer({ layers }) {
           feature={selectedFeature}
           onUpdate={handleFeatureUpdate}
           onClose={() => setSelectedFeatureId(null)}
-          onDelete={selectedFeature.geometry?.type === 'Polygon' ? handleFeatureDelete : null}
+          onDelete={handleFeatureDelete}
         />
       )}
 
       {/* Edit mode toolbar */}
-      {editMode && !selectedFeature && !drawingPolygon && (
+      {editMode && !selectedFeature && !drawingPolygon && !placingPoint && (
         <div className="edit-hint">
           Click a zone or point to edit it
           <button className="draw-polygon-btn" onClick={startDrawing}>+ Draw polygon</button>
+          <button className="draw-polygon-btn" onClick={startPlacingPoint}>+ Place point</button>
         </div>
       )}
       {editMode && drawingPolygon && (
@@ -972,6 +1059,12 @@ export default function MapViewer({ layers }) {
             ? `Click to place node ${drawNodes.length + 1} (need 3+)`
             : `${drawNodes.length} nodes — click first node to close`}
           <button className="draw-cancel-btn" onClick={cancelDrawing}>Cancel</button>
+        </div>
+      )}
+      {editMode && placingPoint && (
+        <div className="edit-hint drawing-active">
+          Click on the map to place a point
+          <button className="draw-cancel-btn" onClick={cancelPlacingPoint}>Cancel</button>
         </div>
       )}
 

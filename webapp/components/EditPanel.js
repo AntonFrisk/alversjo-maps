@@ -144,7 +144,7 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete }) {
 
         {onDelete && (
           <button className="edit-delete-btn" onClick={() => onDelete(feature.id)}>
-            Delete polygon
+            Delete feature
           </button>
         )}
       </div>
