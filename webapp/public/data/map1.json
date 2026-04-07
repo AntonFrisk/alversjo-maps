@@ -4094,14 +4094,14 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "title": "Neighbor Farm West",
+                "title": "Neighbour Farm West",
                 "description": "1000 m West from the Moomin Valley\n1500 m West from the Hills"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    14.89923571819341,
-                    57.621997029538676
+                    14.899623888995393,
+                    57.622135681274955
                 ]
             }
         },
@@ -4113,14 +4113,33 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "title": "Neighbor Community",
+                "title": "Neighbour Community",
                 "description": "500 m East from Hidden Meadow\n1000 m East from the Slope"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    14.944902613677783,
-                    57.627340407498565
+                    14.944953659830645,
+                    57.62731802080103
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "c1786578-a3c8-4fbe-8db9-473b6b592c55",
+            "properties": {
+                "sound-class-num": 0,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "title": "Neighbour Dwellings North-East",
+                "description": "500 m NE from Hidden Meadow\n1000 m NE from the Slope\nObs! Behind Långanäsasjön which may carry sound."
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.93923058944955,
+                    57.63275683850813
                 ]
             }
         }
