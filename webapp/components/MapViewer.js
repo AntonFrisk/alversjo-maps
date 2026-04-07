@@ -296,6 +296,17 @@ export default function MapViewer({ layers }) {
       map.on('mouseenter', 'node-handles', () => { map.getCanvas().style.cursor = 'grab'; });
       map.on('mouseleave', 'node-handles', () => { map.getCanvas().style.cursor = ''; });
 
+      map.on('mouseenter', 'node-midpoints', () => { map.getCanvas().style.cursor = 'copy'; });
+      map.on('mouseleave', 'node-midpoints', () => { map.getCanvas().style.cursor = ''; });
+
+      map.on('click', 'node-midpoints', (e) => {
+        if (!editModeRef.current) return;
+        e.preventDefault();
+        const props = e.features[0]?.properties;
+        if (props?.afterIdx == null) return;
+        insertMidpointRef.current(props.polygonId, props.afterIdx, [e.lngLat.lng, e.lngLat.lat]);
+      });
+
       // Point dragging: mousedown on point layer starts drag
       map.on('mousedown', LAYER_IDS.point, (e) => {
         if (!editModeRef.current) return;
@@ -581,7 +592,7 @@ export default function MapViewer({ layers }) {
 
   // --- Node editing helpers ---
 
-  function nodeSourceData(feature, snapCoord = null) {
+  function nodeSourceData(feature, snapCoord = null, hideMidpoints = false) {
     if (!feature || feature.geometry?.type !== 'Polygon') return { type: 'FeatureCollection', features: [] };
     const ring = feature.geometry.coordinates[0];
     // Exclude the closing duplicate coord
@@ -592,6 +603,17 @@ export default function MapViewer({ layers }) {
       properties: { nodeIdx: i, polygonId: feature.id },
       geometry: { type: 'Point', coordinates: c },
     }));
+    // Midpoint handles between each pair of adjacent nodes
+    if (!hideMidpoints) {
+      open.forEach((c, i) => {
+        const next = open[(i + 1) % open.length];
+        features.push({
+          type: 'Feature',
+          properties: { midpoint: true, afterIdx: i, polygonId: feature.id },
+          geometry: { type: 'Point', coordinates: [(c[0] + next[0]) / 2, (c[1] + next[1]) / 2] },
+        });
+      });
+    }
     if (snapCoord) features.push({
       type: 'Feature',
       properties: { snap: true },
@@ -630,10 +652,28 @@ export default function MapViewer({ layers }) {
 
     editedGeoJSONRef.current = updated;
     map.getSource(SOURCE_ID)?.setData(updated);
-    // Update node handles live (without going through React state for perf)
-    map.getSource(NODE_SOURCE_ID)?.setData(nodeSourceData(updatedFeat, snapCoord));
+    // Update node handles live (without going through React state for perf); hide midpoints while dragging
+    map.getSource(NODE_SOURCE_ID)?.setData(nodeSourceData(updatedFeat, snapCoord, true));
     // Commit to React state (debounced via the mouseup)
     setEditedGeoJSON(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, polygonId]));
+  };
+
+  // Insert a new node after afterIdx in the polygon ring
+  const insertMidpointRef = useRef(null);
+  insertMidpointRef.current = function insertMidpoint(polygonId, afterIdx, coord) {
+    const map = mapRef.current;
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const feat = base.features.find((f) => f.id === polygonId);
+    if (!feat || feat.geometry?.type !== 'Polygon') return;
+    const open = feat.geometry.coordinates[0].slice(0, -1);
+    open.splice(afterIdx + 1, 0, coord);
+    const updatedFeat = { ...feat, geometry: { ...feat.geometry, coordinates: [[...open, open[0]]] } };
+    const updated = { ...base, features: base.features.map((f) => f.id === polygonId ? updatedFeat : f) };
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    map.getSource(SOURCE_ID)?.setData(updated);
+    map.getSource(NODE_SOURCE_ID)?.setData(nodeSourceData(updatedFeat));
     setDirtyFeatureIds((prev) => new Set([...prev, polygonId]));
   };
 
@@ -778,10 +818,14 @@ export default function MapViewer({ layers }) {
       });
       // Node-edit layers — must be added last so they render above polygon fill/outline
       if (map.getLayer('node-handles')) map.removeLayer('node-handles');
+      if (map.getLayer('node-midpoints')) map.removeLayer('node-midpoints');
       if (map.getLayer('node-snap')) map.removeLayer('node-snap');
       map.addLayer({ id: 'node-handles', type: 'circle', source: NODE_SOURCE_ID,
-        filter: ['!=', ['get', 'snap'], true],
+        filter: ['all', ['!=', ['get', 'snap'], true], ['!=', ['get', 'midpoint'], true]],
         paint: { 'circle-radius': 6, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#333' } });
+      map.addLayer({ id: 'node-midpoints', type: 'circle', source: NODE_SOURCE_ID,
+        filter: ['==', ['get', 'midpoint'], true],
+        paint: { 'circle-radius': 4, 'circle-color': 'rgba(255,255,255,0.4)', 'circle-stroke-width': 1.5, 'circle-stroke-color': 'rgba(255,255,255,0.9)' } });
       map.addLayer({ id: 'node-snap', type: 'circle', source: NODE_SOURCE_ID,
         filter: ['==', ['get', 'snap'], true],
         paint: { 'circle-radius': 11, 'circle-color': 'rgba(0,220,255,0.2)', 'circle-stroke-width': 2, 'circle-stroke-color': '#00dcff' } });

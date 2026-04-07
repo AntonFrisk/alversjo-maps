@@ -16,14 +16,14 @@
     "ext": "geojson"
   },
   "map4": {
-    "name": "Sound Makers Map - Letter Class (Copy 1)",
-    "description": "Copy of Map 1 using letter-based sound classes (A–F) instead of numeric scale.",
+    "name": "Sound Makers Map - Proposal #1: Quiet North & Dirty South",
+    "description": "A proposed zoning layout where loud sound-making is concentrated in the southern part of the site, keeping the northern areas quieter and more ambient.",
     "ext": "json",
     "soundMode": "letter"
   },
   "map5": {
-    "name": "Sound Makers Map - Letter Class (Copy 2)",
-    "description": "Copy of Map 1 using letter-based sound classes (A–F) instead of numeric scale.",
+    "name": "Sound Makers Map - Proposal #2: Day Land & Night Land",
+    "description": "A proposed zoning layout dividing the site into day and night territories, with night-land zones allowing louder and later sound activity.",
     "ext": "json",
     "soundMode": "letter"
   }
