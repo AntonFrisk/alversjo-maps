@@ -36,7 +36,7 @@ const LOCAL_SATELLITE_STYLE = {
       maxzoom: 17,
     },
   },
-  layers: [{ id: 'satellite-layer', type: 'raster', source: 'satellite' }],
+  layers: [{ id: 'satellite-layer', type: 'raster', source: 'satellite', paint: { 'raster-saturation': -1 } }],
 };
 
 function escapeHtml(str) {
@@ -160,6 +160,9 @@ export default function MapViewer({ layers }) {
   // Pattern (B&W) mode — null = off, 'dots' | 'grid' | 'stripes'
   const [patternType, setPatternType] = useState(null);
   const patternTypeRef = useRef(null);
+
+  // Grayscale satellite background
+  const [grayscale, setGrayscale] = useState(true);
 
   // Feature type visibility
   const [showPolygons, setShowPolygons] = useState(true);
@@ -591,6 +594,13 @@ export default function MapViewer({ layers }) {
     return { type: 'FeatureCollection', features };
   }
 
+  // Sync grayscale to satellite layer
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map?.getLayer('satellite-layer')) return;
+    map.setPaintProperty('satellite-layer', 'raster-saturation', grayscale ? -1 : 0);
+  }, [grayscale, mapReady]);
+
   // Sync node handles whenever the selected feature changes
   useEffect(() => {
     const map = mapRef.current;
@@ -944,6 +954,17 @@ export default function MapViewer({ layers }) {
                 {label}
               </button>
             ))}
+          </div>
+
+          <div className="menu-visibility-row">
+            <span className="menu-visibility-label">Map</span>
+            <button
+              className={`visibility-toggle-btn ${grayscale ? 'is-on' : ''}`}
+              onClick={() => setGrayscale((v) => !v)}
+              title={grayscale ? 'Color satellite' : 'Grayscale satellite'}
+            >
+              Grayscale
+            </button>
           </div>
 
           <div className="menu-auth-row">
