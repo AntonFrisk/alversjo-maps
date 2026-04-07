@@ -4161,6 +4161,24 @@
                     57.63545053629409
                 ]
             }
+        },
+        {
+            "type": "Feature",
+            "id": "6520439f-ed8e-4a45-8271-59b5c590769e",
+            "properties": {
+                "sound-class-num": 0,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "description": "1500 m from the Moomin Valley\n2000 m from the Hills"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.891037685889955,
+                    57.631347403527
+                ]
+            }
         }
     ],
     "metadata": {
