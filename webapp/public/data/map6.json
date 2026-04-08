@@ -4158,7 +4158,10 @@
             "type": "Feature",
             "id": "c1459d5b-8e5d-447c-8899-1bb6a5a0f417",
             "properties": {
-                "sound-direction-azimuth": 310
+                "sound-direction-azimuth": 310,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
