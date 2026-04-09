@@ -672,10 +672,11 @@
                 "fill": "#6dbf47",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
-                "title": "fields6",
+                "title": "Bison Sirloin",
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47"
+                "marker-color": "#6dbf47",
+                "description": "Highest parts of Bison"
             },
             "geometry": {
                 "coordinates": [
@@ -720,7 +721,7 @@
                 "fill": "#e89422",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
-                "title": "fields7",
+                "title": "Eastwood Marsh",
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
@@ -768,7 +769,8 @@
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#9eb53a",
-                "sound-direction-azimuth": 180
+                "sound-direction-azimuth": 180,
+                "title": "Eastern Slope"
             },
             "geometry": {
                 "coordinates": [
@@ -856,7 +858,8 @@
                 "sound-direction-azimuth": 180,
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29"
+                "marker-color": "#f1ae29",
+                "title": "Eastern Slope South"
             },
             "geometry": {
                 "coordinates": [
@@ -3605,7 +3608,9 @@
                 "sound-class": "C",
                 "marker-color": "#cfab2d",
                 "fill": "#cfab2d",
-                "sound-direction-azimuth": 255
+                "sound-direction-azimuth": 255,
+                "title": "Bison Flank",
+                "description": "Second to highest and lower parts of Bison"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3647,7 +3652,9 @@
                 "sound-class": "C",
                 "marker-color": "#cfab2d",
                 "fill": "#cfab2d",
-                "sound-direction-azimuth": 240
+                "sound-direction-azimuth": 240,
+                "title": "Downtown + Bison Shank",
+                "description": "Park like area and lowest parts of Bison"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3697,10 +3704,12 @@
             "type": "Feature",
             "id": "9bdaba64-d1cb-4ba6-b2a7-cc2b0ab4a3e6",
             "properties": {
-                "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "sound-class-num": 2,
+                "sound-class": "D",
+                "marker-color": "#9eb53a",
+                "fill": "#9eb53a",
+                "description": "Second to highest parts of Bison",
+                "title": "Bison Tenderloin"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3745,7 +3754,8 @@
                 "sound-class-num": 3,
                 "sound-class": "C",
                 "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "fill": "#cfab2d",
+                "title": "Wedge A"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3794,7 +3804,8 @@
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "fill": "#9eb53a",
+                "title": "Swamp"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3847,7 +3858,8 @@
                 "sound-class-num": 3,
                 "sound-class": "C",
                 "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "fill": "#cfab2d",
+                "title": "Wedge B"
             },
             "geometry": {
                 "type": "Polygon",
