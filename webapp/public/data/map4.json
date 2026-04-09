@@ -4205,8 +4205,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#ffcc01",
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4269,9 +4269,9 @@
             "id": "27d11edd-2809-4c93-a422-f8b250f3b6a4",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4311,8 +4311,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#ffcc01",
+                "fill": "#ffcc01",
                 "sound-direction-azimuth": 350
             },
             "geometry": {
