@@ -485,8 +485,7 @@ export default function MapViewer({ layers }) {
           updateSlicePreview(map, next);
           return;
         }
-        const confirmed = window.confirm('Use this line to slice the selected polygon?');
-        if (confirmed) slicePolygonRef.current(nodes[0], coord);
+        slicePolygonRef.current(nodes[0], coord);
         sliceNodesRef.current = [];
         setSliceNodes([]);
         setSlicingPolygon(false);
@@ -559,7 +558,18 @@ export default function MapViewer({ layers }) {
       map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
     });
 
+    const handleKeyDown = (e) => {
+      if (e.key !== 'Backspace') return;
+      if (!slicingPolygonRef.current || sliceNodesRef.current.length !== 1) return;
+      e.preventDefault();
+      sliceNodesRef.current = [];
+      setSliceNodes([]);
+      map.getSource(DRAW_SOURCE_ID)?.setData({ type: 'FeatureCollection', features: [] });
+    };
+    document.addEventListener('keydown', handleKeyDown);
+
     return () => {
+      document.removeEventListener('keydown', handleKeyDown);
       map.remove();
       mapRef.current = null;
     };
@@ -1501,7 +1511,7 @@ export default function MapViewer({ layers }) {
       )}
       {editMode && slicingPolygon && (
         <div className="edit-hint drawing-active">
-          {sliceNodes.length ? 'Click second point to define the slice line' : 'Click first point for slice line'}
+          {sliceNodes.length ? 'Click second point to slice — Backspace to clear' : 'Click first point for slice line'}
           <button className="draw-cancel-btn" onClick={cancelSlicePolygon}>Cancel</button>
         </div>
       )}
