@@ -162,19 +162,11 @@ html, body {
   cursor: pointer;
 }
 
-.menu-map-edits {
-  background: rgba(10, 10, 18, 0.78);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(80, 160, 255, 0.2);
-  border-radius: 12px;
-  padding: 10px 14px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.menu-global-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 2px 0;
 }
-.menu-map-edits-toggle,
 .menu-map-edits-btn {
   appearance: none;
   background: rgba(80, 160, 255, 0.14);
@@ -188,37 +180,57 @@ html, body {
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
-.menu-map-edits-toggle:hover,
 .menu-map-edits-btn:hover {
   background: rgba(80, 160, 255, 0.24);
   border-color: rgba(80, 160, 255, 0.5);
-}
-.menu-map-edits-toggle.is-open {
-  background: rgba(80, 160, 255, 0.26);
 }
 .menu-map-edits-btn:disabled {
   opacity: 0.45;
   cursor: default;
 }
-.menu-map-edits-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 .menu-map-edits-import {
   display: flex;
-  flex-direction: column;
-  gap: 7px;
+  align-items: center;
+  gap: 6px;
 }
 .menu-map-edits-import select {
+  flex: 1;
+  min-width: 0;
   appearance: none;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  color: #ddd;
+  color: #eee;
   font-size: 12px;
   font-family: inherit;
-  padding: 7px 10px;
+  padding: 6px 8px;
+}
+.menu-map-edits-import select option {
+  background: #14141e;
+  color: #f0f0f0;
+}
+.menu-map-edits-import-btn {
+  appearance: none;
+  flex-shrink: 0;
+  background: rgba(80, 160, 255, 0.14);
+  border: 1px solid rgba(80, 160, 255, 0.35);
+  border-radius: 8px;
+  color: #8ecfff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.menu-map-edits-import-btn:hover {
+  background: rgba(80, 160, 255, 0.24);
+  border-color: rgba(80, 160, 255, 0.5);
+}
+.menu-map-edits-import-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .menu-pattern-row {

@@ -1389,62 +1389,51 @@ export default function MapViewer({ layers }) {
           </div>
 
           {editMode && session?.user?.isEditor && (
-            <>
-              <div className="menu-global-settings">
-                <div className="menu-global-title">Global settings</div>
-                <div className="menu-global-row">
-                  <label className="menu-global-label" htmlFor="line-width-input">
-                    Border width
-                    <span className="menu-global-value">{globalLineWidth}px</span>
-                  </label>
-                  <input
-                    id="line-width-input"
-                    type="range" min={0} max={8} step={0.5}
-                    value={globalLineWidth}
-                    onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
-                    className="menu-global-slider"
-                  />
-                </div>
-                <div className="menu-global-row">
-                  <label className="menu-global-label" htmlFor="snap-dist-input">
-                    Snap distance
-                    <span className="menu-global-value">{snapDistance}px</span>
-                  </label>
-                  <input
-                    id="snap-dist-input"
-                    type="range" min={4} max={40} step={1}
-                    value={snapDistance}
-                    onChange={(e) => setSnapDistance(Number(e.target.value))}
-                    className="menu-global-slider"
-                  />
-                </div>
+            <div className="menu-global-settings">
+              <div className="menu-global-title">Global settings</div>
+              <div className="menu-global-row">
+                <label className="menu-global-label" htmlFor="line-width-input">
+                  Border width
+                  <span className="menu-global-value">{globalLineWidth}px</span>
+                </label>
+                <input
+                  id="line-width-input"
+                  type="range" min={0} max={8} step={0.5}
+                  value={globalLineWidth}
+                  onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
+                  className="menu-global-slider"
+                />
               </div>
-
-              <div className="menu-map-edits">
-                <button className={`menu-map-edits-toggle ${mapEditsOpen ? 'is-open' : ''}`} onClick={() => setMapEditsOpen((v) => !v)}>
-                  Map edits
+              <div className="menu-global-row">
+                <label className="menu-global-label" htmlFor="snap-dist-input">
+                  Snap distance
+                  <span className="menu-global-value">{snapDistance}px</span>
+                </label>
+                <input
+                  id="snap-dist-input"
+                  type="range" min={4} max={40} step={1}
+                  value={snapDistance}
+                  onChange={(e) => setSnapDistance(Number(e.target.value))}
+                  className="menu-global-slider"
+                />
+              </div>
+              <div className="menu-global-divider" />
+              <button className="menu-map-edits-btn" onClick={syncFeatureColors}>
+                Sync colors from sound class
+              </button>
+              <div className="menu-map-edits-import">
+                <select value={importSourceMap} onChange={(e) => setImportSourceMap(e.target.value)}>
+                  {layers.filter((name) => name !== activeLayer).map((name) => (
+                    <option key={name} value={name}>
+                      {mapsConfig?.[name]?.shortName || name.replace('map', 'Map ')}
+                    </option>
+                  ))}
+                </select>
+                <button className="menu-map-edits-import-btn" onClick={importNamesFromMap} disabled={!importSourceMap}>
+                  Import
                 </button>
-                {mapEditsOpen && (
-                  <div className="menu-map-edits-body">
-                    <button className="menu-map-edits-btn" onClick={syncFeatureColors}>
-                      Sync colors from sound class
-                    </button>
-                    <div className="menu-map-edits-import">
-                      <select value={importSourceMap} onChange={(e) => setImportSourceMap(e.target.value)}>
-                        {layers.filter((name) => name !== activeLayer).map((name) => (
-                          <option key={name} value={name}>
-                            {mapsConfig?.[name]?.shortName || name.replace('map', 'Map ')}
-                          </option>
-                        ))}
-                      </select>
-                      <button className="menu-map-edits-btn" onClick={importNamesFromMap} disabled={!importSourceMap}>
-                        Import names/details
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
-            </>
+            </div>
           )}
           {mapsConfig && (
             <MapInfoCard
