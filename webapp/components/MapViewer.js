@@ -1119,7 +1119,9 @@ export default function MapViewer({ layers }) {
       features: base.features.map((feature) => {
         const props = feature.properties || {};
         let color = null;
-        if (props['sound-class-num'] !== undefined && props['sound-class-num'] !== null && props['sound-class-num'] !== '') {
+        if (soundMode === 'letter') {
+          color = props['sound-class'] ? (SOUND_LETTER_COLORS[props['sound-class']] || null) : null;
+        } else if (props['sound-class-num'] !== undefined && props['sound-class-num'] !== null && props['sound-class-num'] !== '') {
           color = deriveFromNum(Number(props['sound-class-num'])).featureColor;
         } else if (props['sound-class']) {
           color = SOUND_LETTER_COLORS[props['sound-class']] || null;
