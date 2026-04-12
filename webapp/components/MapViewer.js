@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSession, signIn } from 'next-auth/react';
-import { SOUND_NUM_COLORS, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/sound-class';
+import { deriveFromNum, SOUND_NUM_COLORS, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/sound-class';
 import AuthButton from '@/components/AuthButton';
 import MapInfoCard from '@/components/MapInfoCard';
 import EditPanel from '@/components/EditPanel';
@@ -23,6 +23,19 @@ const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.pol
 
 const CENTER = [14.923, 57.620]; // Alversjö
 const ZOOM = 15.5;
+const NAME_IMPORT_FIELDS = [
+  'title',
+  'description',
+  'camp-in-2025',
+  'camp-in-2024',
+  'camp-in-2023',
+  'upgrade-actions',
+  'sound-direction-azimuth',
+  'sound-direction-comment',
+];
+const NAME_MATCH_TOLERANCE = 0.00012;
+const NAME_MATCH_CONFIDENCE = 0.72;
+const EPSILON = 1e-9;
 
 const LOCAL_SATELLITE_STYLE = {
   version: 8,
@@ -47,6 +60,102 @@ function escapeHtml(str) {
 
 function getNumColor(num) {
   return SOUND_NUM_COLORS[Math.max(0, Math.min(10, Math.round(num)))] || '#888';
+}
+
+function getOpenRing(feature) {
+  const ring = feature?.geometry?.type === 'Polygon' ? feature.geometry.coordinates?.[0] : null;
+  if (!ring || ring.length < 4) return null;
+  return ring.slice(0, -1);
+}
+
+function bestNodeIndexMatchScore(targetRing, sourceRing, tolerance = NAME_MATCH_TOLERANCE) {
+  if (!targetRing || !sourceRing) return 0;
+  const compareLen = Math.min(targetRing.length, sourceRing.length);
+  if (compareLen < 3) return 0;
+  let best = 0;
+  for (let shift = 0; shift < sourceRing.length; shift += 1) {
+    let hits = 0;
+    for (let i = 0; i < compareLen; i += 1) {
+      const t = targetRing[i];
+      const s = sourceRing[(i + shift) % sourceRing.length];
+      if (Math.hypot(t[0] - s[0], t[1] - s[1]) <= tolerance) hits += 1;
+    }
+    const score = (hits / compareLen) * (compareLen / Math.max(targetRing.length, sourceRing.length));
+    if (score > best) best = score;
+  }
+  return best;
+}
+
+function segmentIntersection(a, b, c, d) {
+  const bax = b[0] - a[0];
+  const bay = b[1] - a[1];
+  const dcx = d[0] - c[0];
+  const dcy = d[1] - c[1];
+  const den = bax * dcy - bay * dcx;
+  if (Math.abs(den) < EPSILON) return null;
+  const acx = c[0] - a[0];
+  const acy = c[1] - a[1];
+  const t = (acx * dcy - acy * dcx) / den;
+  const u = (acx * bay - acy * bax) / den;
+  if (t < 0 || t > 1 || u < 0 || u > 1) return null;
+  return { point: [a[0] + t * bax, a[1] + t * bay], t, u };
+}
+
+function polygonAreaAbs(closedRing) {
+  let area = 0;
+  for (let i = 0; i < closedRing.length - 1; i += 1) {
+    const [x1, y1] = closedRing[i];
+    const [x2, y2] = closedRing[i + 1];
+    area += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(area / 2);
+}
+
+function splitPolygonByLine(closedRing, cutA, cutB) {
+  if (!closedRing || closedRing.length < 4) return null;
+  const open = closedRing.slice(0, -1);
+  if (open.length < 3) return null;
+
+  const hits = [];
+  for (let i = 0; i < open.length; i += 1) {
+    const edgeStart = open[i];
+    const edgeEnd = open[(i + 1) % open.length];
+    const hit = segmentIntersection(edgeStart, edgeEnd, cutA, cutB);
+    if (!hit) continue;
+    if (hit.t <= EPSILON || hit.t >= 1 - EPSILON) continue;
+    if (hits.some((h) => Math.hypot(h.point[0] - hit.point[0], h.point[1] - hit.point[1]) < 1e-7)) continue;
+    hits.push({ ...hit, edgeIdx: i, id: `cut${hits.length}` });
+  }
+  if (hits.length !== 2) return null;
+
+  const ordered = [];
+  for (let i = 0; i < open.length; i += 1) {
+    ordered.push({ coord: open[i], id: null });
+    hits
+      .filter((h) => h.edgeIdx === i)
+      .sort((a, b) => a.t - b.t)
+      .forEach((h) => ordered.push({ coord: h.point, id: h.id }));
+  }
+  const coords = ordered.map((p) => p.coord);
+  const idxA = ordered.findIndex((p) => p.id === 'cut0');
+  const idxB = ordered.findIndex((p) => p.id === 'cut1');
+  if (idxA < 0 || idxB < 0 || idxA === idxB) return null;
+
+  const walk = (from, to) => {
+    const out = [coords[from]];
+    let i = from;
+    while (i !== to) {
+      i = (i + 1) % coords.length;
+      out.push(coords[i]);
+    }
+    out.push(coords[from]);
+    return out;
+  };
+  const part1 = walk(idxA, idxB);
+  const part2 = walk(idxB, idxA);
+  if (part1.length < 4 || part2.length < 4) return null;
+  if (polygonAreaAbs(part1) < 1e-12 || polygonAreaAbs(part2) < 1e-12) return null;
+  return [part1, part2];
 }
 
 function buildPopupHTML(props, soundMode = null) {
@@ -141,6 +250,10 @@ export default function MapViewer({ layers }) {
   // Place point state
   const [placingPoint, setPlacingPoint] = useState(false);
   const placingPointRef = useRef(false);
+  const [slicingPolygon, setSlicingPolygon] = useState(false);
+  const slicingPolygonRef = useRef(false);
+  const [sliceNodes, setSliceNodes] = useState([]);
+  const sliceNodesRef = useRef([]);
 
   // Node editing state
   const draggingNodeIdxRef = useRef(null); // index into ring[0] being dragged
@@ -159,6 +272,8 @@ export default function MapViewer({ layers }) {
 
   // Hamburger menu state
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mapEditsOpen, setMapEditsOpen] = useState(false);
+  const [importSourceMap, setImportSourceMap] = useState('');
 
   // Pattern (B&W) mode — null = off, 'dots' | 'grid' | 'stripes'
   const [patternType, setPatternType] = useState(null);
@@ -189,6 +304,7 @@ export default function MapViewer({ layers }) {
     if (!selectedFeatureId || !editedGeoJSON) return null;
     return editedGeoJSON.features.find((f) => f.id === selectedFeatureId) ?? null;
   }, [selectedFeatureId, editedGeoJSON]);
+  const selectedFeatureIdRef = useRef(null);
 
   // Fetch maps config once
   useEffect(() => {
@@ -346,6 +462,10 @@ export default function MapViewer({ layers }) {
         movePointRef.current(draggingPointIdRef.current, [e.lngLat.lng, e.lngLat.lat]);
         return;
       }
+      if (slicingPolygonRef.current && sliceNodesRef.current.length === 1) {
+        updateSlicePreview(map, sliceNodesRef.current, [e.lngLat.lng, e.lngLat.lat]);
+        return;
+      }
       // Draw preview
       if (!drawingPolygonRef.current) return;
       const snap = findSnapTarget(map, e.lngLat, e.originalEvent.shiftKey);
@@ -355,6 +475,25 @@ export default function MapViewer({ layers }) {
 
     map.on('click', (e) => {
       // Place point mode: single click to create a new point
+      if (slicingPolygonRef.current) {
+        const coord = [e.lngLat.lng, e.lngLat.lat];
+        const nodes = sliceNodesRef.current;
+        if (!nodes.length) {
+          const next = [coord];
+          sliceNodesRef.current = next;
+          setSliceNodes(next);
+          updateSlicePreview(map, next);
+          return;
+        }
+        const confirmed = window.confirm('Use this line to slice the selected polygon?');
+        if (confirmed) slicePolygonRef.current(nodes[0], coord);
+        sliceNodesRef.current = [];
+        setSliceNodes([]);
+        setSlicingPolygon(false);
+        clearDrawPreview(map);
+        return;
+      }
+
       if (placingPointRef.current) {
         const coord = [e.lngLat.lng, e.lngLat.lat];
         placePointRef.current(coord);
@@ -433,15 +572,33 @@ export default function MapViewer({ layers }) {
   // Keep draw refs in sync
   useEffect(() => { drawingPolygonRef.current = drawingPolygon; }, [drawingPolygon]);
   useEffect(() => { placingPointRef.current = placingPoint; }, [placingPoint]);
+  useEffect(() => { slicingPolygonRef.current = slicingPolygon; }, [slicingPolygon]);
   useEffect(() => { drawNodesRef.current = drawNodes; }, [drawNodes]);
+  useEffect(() => { sliceNodesRef.current = sliceNodes; }, [sliceNodes]);
+  useEffect(() => { selectedFeatureIdRef.current = selectedFeatureId; }, [selectedFeatureId]);
   useEffect(() => { snapDistanceRef.current = snapDistance; }, [snapDistance]);
 
   // Cursor: crosshair while drawing/placing
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    map.getCanvas().style.cursor = (drawingPolygon || placingPoint) ? 'crosshair' : '';
-  }, [drawingPolygon, placingPoint]);
+    map.getCanvas().style.cursor = (drawingPolygon || placingPoint || slicingPolygon) ? 'crosshair' : '';
+  }, [drawingPolygon, placingPoint, slicingPolygon]);
+
+  useEffect(() => {
+    const options = layers.filter((name) => name !== activeLayer);
+    if (!options.length) { setImportSourceMap(''); return; }
+    if (!options.includes(importSourceMap)) setImportSourceMap(options[0]);
+  }, [activeLayer, importSourceMap, layers]);
+
+  useEffect(() => {
+    if (!slicingPolygon) return;
+    if (selectedFeature?.geometry?.type === 'Polygon') return;
+    setSlicingPolygon(false);
+    setSliceNodes([]);
+    sliceNodesRef.current = [];
+    clearDrawPreview(mapRef.current);
+  }, [selectedFeature, slicingPolygon]);
 
   // Collect polygon node coordinates, optionally excluding one polygon by id
   function getAllPolygonNodes(excludePolygonId = null) {
@@ -485,6 +642,15 @@ export default function MapViewer({ layers }) {
         properties: { snap: true },
         geometry: { type: 'Point', coordinates: snapCoord },
       });
+    }
+    map.getSource(DRAW_SOURCE_ID).setData({ type: 'FeatureCollection', features });
+  }
+
+  function updateSlicePreview(map, nodes, hoverCoord = null) {
+    if (!map.getSource(DRAW_SOURCE_ID)) return;
+    const features = nodes.map((coord) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: coord } }));
+    if (nodes.length === 1 && hoverCoord) {
+      features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: [nodes[0], hoverCoord] } });
     }
     map.getSource(DRAW_SOURCE_ID).setData({ type: 'FeatureCollection', features });
   }
@@ -556,6 +722,10 @@ export default function MapViewer({ layers }) {
   };
 
   function startPlacingPoint() {
+    setSlicingPolygon(false);
+    sliceNodesRef.current = [];
+    setSliceNodes([]);
+    clearDrawPreview(mapRef.current);
     setSelectedFeatureId(null);
     setPlacingPoint(true);
   }
@@ -565,6 +735,9 @@ export default function MapViewer({ layers }) {
   }
 
   function startDrawing() {
+    setSlicingPolygon(false);
+    sliceNodesRef.current = [];
+    setSliceNodes([]);
     setSelectedFeatureId(null);
     drawNodesRef.current = [];
     setDrawNodes([]);
@@ -576,6 +749,25 @@ export default function MapViewer({ layers }) {
     drawNodesRef.current = [];
     setDrawNodes([]);
     setDrawingPolygon(false);
+    clearDrawPreview(mapRef.current);
+  }
+
+  function startSlicePolygon() {
+    if (!selectedFeature || selectedFeature.geometry?.type !== 'Polygon') return;
+    setDrawingPolygon(false);
+    setPlacingPoint(false);
+    drawNodesRef.current = [];
+    setDrawNodes([]);
+    sliceNodesRef.current = [];
+    setSliceNodes([]);
+    clearDrawPreview(mapRef.current);
+    setSlicingPolygon(true);
+  }
+
+  function cancelSlicePolygon() {
+    sliceNodesRef.current = [];
+    setSliceNodes([]);
+    setSlicingPolygon(false);
     clearDrawPreview(mapRef.current);
   }
 
@@ -677,6 +869,35 @@ export default function MapViewer({ layers }) {
     setDirtyFeatureIds((prev) => new Set([...prev, polygonId]));
   };
 
+  const slicePolygonRef = useRef(null);
+  slicePolygonRef.current = function slicePolygon(cutA, cutB) {
+    const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
+    const featureId = selectedFeatureIdRef.current;
+    const feature = base?.features.find((f) => f.id === featureId);
+    if (!feature || feature.geometry?.type !== 'Polygon') return;
+    const parts = splitPolygonByLine(feature.geometry.coordinates[0], cutA, cutB);
+    if (!parts) {
+      alert('Slice failed: draw a line that crosses the polygon twice (not through a corner).');
+      return;
+    }
+    const [ring1, ring2] = parts;
+    const props = { ...(feature.properties || {}) };
+    const title = props.title;
+    const props1 = title ? { ...props, title: `${title} p1` } : { ...props };
+    const props2 = title ? { ...props, title: `${title} p2` } : { ...props };
+    const feature1 = { ...feature, id: crypto.randomUUID(), properties: props1, geometry: { ...feature.geometry, coordinates: [ring1] } };
+    const feature2 = { ...feature, id: crypto.randomUUID(), properties: props2, geometry: { ...feature.geometry, coordinates: [ring2] } };
+    const updated = {
+      ...base,
+      features: base.features.flatMap((f) => (f.id === featureId ? [feature1, feature2] : [f])),
+    };
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, featureId, feature1.id, feature2.id]));
+    setSelectedFeatureId(feature1.id);
+  };
+
   // Build a data-driven fill-pattern expression for the given prefix ('dots'|'grid'|'stripes')
   function patternExpr(prefix) {
     // sound-class-num 0–10 → bucket 0–4
@@ -746,6 +967,10 @@ export default function MapViewer({ layers }) {
     editedGeoJSONRef.current = null;
     setShowCommitInput(false);
     setCommitMsg('');
+    setMapEditsOpen(false);
+    setSlicingPolygon(false);
+    setSliceNodes([]);
+    sliceNodesRef.current = [];
 
     map.getSource(NODE_SOURCE_ID)?.setData({ type: 'FeatureCollection', features: [] });
     Object.values(LAYER_IDS).forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
@@ -864,6 +1089,7 @@ export default function MapViewer({ layers }) {
       }
       setEditMode(false);
       setSelectedFeatureId(null);
+      setMapEditsOpen(false);
       return;
     }
     const clone = JSON.parse(JSON.stringify(originalGeoJSONRef.current));
@@ -872,6 +1098,122 @@ export default function MapViewer({ layers }) {
     editedGeoJSONRef.current = clone;
     setEditedGeoJSON(clone);
     setEditMode(true);
+  }
+
+  function syncFeatureColors() {
+    const base = editedGeoJSONRef.current;
+    if (!base) return;
+    const changedIds = [];
+    const updated = {
+      ...base,
+      features: base.features.map((feature) => {
+        const props = feature.properties || {};
+        let color = null;
+        if (props['sound-class-num'] !== undefined && props['sound-class-num'] !== null && props['sound-class-num'] !== '') {
+          color = deriveFromNum(Number(props['sound-class-num'])).featureColor;
+        } else if (props['sound-class']) {
+          color = SOUND_LETTER_COLORS[props['sound-class']] || null;
+        }
+        if (!color) return feature;
+        if (props.fill === color && props['marker-color'] === color) return feature;
+        changedIds.push(feature.id);
+        return { ...feature, properties: { ...props, fill: color, 'marker-color': color } };
+      }),
+    };
+    if (!changedIds.length) {
+      alert('No color updates were needed.');
+      return;
+    }
+    editedGeoJSONRef.current = updated;
+    setEditedGeoJSON(updated);
+    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    setDirtyFeatureIds((prev) => new Set([...prev, ...changedIds]));
+    alert(`Synced colors for ${changedIds.length} feature${changedIds.length === 1 ? '' : 's'}.`);
+  }
+
+  async function importNamesFromMap() {
+    if (!importSourceMap) return;
+    const base = editedGeoJSONRef.current;
+    if (!base) return;
+    try {
+      let res = await fetch(`/data/${importSourceMap}.json`);
+      if (!res.ok) res = await fetch(`/data/${importSourceMap}.geojson`);
+      if (!res.ok) throw new Error(`Could not load ${importSourceMap}`);
+      const sourceGeoJSON = await res.json();
+      const targets = base.features.filter((f) => f.geometry?.type === 'Polygon');
+      const sources = sourceGeoJSON.features.filter((f) => f.geometry?.type === 'Polygon');
+      if (!targets.length || !sources.length) {
+        alert('No polygons found to match.');
+        return;
+      }
+
+      const candidates = [];
+      targets.forEach((target, targetIdx) => {
+        const targetRing = getOpenRing(target);
+        if (!targetRing) return;
+        sources.forEach((source, sourceIdx) => {
+          const score = bestNodeIndexMatchScore(targetRing, getOpenRing(source));
+          if (score >= NAME_MATCH_CONFIDENCE) candidates.push({ targetIdx, sourceIdx, score });
+        });
+      });
+      candidates.sort((a, b) => b.score - a.score);
+
+      const usedTargets = new Set();
+      const usedSources = new Set();
+      const matchedPairs = [];
+      candidates.forEach((candidate) => {
+        if (usedTargets.has(candidate.targetIdx) || usedSources.has(candidate.sourceIdx)) return;
+        usedTargets.add(candidate.targetIdx);
+        usedSources.add(candidate.sourceIdx);
+        matchedPairs.push(candidate);
+      });
+
+      const updates = new Map();
+      const changedIds = [];
+      matchedPairs.forEach(({ targetIdx, sourceIdx }) => {
+        const target = targets[targetIdx];
+        const sourceProps = sources[sourceIdx].properties || {};
+        const next = { ...(target.properties || {}) };
+        let changed = false;
+        NAME_IMPORT_FIELDS.forEach((key) => {
+          if (!Object.prototype.hasOwnProperty.call(sourceProps, key)) return;
+          const val = sourceProps[key];
+          const had = Object.prototype.hasOwnProperty.call(next, key);
+          if (val === undefined || val === null || val === '') {
+            if (had) {
+              delete next[key];
+              changed = true;
+            }
+            return;
+          }
+          if (next[key] !== val) {
+            next[key] = val;
+            changed = true;
+          }
+        });
+        if (changed) {
+          updates.set(target.id, next);
+          changedIds.push(target.id);
+        }
+      });
+
+      if (!updates.size) {
+        alert(`Matched ${matchedPairs.length} polygons but no name/details changes were needed.`);
+        return;
+      }
+      const updated = {
+        ...base,
+        features: base.features.map((f) => (updates.has(f.id) ? { ...f, properties: updates.get(f.id) } : f)),
+      };
+      editedGeoJSONRef.current = updated;
+      setEditedGeoJSON(updated);
+      mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+      setDirtyFeatureIds((prev) => new Set([...prev, ...changedIds]));
+      const skipped = targets.length - matchedPairs.length;
+      alert(`Imported names/details from ${importSourceMap}: matched ${matchedPairs.length}, updated ${changedIds.length}, skipped ${skipped}.`);
+    } catch (err) {
+      alert(`Name import failed: ${err.message}`);
+    }
   }
 
   function handleFeatureUpdate(featureId, newProps) {
@@ -895,7 +1237,11 @@ export default function MapViewer({ layers }) {
     setEditedGeoJSON(null);
     setDirtyFeatureIds(new Set());
     setSelectedFeatureId(null);
+    setSlicingPolygon(false);
+    setSliceNodes([]);
+    sliceNodesRef.current = [];
     setShowCommitInput(false);
+    clearDrawPreview(mapRef.current);
     mapRef.current?.getSource(SOURCE_ID)?.setData(original);
   }
 
@@ -1031,35 +1377,62 @@ export default function MapViewer({ layers }) {
           </div>
 
           {editMode && session?.user?.isEditor && (
-            <div className="menu-global-settings">
-              <div className="menu-global-title">Global settings</div>
-              <div className="menu-global-row">
-                <label className="menu-global-label" htmlFor="line-width-input">
-                  Border width
-                  <span className="menu-global-value">{globalLineWidth}px</span>
-                </label>
-                <input
-                  id="line-width-input"
-                  type="range" min={0} max={8} step={0.5}
-                  value={globalLineWidth}
-                  onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
-                  className="menu-global-slider"
-                />
+            <>
+              <div className="menu-global-settings">
+                <div className="menu-global-title">Global settings</div>
+                <div className="menu-global-row">
+                  <label className="menu-global-label" htmlFor="line-width-input">
+                    Border width
+                    <span className="menu-global-value">{globalLineWidth}px</span>
+                  </label>
+                  <input
+                    id="line-width-input"
+                    type="range" min={0} max={8} step={0.5}
+                    value={globalLineWidth}
+                    onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
+                    className="menu-global-slider"
+                  />
+                </div>
+                <div className="menu-global-row">
+                  <label className="menu-global-label" htmlFor="snap-dist-input">
+                    Snap distance
+                    <span className="menu-global-value">{snapDistance}px</span>
+                  </label>
+                  <input
+                    id="snap-dist-input"
+                    type="range" min={4} max={40} step={1}
+                    value={snapDistance}
+                    onChange={(e) => setSnapDistance(Number(e.target.value))}
+                    className="menu-global-slider"
+                  />
+                </div>
               </div>
-              <div className="menu-global-row">
-                <label className="menu-global-label" htmlFor="snap-dist-input">
-                  Snap distance
-                  <span className="menu-global-value">{snapDistance}px</span>
-                </label>
-                <input
-                  id="snap-dist-input"
-                  type="range" min={4} max={40} step={1}
-                  value={snapDistance}
-                  onChange={(e) => setSnapDistance(Number(e.target.value))}
-                  className="menu-global-slider"
-                />
+
+              <div className="menu-map-edits">
+                <button className={`menu-map-edits-toggle ${mapEditsOpen ? 'is-open' : ''}`} onClick={() => setMapEditsOpen((v) => !v)}>
+                  Map edits
+                </button>
+                {mapEditsOpen && (
+                  <div className="menu-map-edits-body">
+                    <button className="menu-map-edits-btn" onClick={syncFeatureColors}>
+                      Sync colors from sound class
+                    </button>
+                    <div className="menu-map-edits-import">
+                      <select value={importSourceMap} onChange={(e) => setImportSourceMap(e.target.value)}>
+                        {layers.filter((name) => name !== activeLayer).map((name) => (
+                          <option key={name} value={name}>
+                            {mapsConfig?.[name]?.shortName || name.replace('map', 'Map ')}
+                          </option>
+                        ))}
+                      </select>
+                      <button className="menu-map-edits-btn" onClick={importNamesFromMap} disabled={!importSourceMap}>
+                        Import names/details
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            </>
           )}
           {mapsConfig && (
             <MapInfoCard
@@ -1114,15 +1487,22 @@ export default function MapViewer({ layers }) {
           onClose={() => setSelectedFeatureId(null)}
           onDelete={handleFeatureDelete}
           soundMode={soundMode}
+          onSlice={selectedFeature.geometry?.type === 'Polygon' ? startSlicePolygon : null}
         />
       )}
 
       {/* Edit mode toolbar */}
-      {editMode && !selectedFeature && !drawingPolygon && !placingPoint && (
+      {editMode && !selectedFeature && !drawingPolygon && !placingPoint && !slicingPolygon && (
         <div className="edit-hint">
           Click a zone or point to edit it
           <button className="draw-polygon-btn" onClick={startDrawing}>+ Draw polygon</button>
           <button className="draw-polygon-btn" onClick={startPlacingPoint}>+ Place point</button>
+        </div>
+      )}
+      {editMode && slicingPolygon && (
+        <div className="edit-hint drawing-active">
+          {sliceNodes.length ? 'Click second point to define the slice line' : 'Click first point for slice line'}
+          <button className="draw-cancel-btn" onClick={cancelSlicePolygon}>Cancel</button>
         </div>
       )}
       {editMode && drawingPolygon && (

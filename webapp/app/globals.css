@@ -162,6 +162,65 @@ html, body {
   cursor: pointer;
 }
 
+.menu-map-edits {
+  background: rgba(10, 10, 18, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(80, 160, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu-map-edits-toggle,
+.menu-map-edits-btn {
+  appearance: none;
+  background: rgba(80, 160, 255, 0.14);
+  border: 1px solid rgba(80, 160, 255, 0.35);
+  border-radius: 8px;
+  color: #8ecfff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.menu-map-edits-toggle:hover,
+.menu-map-edits-btn:hover {
+  background: rgba(80, 160, 255, 0.24);
+  border-color: rgba(80, 160, 255, 0.5);
+}
+.menu-map-edits-toggle.is-open {
+  background: rgba(80, 160, 255, 0.26);
+}
+.menu-map-edits-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.menu-map-edits-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu-map-edits-import {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.menu-map-edits-import select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #ddd;
+  font-size: 12px;
+  font-family: inherit;
+  padding: 7px 10px;
+}
+
 .menu-pattern-row {
   background: rgba(10, 10, 18, 0.78);
   backdrop-filter: blur(16px);
@@ -895,6 +954,26 @@ html, body {
   padding: 7px 0;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
+}
+.edit-slice-btn {
+  appearance: none;
+  width: 100%;
+  margin-top: 8px;
+  background: rgba(80, 160, 255, 0.15);
+  border: 1px solid rgba(80, 160, 255, 0.38);
+  border-radius: 8px;
+  color: #8ecfff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 0;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.edit-slice-btn:hover {
+  background: rgba(80, 160, 255, 0.3);
+  border-color: rgba(80, 160, 255, 0.55);
+  color: #c6e8ff;
 }
 .edit-delete-btn:hover {
   background: rgba(200, 50, 50, 0.3);

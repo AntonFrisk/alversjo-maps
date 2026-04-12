@@ -3,7 +3,7 @@ import { deriveFromNum, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/so
 
 const LETTER_OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
-export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundMode }) {
+export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundMode, onSlice }) {
   if (!feature) return null;
 
   const props = feature.properties || {};
@@ -170,6 +170,12 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundM
           <span>ID: {String(feature.id).slice(0, 18)}…</span>
           <span>{feature.geometry?.type}</span>
         </div>
+
+        {onSlice && feature.geometry?.type === 'Polygon' && (
+          <button className="edit-slice-btn" onClick={onSlice}>
+            Slice polygon
+          </button>
+        )}
 
         {onDelete && (
           <button className="edit-delete-btn" onClick={() => onDelete(feature.id)}>
