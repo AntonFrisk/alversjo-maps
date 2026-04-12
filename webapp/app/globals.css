@@ -1130,3 +1130,190 @@ html, body {
   margin-left: auto;
 }
 .discard-btn:hover { background: rgba(255, 60, 60, 0.18); border-color: rgba(255, 60, 60, 0.4); color: #ff9090; }
+
+/* ===== Import dialog ===== */
+.import-dialog-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.import-dialog-card {
+  position: relative;
+  background: rgba(14, 14, 24, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 26px 28px 22px;
+  width: min(440px, 92vw);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.import-dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  appearance: none;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.import-dialog-close:hover { color: #fff; }
+.import-dialog-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+.import-dialog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.import-dialog-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666;
+}
+.import-dialog-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #eee;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.import-dialog-select:focus { border-color: rgba(80, 160, 255, 0.5); }
+.import-dialog-select option { background: #14141e; color: #f0f0f0; }
+.import-mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.import-mode-btn {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #bbb;
+  font-family: inherit;
+  padding: 10px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+.import-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.import-mode-btn.is-selected {
+  background: rgba(80, 160, 255, 0.14);
+  border-color: rgba(80, 160, 255, 0.45);
+  color: #fff;
+}
+.import-mode-btn.is-warn.is-selected {
+  background: rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 140, 0, 0.4);
+}
+.import-mode-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+.import-mode-desc {
+  font-size: 11px;
+  color: #777;
+}
+.import-mode-btn.is-selected .import-mode-desc { color: #aaa; }
+.import-field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.import-field-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.import-field-item:hover { background: rgba(255, 255, 255, 0.07); }
+.import-field-item.is-checked {
+  background: rgba(80, 160, 255, 0.1);
+  border-color: rgba(80, 160, 255, 0.3);
+}
+.import-field-item input[type='checkbox'] {
+  accent-color: #5b9ff8;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.import-field-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ddd;
+  flex-shrink: 0;
+}
+.import-field-desc {
+  font-size: 11px;
+  color: #666;
+}
+.import-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.import-dialog-cancel {
+  appearance: none;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.import-dialog-cancel:hover { color: #ccc; border-color: rgba(255, 255, 255, 0.2); }
+.import-dialog-confirm {
+  appearance: none;
+  background: rgba(80, 160, 255, 0.2);
+  border: 1px solid rgba(80, 160, 255, 0.45);
+  border-radius: 8px;
+  color: #7ec8ff;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 8px 22px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.import-dialog-confirm:hover { background: rgba(80, 160, 255, 0.32); border-color: rgba(80, 160, 255, 0.6); }
+.import-dialog-confirm:disabled { opacity: 0.4; cursor: default; }

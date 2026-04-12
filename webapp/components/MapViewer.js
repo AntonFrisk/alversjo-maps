@@ -8,6 +8,7 @@ import { deriveFromNum, SOUND_NUM_COLORS, SOUND_CLASS_COLORS, SOUND_LETTER_COLOR
 import AuthButton from '@/components/AuthButton';
 import MapInfoCard from '@/components/MapInfoCard';
 import EditPanel from '@/components/EditPanel';
+import ImportDialog from '@/components/ImportDialog';
 
 const SOURCE_ID = 'geojson-data';
 const DRAW_SOURCE_ID = 'draw-preview';
@@ -23,16 +24,12 @@ const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.pol
 
 const CENTER = [14.923, 57.620]; // Alversjö
 const ZOOM = 15.5;
-const NAME_IMPORT_FIELDS = [
-  'title',
-  'description',
-  'camp-in-2025',
-  'camp-in-2024',
-  'camp-in-2023',
-  'upgrade-actions',
-  'sound-direction-azimuth',
-  'sound-direction-comment',
-];
+const SMART_IMPORT_FIELDS = {
+  names:       ['title', 'point-num'],
+  soundClass:  ['sound-class', 'sound-class-num'],
+  otherFields: ['description', 'sound-direction-azimuth', 'sound-direction-comment',
+                'camp-in-2025', 'camp-in-2024', 'camp-in-2023', 'upgrade-actions'],
+};
 const NAME_MATCH_TOLERANCE = 0.00012;
 const NAME_MATCH_CONFIDENCE = 0.72;
 const EPSILON = 1e-9;
@@ -272,8 +269,7 @@ export default function MapViewer({ layers }) {
 
   // Hamburger menu state
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mapEditsOpen, setMapEditsOpen] = useState(false);
-  const [importSourceMap, setImportSourceMap] = useState('');
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
   // Pattern (B&W) mode — null = off, 'dots' | 'grid' | 'stripes'
   const [patternType, setPatternType] = useState(null);
@@ -594,12 +590,6 @@ export default function MapViewer({ layers }) {
     if (!map) return;
     map.getCanvas().style.cursor = (drawingPolygon || placingPoint || slicingPolygon) ? 'crosshair' : '';
   }, [drawingPolygon, placingPoint, slicingPolygon]);
-
-  useEffect(() => {
-    const options = layers.filter((name) => name !== activeLayer);
-    if (!options.length) { setImportSourceMap(''); return; }
-    if (!options.includes(importSourceMap)) setImportSourceMap(options[0]);
-  }, [activeLayer, importSourceMap, layers]);
 
   useEffect(() => {
     if (!slicingPolygon) return;
@@ -977,7 +967,7 @@ export default function MapViewer({ layers }) {
     editedGeoJSONRef.current = null;
     setShowCommitInput(false);
     setCommitMsg('');
-    setMapEditsOpen(false);
+    setShowImportDialog(false);
     setSlicingPolygon(false);
     setSliceNodes([]);
     sliceNodesRef.current = [];
@@ -1099,7 +1089,7 @@ export default function MapViewer({ layers }) {
       }
       setEditMode(false);
       setSelectedFeatureId(null);
-      setMapEditsOpen(false);
+      setShowImportDialog(false);
       return;
     }
     const clone = JSON.parse(JSON.stringify(originalGeoJSONRef.current));
@@ -1143,88 +1133,92 @@ export default function MapViewer({ layers }) {
     alert(`Synced colors for ${changedIds.length} feature${changedIds.length === 1 ? '' : 's'}.`);
   }
 
-  async function importNamesFromMap() {
-    if (!importSourceMap) return;
+  async function executeImport(sourceMapName, mode, smartFields) {
     const base = editedGeoJSONRef.current;
     if (!base) return;
     try {
-      let res = await fetch(`/data/${importSourceMap}.json`);
-      if (!res.ok) res = await fetch(`/data/${importSourceMap}.geojson`);
-      if (!res.ok) throw new Error(`Could not load ${importSourceMap}`);
+      let res = await fetch(`/data/${sourceMapName}.json`);
+      if (!res.ok) res = await fetch(`/data/${sourceMapName}.geojson`);
+      if (!res.ok) throw new Error(`Could not load ${sourceMapName}`);
       const sourceGeoJSON = await res.json();
-      const targets = base.features.filter((f) => f.geometry?.type === 'Polygon');
-      const sources = sourceGeoJSON.features.filter((f) => f.geometry?.type === 'Polygon');
-      if (!targets.length || !sources.length) {
-        alert('No polygons found to match.');
-        return;
-      }
 
-      const candidates = [];
-      targets.forEach((target, targetIdx) => {
-        const targetRing = getOpenRing(target);
-        if (!targetRing) return;
-        sources.forEach((source, sourceIdx) => {
-          const score = bestNodeIndexMatchScore(targetRing, getOpenRing(source));
-          if (score >= NAME_MATCH_CONFIDENCE) candidates.push({ targetIdx, sourceIdx, score });
-        });
-      });
-      candidates.sort((a, b) => b.score - a.score);
+      let updated, dirtyIds;
 
-      const usedTargets = new Set();
-      const usedSources = new Set();
-      const matchedPairs = [];
-      candidates.forEach((candidate) => {
-        if (usedTargets.has(candidate.targetIdx) || usedSources.has(candidate.sourceIdx)) return;
-        usedTargets.add(candidate.targetIdx);
-        usedSources.add(candidate.sourceIdx);
-        matchedPairs.push(candidate);
-      });
-
-      const updates = new Map();
-      const changedIds = [];
-      matchedPairs.forEach(({ targetIdx, sourceIdx }) => {
-        const target = targets[targetIdx];
-        const sourceProps = sources[sourceIdx].properties || {};
-        const next = { ...(target.properties || {}) };
-        let changed = false;
-        NAME_IMPORT_FIELDS.forEach((key) => {
-          if (!Object.prototype.hasOwnProperty.call(sourceProps, key)) return;
-          const val = sourceProps[key];
-          const had = Object.prototype.hasOwnProperty.call(next, key);
-          if (val === undefined || val === null || val === '') {
-            if (had) {
-              delete next[key];
-              changed = true;
-            }
-            return;
-          }
-          if (next[key] !== val) {
-            next[key] = val;
-            changed = true;
-          }
-        });
-        if (changed) {
-          updates.set(target.id, next);
-          changedIds.push(target.id);
+      if (mode === 'replace-points' || mode === 'replace-polygons') {
+        const geomType = mode === 'replace-points' ? 'Point' : 'Polygon';
+        const kept = base.features.filter((f) => f.geometry?.type !== geomType);
+        const removedIds = base.features.filter((f) => f.geometry?.type === geomType).map((f) => f.id);
+        const incoming = sourceGeoJSON.features
+          .filter((f) => f.geometry?.type === geomType)
+          .map((f) => ({ ...f, id: crypto.randomUUID() }));
+        updated = { ...base, features: [...kept, ...incoming] };
+        dirtyIds = [...removedIds, ...incoming.map((f) => f.id)];
+      } else {
+        const fieldsToImport = [...smartFields].flatMap((g) => SMART_IMPORT_FIELDS[g] || []);
+        const targets = base.features.filter((f) => f.geometry?.type === 'Polygon');
+        const sources = sourceGeoJSON.features.filter((f) => f.geometry?.type === 'Polygon');
+        if (!targets.length || !sources.length) {
+          alert('No polygons found to match.');
+          return;
         }
-      });
 
-      if (!updates.size) {
-        alert(`Matched ${matchedPairs.length} polygons but no name/details changes were needed.`);
-        return;
+        const candidates = [];
+        targets.forEach((target, ti) => {
+          const targetRing = getOpenRing(target);
+          if (!targetRing) return;
+          sources.forEach((source, si) => {
+            const score = bestNodeIndexMatchScore(targetRing, getOpenRing(source));
+            if (score >= NAME_MATCH_CONFIDENCE) candidates.push({ ti, si, score });
+          });
+        });
+        candidates.sort((a, b) => b.score - a.score);
+
+        const usedT = new Set(), usedS = new Set(), pairs = [];
+        candidates.forEach((c) => {
+          if (usedT.has(c.ti) || usedS.has(c.si)) return;
+          usedT.add(c.ti); usedS.add(c.si);
+          pairs.push(c);
+        });
+
+        const updates = new Map();
+        pairs.forEach(({ ti, si }) => {
+          const target = targets[ti];
+          const sourceProps = sources[si].properties || {};
+          const next = { ...(target.properties || {}) };
+          let changed = false;
+          fieldsToImport.forEach((key) => {
+            if (!Object.prototype.hasOwnProperty.call(sourceProps, key)) return;
+            const val = sourceProps[key];
+            if (val === undefined || val === null || val === '') {
+              if (Object.prototype.hasOwnProperty.call(next, key)) { delete next[key]; changed = true; }
+              return;
+            }
+            if (next[key] !== val) { next[key] = val; changed = true; }
+          });
+          if (changed) updates.set(target.id, next);
+        });
+
+        if (!updates.size) {
+          alert(`Matched ${pairs.length} polygons — no field changes needed.`);
+          setShowImportDialog(false);
+          return;
+        }
+        updated = {
+          ...base,
+          features: base.features.map((f) => (updates.has(f.id) ? { ...f, properties: updates.get(f.id) } : f)),
+        };
+        dirtyIds = [...updates.keys()];
+        const skipped = targets.length - pairs.length;
+        alert(`Smart import from ${sourceMapName}: matched ${pairs.length}, updated ${updates.size}, skipped ${skipped}.`);
       }
-      const updated = {
-        ...base,
-        features: base.features.map((f) => (updates.has(f.id) ? { ...f, properties: updates.get(f.id) } : f)),
-      };
+
       editedGeoJSONRef.current = updated;
       setEditedGeoJSON(updated);
       mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
-      setDirtyFeatureIds((prev) => new Set([...prev, ...changedIds]));
-      const skipped = targets.length - matchedPairs.length;
-      alert(`Imported names/details from ${importSourceMap}: matched ${matchedPairs.length}, updated ${changedIds.length}, skipped ${skipped}.`);
+      setDirtyFeatureIds((prev) => new Set([...prev, ...dirtyIds]));
+      setShowImportDialog(false);
     } catch (err) {
-      alert(`Name import failed: ${err.message}`);
+      alert(`Import failed: ${err.message}`);
     }
   }
 
@@ -1421,18 +1415,9 @@ export default function MapViewer({ layers }) {
               <button className="menu-map-edits-btn" onClick={syncFeatureColors}>
                 Sync colors from sound class
               </button>
-              <div className="menu-map-edits-import">
-                <select value={importSourceMap} onChange={(e) => setImportSourceMap(e.target.value)}>
-                  {layers.filter((name) => name !== activeLayer).map((name) => (
-                    <option key={name} value={name}>
-                      {mapsConfig?.[name]?.shortName || name.replace('map', 'Map ')}
-                    </option>
-                  ))}
-                </select>
-                <button className="menu-map-edits-import-btn" onClick={importNamesFromMap} disabled={!importSourceMap}>
-                  Import
-                </button>
-              </div>
+              <button className="menu-map-edits-btn" onClick={() => setShowImportDialog(true)}>
+                Import from map…
+              </button>
             </div>
           )}
           {mapsConfig && (
@@ -1557,6 +1542,16 @@ export default function MapViewer({ layers }) {
 
           <button className="discard-btn" onClick={handleDiscard}>Discard</button>
         </div>
+      )}
+
+      {showImportDialog && (
+        <ImportDialog
+          layers={layers}
+          mapsConfig={mapsConfig}
+          activeLayer={activeLayer}
+          onConfirm={executeImport}
+          onClose={() => setShowImportDialog(false)}
+        />
       )}
     </div>
   );
