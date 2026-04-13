@@ -278,6 +278,9 @@ export default function MapViewer({ layers }) {
   // Grayscale satellite background
   const [grayscale, setGrayscale] = useState(true);
 
+  // Elevation overlay
+  const [elevationOpacity, setElevationOpacity] = useState(0);
+
   // Feature type visibility
   const [showPolygons, setShowPolygons] = useState(true);
   const [showPoints, setShowPoints] = useState(true);
@@ -366,6 +369,20 @@ export default function MapViewer({ layers }) {
         ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(0, sz); ctx.lineTo(sz, 0); ctx.stroke();
       }));
+
+      // Elevation overlay (below all data/draw layers)
+      map.addSource('elevation', {
+        type: 'image',
+        url: '/elevation/elevation_map_alversjo.png',
+        coordinates: [
+          [14.913661, 57.638955], // TL
+          [14.938783, 57.638970], // TR
+          [14.938825, 57.613818], // BR
+          [14.913721, 57.613803], // BL
+        ],
+      });
+      map.addLayer({ id: 'elevation-layer', type: 'raster', source: 'elevation',
+        paint: { 'raster-opacity': 0 } });
 
       // Draw-preview source + layers (empty initially)
       map.addSource(DRAW_SOURCE_ID, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
@@ -820,6 +837,13 @@ export default function MapViewer({ layers }) {
     if (!map?.getLayer('satellite-layer')) return;
     map.setPaintProperty('satellite-layer', 'raster-saturation', grayscale ? -1 : 0);
   }, [grayscale, mapReady]);
+
+  // Sync elevation layer opacity
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map?.getLayer('elevation-layer')) return;
+    map.setPaintProperty('elevation-layer', 'raster-opacity', elevationOpacity);
+  }, [elevationOpacity, mapReady]);
 
   // Sync node handles whenever the selected feature changes
   useEffect(() => {
@@ -1358,15 +1382,28 @@ export default function MapViewer({ layers }) {
             ))}
           </div>
 
-          <div className="menu-visibility-row">
-            <span className="menu-visibility-label">Map</span>
-            <button
-              className={`visibility-toggle-btn ${grayscale ? 'is-on' : ''}`}
-              onClick={() => setGrayscale((v) => !v)}
-              title={grayscale ? 'Color satellite' : 'Grayscale satellite'}
-            >
-              Grayscale
-            </button>
+          <div className="menu-visibility-row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="menu-visibility-label">Map</span>
+              <button
+                className={`visibility-toggle-btn ${grayscale ? 'is-on' : ''}`}
+                onClick={() => setGrayscale((v) => !v)}
+                title={grayscale ? 'Color satellite' : 'Grayscale satellite'}
+              >
+                Grayscale
+              </button>
+            </div>
+            <div className="menu-global-row">
+              <label className="menu-global-label">
+                Elevation overlay<span className="menu-global-value">{Math.round(elevationOpacity * 100)}%</span>
+              </label>
+              <input
+                type="range" min={0} max={1} step={0.05}
+                value={elevationOpacity}
+                onChange={(e) => setElevationOpacity(Number(e.target.value))}
+                className="menu-global-slider"
+              />
+            </div>
           </div>
 
           <div className="menu-auth-row">
