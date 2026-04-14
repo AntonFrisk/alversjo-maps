@@ -2369,9 +2369,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 5,
-                "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
                 "sound-direction-azimuth": 219,
                 "title": "eclipe-back"
             },
@@ -3749,9 +3749,9 @@
             "id": "7b1a3d06-7a71-4eb5-83fb-860b3d058756",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#e75480",
-                "fill": "#e75480"
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
