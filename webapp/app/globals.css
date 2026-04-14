@@ -589,6 +589,45 @@ html, body {
   margin-top: 4px;
 }
 
+/* ===== Schedule panel ===== */
+.schedule-panel {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  z-index: 10;
+  max-width: min(560px, calc(100vw - 32px));
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  animation: schedule-fade-in 0.2s ease;
+}
+@keyframes schedule-fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.schedule-img {
+  display: block;
+  width: 100%;
+  cursor: zoom-in;
+}
+.schedule-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 24px;
+}
+.schedule-lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.8);
+}
+
 /* ===== Edit toggle button ===== */
 .edit-toggle-btn {
   appearance: none;

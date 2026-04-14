@@ -281,6 +281,10 @@ export default function MapViewer({ layers, defaultLayer }) {
   // Elevation overlay
   const [elevationOpacity, setElevationOpacity] = useState(0);
 
+  // Schedule panel
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [scheduleLightbox, setScheduleLightbox] = useState(false);
+
   // First-visit welcome tooltip
   const [showWelcome, setShowWelcome] = useState(false);
   useEffect(() => {
@@ -1353,6 +1357,26 @@ export default function MapViewer({ layers, defaultLayer }) {
         </button>
       </div>
 
+      {/* Schedule panel */}
+      {showSchedule && (
+        <div className="schedule-panel">
+          <img
+            src="/schedule/sound-schedule-v2.png"
+            alt="Sound schedule"
+            className="schedule-img"
+            onClick={() => setScheduleLightbox(true)}
+            title="Click to enlarge"
+          />
+        </div>
+      )}
+
+      {/* Schedule lightbox */}
+      {scheduleLightbox && (
+        <div className="schedule-lightbox" onClick={() => setScheduleLightbox(false)}>
+          <img src="/schedule/sound-schedule-v2.png" alt="Sound schedule" className="schedule-lightbox-img" />
+        </div>
+      )}
+
       {/* First-visit welcome tooltip */}
       {showWelcome && (
         <div className="welcome-tooltip" onClick={dismissWelcome} role="button" aria-label="Dismiss welcome">
@@ -1386,6 +1410,13 @@ export default function MapViewer({ layers, defaultLayer }) {
               title={showPoints ? 'Hide points' : 'Show points'}
             >
               ● Points
+            </button>
+            <button
+              className={`visibility-toggle-btn ${showSchedule ? 'is-on' : ''}`}
+              onClick={() => setShowSchedule((v) => !v)}
+              title="Show sound schedule"
+            >
+              Schedule
             </button>
           </div>
 
