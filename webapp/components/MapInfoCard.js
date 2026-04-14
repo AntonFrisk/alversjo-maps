@@ -6,7 +6,7 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export default function MapInfoCard({ mapName, mapsConfig, viewingRef, onLoadRef, onBackToLatest }) {
+export default function MapInfoCard({ mapName, mapsConfig, viewingRef, onLoadRef, onBackToLatest, onRevert, isEditor, revertLoading }) {
   const [commits, setCommits] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -52,10 +52,15 @@ export default function MapInfoCard({ mapName, mapsConfig, viewingRef, onLoadRef
       <div className="map-info-footer">
         {viewingRef ? (
           <div className="map-info-historical">
-            <span className="map-info-viewing-badge">Historical version</span>
+            <span className="map-info-viewing-badge">v {viewingRef.slice(0, 7)}</span>
             <button className="map-info-back-btn" onClick={onBackToLatest}>
               ← Back to latest
             </button>
+            {isEditor && (
+              <button className="map-info-revert-btn" onClick={onRevert} disabled={revertLoading}>
+                {revertLoading ? 'Reverting…' : 'Revert to this version'}
+              </button>
+            )}
           </div>
         ) : (
           <button className="map-info-version-btn" onClick={toggleHistory} disabled={loading}>

@@ -1292,6 +1292,29 @@ export default function MapViewer({ layers, defaultLayer }) {
     mapRef.current?.getSource(SOURCE_ID)?.setData(original);
   }
 
+  async function handleRevert() {
+    const geojson = originalGeoJSONRef.current;
+    if (!geojson || !viewingRef) return;
+    if (!confirm(`Revert to version ${viewingRef.slice(0, 7)}? This will overwrite the current latest version.`)) return;
+    setCommitLoading(true);
+    try {
+      const res = await fetch('/api/github/commit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ map: activeLayer, geojson, message: `Revert to ${viewingRef.slice(0, 7)}` }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Revert failed');
+      }
+      setViewingRef(null);
+    } catch (err) {
+      alert(`Failed to revert: ${err.message}`);
+    } finally {
+      setCommitLoading(false);
+    }
+  }
+
   async function handleCommit() {
     const geojsonToCommit = editedGeoJSONRef.current || originalGeoJSONRef.current;
     const message = commitMsg.trim() || `Edit ${activeLayer}`;
@@ -1524,6 +1547,9 @@ export default function MapViewer({ layers, defaultLayer }) {
               viewingRef={viewingRef}
               onLoadRef={(ref) => { setViewingRef(ref); setMenuOpen(false); }}
               onBackToLatest={() => { setViewingRef(null); }}
+              onRevert={handleRevert}
+              isEditor={!!session?.user?.isEditor}
+              revertLoading={commitLoading}
             />
           )}
         </div>
