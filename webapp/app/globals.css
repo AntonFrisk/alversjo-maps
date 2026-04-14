@@ -976,8 +976,7 @@ html, body {
   transition: background 0.15s, color 0.15s;
   margin-left: auto;
 }
-.map-info-revert-btn:hover:not(:disabled) { background: rgba(220, 80, 60, 0.28); color: #ff9080; }
-.map-info-revert-btn:disabled { opacity: 0.5; cursor: default; }
+.map-info-revert-btn:hover { background: rgba(220, 80, 60, 0.28); color: #ff9080; }
 
 /* Version history dropdown */
 .map-version-list {

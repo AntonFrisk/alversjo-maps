@@ -308,8 +308,10 @@ export default function MapViewer({ layers, defaultLayer }) {
   const [globalLineWidth, setGlobalLineWidth] = useState(1);
   const globalLineWidthRef = useRef(1);
 
+  const [pendingRevert, setPendingRevert] = useState(false);
+
   const { data: session } = useSession();
-  const dirty = dirtyFeatureIds.size > 0;
+  const dirty = dirtyFeatureIds.size > 0 || pendingRevert;
 
   // soundMode: 'num' = only show number, 'letter' = only show letter, undefined = show both
   const soundMode = mapsConfig?.[activeLayer]?.soundMode || null;
@@ -1283,6 +1285,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     editedGeoJSONRef.current = null;
     setEditedGeoJSON(null);
     setDirtyFeatureIds(new Set());
+    setPendingRevert(false);
     setSelectedFeatureId(null);
     setSlicingPolygon(false);
     setSliceNodes([]);
@@ -1292,27 +1295,13 @@ export default function MapViewer({ layers, defaultLayer }) {
     mapRef.current?.getSource(SOURCE_ID)?.setData(original);
   }
 
-  async function handleRevert() {
-    const geojson = originalGeoJSONRef.current;
-    if (!geojson || !viewingRef) return;
-    if (!confirm(`Revert to version ${viewingRef.slice(0, 7)}? This will overwrite the current latest version.`)) return;
-    setCommitLoading(true);
-    try {
-      const res = await fetch('/api/github/commit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ map: activeLayer, geojson, message: `Revert to ${viewingRef.slice(0, 7)}` }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Revert failed');
-      }
-      setViewingRef(null);
-    } catch (err) {
-      alert(`Failed to revert: ${err.message}`);
-    } finally {
-      setCommitLoading(false);
-    }
+  function handleRevert() {
+    if (!originalGeoJSONRef.current || !viewingRef) return;
+    editedGeoJSONRef.current = originalGeoJSONRef.current;
+    setEditedGeoJSON(originalGeoJSONRef.current);
+    setPendingRevert(true);
+    setCommitMsg(`revert to: ${viewingRef.slice(0, 7)}`);
+    setShowCommitInput(true);
   }
 
   async function handleCommit() {
@@ -1337,6 +1326,7 @@ export default function MapViewer({ layers, defaultLayer }) {
       setSelectedFeatureId(null);
       setShowCommitInput(false);
       setCommitMsg('');
+      if (pendingRevert) { setPendingRevert(false); setViewingRef(null); }
     } catch (err) {
       alert(`Failed to commit: ${err.message}`);
     } finally {
@@ -1549,7 +1539,6 @@ export default function MapViewer({ layers, defaultLayer }) {
               onBackToLatest={() => { setViewingRef(null); }}
               onRevert={handleRevert}
               isEditor={!!session?.user?.isEditor}
-              revertLoading={commitLoading}
             />
           )}
         </div>
@@ -1633,7 +1622,7 @@ export default function MapViewer({ layers, defaultLayer }) {
       {dirty && (
         <div className="commit-bar">
           <span className="commit-count">
-            {dirtyFeatureIds.size} feature{dirtyFeatureIds.size !== 1 ? 's' : ''} edited
+            {pendingRevert ? 'Revert staged' : `${dirtyFeatureIds.size} feature${dirtyFeatureIds.size !== 1 ? 's' : ''} edited`}
           </span>
 
           {showCommitInput ? (
