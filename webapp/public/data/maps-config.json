@@ -10,7 +10,8 @@
     "name": "Borderland 2026 - Sound Makers Map (WIP!!!)",
     "shortName": "Borderland 2026 SMM",
     "description": "The sound map for making sound at borderland 2026. Work in progress! See the proposal maps below in the meantime!",
-    "ext": "json"
+    "ext": "json",
+    "soundMode": "letter"
   },
   "map3": {
     "name": "Backup map for development",
