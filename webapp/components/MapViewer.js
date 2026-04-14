@@ -285,6 +285,9 @@ export default function MapViewer({ layers, defaultLayer }) {
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduleLightbox, setScheduleLightbox] = useState(false);
 
+  // Help / tutorial
+  const [showHelp, setShowHelp] = useState(false);
+
   // First-visit welcome tooltip
   const [showWelcome, setShowWelcome] = useState(false);
   useEffect(() => {
@@ -1325,6 +1328,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     }
     setActiveLayer(e.target.value);
     setViewingRef(null);
+    window.history.pushState(null, '', `/${e.target.value}`);
   }
 
   return (
@@ -1645,6 +1649,86 @@ export default function MapViewer({ layers, defaultLayer }) {
           onConfirm={executeImport}
           onClose={() => setShowImportDialog(false)}
         />
+      )}
+
+      {/* Help button */}
+      <button
+        className="help-btn"
+        onClick={() => setShowHelp(true)}
+        title="How to use this map"
+        aria-label="Help"
+      >?</button>
+
+      {/* Help / tutorial modal */}
+      {showHelp && (
+        <div className="help-overlay" onClick={() => setShowHelp(false)}>
+          <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="help-header">
+              <span className="help-title">How to use this map</span>
+              <button className="help-close" onClick={() => setShowHelp(false)}>✕</button>
+            </div>
+
+            <div className="help-sections">
+              <div className="help-section">
+                <div className="help-section-icon">🗺️</div>
+                <div>
+                  <div className="help-section-title">Navigate</div>
+                  <div className="help-section-body">Drag to pan around the map. Scroll or pinch to zoom in and out.</div>
+                </div>
+              </div>
+
+              <div className="help-section">
+                <div className="help-section-icon">🔀</div>
+                <div>
+                  <div className="help-section-title">Switch maps</div>
+                  <div className="help-section-body">Use the <strong>Layer</strong> dropdown in the top-right corner to switch between the three zone proposals and other maps.</div>
+                </div>
+              </div>
+
+              <div className="help-section">
+                <div className="help-section-icon">☰</div>
+                <div>
+                  <div className="help-section-title">Menu</div>
+                  <div className="help-section-body">Open the menu with the <strong>≡</strong> button (top-right, next to the dropdown) to access all display options below.</div>
+                </div>
+              </div>
+
+              <div className="help-section">
+                <div className="help-section-icon">👁️</div>
+                <div>
+                  <div className="help-section-title">Show / hide layers</div>
+                  <div className="help-section-body">Under <strong>Show</strong> in the menu, toggle <em>Polygons</em> (coloured zones) and <em>Points</em> (camps and markers) on or off.</div>
+                </div>
+              </div>
+
+              <div className="help-section">
+                <div className="help-section-icon">📅</div>
+                <div>
+                  <div className="help-section-title">Sound schedule</div>
+                  <div className="help-section-body">Click <strong>Schedule</strong> under <em>Show</em> to open the colour legend and dB schedule. Click the image to view it full size.</div>
+                </div>
+              </div>
+
+              <div className="help-section">
+                <div className="help-section-icon">⛰️</div>
+                <div>
+                  <div className="help-section-title">Elevation overlay</div>
+                  <div className="help-section-body">Under <strong>Map</strong> in the menu, drag the <em>Elevation overlay</em> slider to fade a terrain map on top of the satellite image.</div>
+                </div>
+              </div>
+
+              <div className="help-section">
+                <div className="help-section-icon">🎨</div>
+                <div>
+                  <div className="help-section-title">Grayscale satellite</div>
+                  <div className="help-section-body">Toggle <strong>Grayscale</strong> under <em>Map</em> to switch the satellite background between colour and greyscale.</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="help-footer">Click outside or ✕ to close</div>
+          </div>
+        </div>
       )}
     </div>
   );

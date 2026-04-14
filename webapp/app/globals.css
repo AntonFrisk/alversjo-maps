@@ -628,6 +628,145 @@ html, body {
   box-shadow: 0 16px 64px rgba(0, 0, 0, 0.8);
 }
 
+/* ===== Help button + tutorial modal ===== */
+.help-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(10, 10, 18, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ccc;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.help-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.help-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: help-fade 0.2s ease;
+}
+@keyframes help-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.help-modal {
+  background: rgba(12, 12, 22, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 28px 32px 20px;
+  width: min(520px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: help-slide 0.25s ease;
+}
+@keyframes help-slide {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.help-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f0f0f0;
+  letter-spacing: -0.01em;
+}
+.help-close {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  font-size: 14px;
+  font-family: inherit;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.help-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ddd;
+}
+.help-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.help-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.help-section:last-child {
+  border-bottom: none;
+}
+.help-section-icon {
+  font-size: 22px;
+  width: 32px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.help-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin-bottom: 4px;
+}
+.help-section-body {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.6;
+}
+.help-section-body strong {
+  color: #bbb;
+  font-weight: 600;
+}
+.help-section-body em {
+  color: #999;
+  font-style: normal;
+}
+.help-footer {
+  font-size: 12px;
+  color: #444;
+  text-align: center;
+  margin-top: 18px;
+}
+
 /* ===== Edit toggle button ===== */
 .edit-toggle-btn {
   appearance: none;
