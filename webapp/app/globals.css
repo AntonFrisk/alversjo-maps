@@ -500,6 +500,95 @@ html, body {
   letter-spacing: 0.05em;
 }
 
+/* ===== First-visit welcome tooltip ===== */
+.welcome-tooltip {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(10, 10, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 36px 52px 30px 40px;
+  width: min(420px, calc(100vw - 48px));
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: welcome-fade-in 0.35s ease;
+}
+@keyframes welcome-fade-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.welcome-arrow-right {
+  position: absolute;
+  top: 28px;
+  right: -13px;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid rgba(255, 255, 255, 0.15);
+}
+.welcome-arrow-right::after {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: -14px;
+  width: 0;
+  height: 0;
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  border-left: 11px solid rgba(10, 10, 18, 0.92);
+}
+.welcome-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f0f0f0;
+  letter-spacing: -0.01em;
+}
+.welcome-hint {
+  font-size: 16px;
+  color: #aaa;
+  line-height: 1.6;
+}
+.welcome-proposals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.welcome-proposals li {
+  font-size: 15px;
+  color: #ccc;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.welcome-proposal-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #5b9ff8;
+  background: rgba(91, 159, 248, 0.12);
+  border: 1px solid rgba(91, 159, 248, 0.25);
+  border-radius: 5px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+.welcome-dismiss {
+  font-size: 13px;
+  color: #555;
+  margin-top: 4px;
+}
+
 /* ===== Edit toggle button ===== */
 .edit-toggle-btn {
   appearance: none;

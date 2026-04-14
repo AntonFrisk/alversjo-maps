@@ -10,5 +10,5 @@ const MapViewer = dynamic(() => import('@/components/MapViewer'), {
 const LAYERS = ['map1', 'map2', 'map3', 'map4', 'map5', 'map6'];
 
 export default function Home() {
-  return <MapViewer layers={LAYERS} />;
+  return <MapViewer layers={LAYERS} defaultLayer="map4" />;
 }

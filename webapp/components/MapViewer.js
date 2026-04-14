@@ -218,14 +218,14 @@ function buildPopupHTML(props, soundMode = null) {
   return parts.join('');
 }
 
-export default function MapViewer({ layers }) {
+export default function MapViewer({ layers, defaultLayer }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
   const originalGeoJSONRef = useRef(null);
   const editedGeoJSONRef = useRef(null);
 
   const [mapReady, setMapReady] = useState(false);
-  const [activeLayer, setActiveLayer] = useState(layers[0]);
+  const [activeLayer, setActiveLayer] = useState(defaultLayer || layers[0]);
   const [mapsConfig, setMapsConfig] = useState(null);
 
   // Edit mode state
@@ -280,6 +280,16 @@ export default function MapViewer({ layers }) {
 
   // Elevation overlay
   const [elevationOpacity, setElevationOpacity] = useState(0);
+
+  // First-visit welcome tooltip
+  const [showWelcome, setShowWelcome] = useState(false);
+  useEffect(() => {
+    if (!localStorage.getItem('soundmaps-welcomed')) setShowWelcome(true);
+  }, []);
+  const dismissWelcome = () => {
+    setShowWelcome(false);
+    localStorage.setItem('soundmaps-welcomed', '1');
+  };
 
   // Feature type visibility
   const [showPolygons, setShowPolygons] = useState(true);
@@ -1342,6 +1352,21 @@ export default function MapViewer({ layers }) {
           <span /><span /><span />
         </button>
       </div>
+
+      {/* First-visit welcome tooltip */}
+      {showWelcome && (
+        <div className="welcome-tooltip" onClick={dismissWelcome} role="button" aria-label="Dismiss welcome">
+          <div className="welcome-arrow-right" />
+          <div className="welcome-title">Welcome to Sound maps</div>
+          <div className="welcome-hint">Have a look at these three map proposals — switch using the dropdown →</div>
+          <ul className="welcome-proposals">
+            <li><span className="welcome-proposal-num">#1</span> Quiet North &amp; Dirty South</li>
+            <li><span className="welcome-proposal-num">#2</span> Day Land &amp; Night Land</li>
+            <li><span className="welcome-proposal-num">#3</span> Double Night Lands</li>
+          </ul>
+          <div className="welcome-dismiss">Tap anywhere to dismiss</div>
+        </div>
+      )}
 
       {/* Hamburger menu dropdown */}
       {menuOpen && (
