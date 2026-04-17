@@ -252,6 +252,10 @@
                             57.6196345427594
                         ],
                         [
+                            14.919270085201504,
+                            57.620338523229435
+                        ],
+                        [
                             14.920383975507377,
                             57.62105337165579
                         ],
@@ -312,8 +316,8 @@
                             57.6196345427594
                         ],
                         [
-                            14.920383975507377,
-                            57.62105337165579
+                            14.919270085201504,
+                            57.620338523229435
                         ],
                         [
                             14.920383975507377,
@@ -1573,9 +1577,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 1,
-                "sound-class": "F",
-                "marker-color": "#4a90d9",
-                "fill": "#4a90d9"
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954"
             },
             "geometry": {
                 "coordinates": [
@@ -4591,11 +4595,11 @@
                 "camp-in-2024": "Muumimaa",
                 "camp-in-2023": "Muumimaa",
                 "point-num": 1,
-                "sound-direction-comment": "South east into forest",
+                "sound-direction-comment": "South east into forest: 100 to 180 deg",
                 "sound-direction-azimuth": 130,
                 "fill": "#e89422",
                 "marker-color": "#e89422",
-                "upgrade-actions": "NB! This spot is planned to get a haybale wall to the north. \n\nPlay Direction: 100 - 180 deg\n\nUpgrades actions possible to make this Red.",
+                "upgrade-actions": "NB! This spot is planned to get a haybale wall to the north. \n\nUpgrade with cardioid bass to make this Red.",
                 "sound-class-num": 4,
                 "sound-class": "B",
                 "description": "North part of Field in the west. Access  through a forest road. Muumima's blue house placed here. Play directly towards forest. No sound blocking to the north unfortunately"
@@ -4622,7 +4626,7 @@
                 "sound-class": "B",
                 "point-num": 26,
                 "sound-direction-comment": "south more than east.",
-                "upgrade-actions": "sound block north. Directional subs",
+                "upgrade-actions": "sound block north. Directional subs --> Red",
                 "marker-color": "#e89422",
                 "fill": "#e89422"
             },
@@ -4725,7 +4729,7 @@
                 "point-num": 6,
                 "sound-direction-azimuth": 250,
                 "sound-direction-comment": "W-SW. ",
-                "upgrade-actions": "dir subs and sound block NE",
+                "upgrade-actions": "dir subs and sound block to north east (NE). Not upgradable to full Red, but extensions possible",
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none"
@@ -5021,7 +5025,8 @@
                 "sound-direction-comment": "S-SE-E",
                 "point-num": 14,
                 "marker-color": "#e75480",
-                "fill": "#e75480"
+                "fill": "#e75480",
+                "upgrade-actions": "NB! Can be yellow or pink. Neighbourhoo decision on the vibe they want there. \n\nUpgrade using haybales + cardioid to extend night hours."
             },
             "geometry": {
                 "coordinates": [
