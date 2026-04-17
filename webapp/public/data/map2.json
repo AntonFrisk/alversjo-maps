@@ -1398,8 +1398,8 @@
                             57.62618048013002
                         ],
                         [
-                            14.928378797874728,
-                            57.62579474772065
+                            14.928393309001876,
+                            57.6257733461544
                         ],
                         [
                             14.928055571631575,
@@ -1423,9 +1423,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 4,
-                "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "sound-class": "C",
+                "marker-color": "#e75480",
+                "fill": "#e75480",
                 "title": "slope-times p2 p2",
                 "sound-direction-azimuth": 255
             },
@@ -1542,6 +1542,10 @@
                         [
                             14.928430067387694,
                             57.62618048013002
+                        ],
+                        [
+                            14.928393309001876,
+                            57.6257733461544
                         ],
                         [
                             14.928055571631575,
@@ -4434,9 +4438,9 @@
             "type": "Feature",
             "id": "23cb03dc-e2e4-4182-8854-37614909c474",
             "properties": {
-                "sound-class": "D",
-                "marker-color": "#ffcc01",
-                "fill": "#ffcc01",
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
                 "sound-direction-azimuth": 255
             },
             "geometry": {
