@@ -4898,15 +4898,15 @@
             "properties": {
                 "title": "foxmantle",
                 "point-num": 13,
-                "sound-direction-azimuth": 315,
-                "sound-direction-comment": "N-NW. Into the hill",
+                "sound-direction-comment": "SE. Into the hill",
                 "description": "Grassy patch between the trees. Surrounded by trees and uphill in all directions but SW. Close to the creek. Slightly down-hill from FoxHole2024 location.",
                 "camp-in-2024": "none",
                 "camp-in-2025": "Kismantle Castle [lead: yuimbo]",
                 "sound-class-num": 6,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422"
+                "fill": "#e89422",
+                "sound-direction-azimuth": 120
             },
             "geometry": {
                 "coordinates": [
