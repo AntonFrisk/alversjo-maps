@@ -5111,7 +5111,7 @@
             "type": "Feature",
             "properties": {
                 "title": "rascal swamp",
-                "description": "Lowlands to the east, next to a hill. Wet below the hill in 2024. Speakers need to be placed close to the hill to avoid dampness. Playing into the hill. Prime sunset view for dancers.",
+                "description": "Lowlands to the east, next to a hill. Wet below the hill in 2024. Speakers need to be placed close to the hill to avoid dampness. Playing into the hill. Prime sunset view for dancers.\n\nNB! Can be yellow or pink. Neighbourhoo decision on the vibe they want there. ",
                 "camp-in-2025": "Camp Ra (almost)",
                 "sound-class": "C",
                 "sound-class-num": 4,
@@ -5120,7 +5120,7 @@
                 "point-num": 14,
                 "marker-color": "#e75480",
                 "fill": "#e75480",
-                "upgrade-actions": "NB! Can be yellow or pink. Neighbourhoo decision on the vibe they want there. \n\nUpgrade using haybales + cardioid to extend night hours."
+                "upgrade-actions": "Upgrade using haybales + cardioid to extend night hours."
             },
             "geometry": {
                 "coordinates": [
