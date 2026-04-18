@@ -5093,9 +5093,10 @@
                 "description": "By the woods to the east. Playing into the steep hill in the forest. Good sunset spot. Ground was dry in 2024.",
                 "title": "clint eastwood",
                 "sound-direction-azimuth": 130,
-                "sound-direction-comment": "East",
+                "sound-direction-comment": "SE/E",
                 "marker-color": "#888",
-                "fill": "#888"
+                "fill": "#888",
+                "upgrade-actions": "Sound block wall to the north."
             },
             "geometry": {
                 "coordinates": [
