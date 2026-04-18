@@ -356,8 +356,8 @@
                             57.62181297355275
                         ],
                         [
-                            14.925184913024793,
-                            57.62217574056098
+                            14.925341761819908,
+                            57.622175282612375
                         ],
                         [
                             14.9256284033018,
@@ -385,7 +385,7 @@
             }
         },
         {
-            "id": "42e98eaf-25e6-4f6a-8c09-cba86e960052",
+            "id": "338ced45-2a92-4fe8-ac25-c8e1d89d677e",
             "type": "Feature",
             "properties": {
                 "fill": "#e89422",
@@ -394,15 +394,17 @@
                 "sound-class-num": 4,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "title": "forest-cave",
-                "sound-direction-azimuth": 290
+                "title": "forest-cave p1",
+                "sound-direction-azimuth": 110,
+                "sound-direction-comment": "East to avoid sound on the sunny hills",
+                "upgrade-actions": "New spots may be found in this area for updrade"
             },
             "geometry": {
                 "coordinates": [
                     [
                         [
-                            14.926250417627216,
-                            57.62055719707777
+                            14.925935692686199,
+                            57.620534213676564
                         ],
                         [
                             14.925863032294842,
@@ -441,8 +443,38 @@
                             57.61898016303613
                         ],
                         [
+                            14.926090770566148,
+                            57.61909719874106
+                        ],
+                        [
+                            14.925935692686199,
+                            57.620534213676564
+                        ]
+                    ]
+                ],
+                "type": "Polygon"
+            }
+        },
+        {
+            "id": "e5f6d772-a710-4e4a-9f11-c76a3a1723c0",
+            "type": "Feature",
+            "properties": {
+                "fill": "#e89422",
+                "fill-opacity": 0.3,
+                "stroke-width": 0,
+                "sound-class-num": 4,
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "title": "forest-cave p2",
+                "sound-direction-comment": "Higher ground -- sendin sound into the hill is best",
+                "sound-direction-azimuth": 270
+            },
+            "geometry": {
+                "coordinates": [
+                    [
+                        [
                             14.926750556803995,
-                            57.61962387933127
+                            57.61982561911384
                         ],
                         [
                             14.926750556803995,
@@ -459,6 +491,60 @@
                         [
                             14.926250417627216,
                             57.62055719707777
+                        ],
+                        [
+                            14.925935692686199,
+                            57.620534213676564
+                        ],
+                        [
+                            14.926008297208462,
+                            57.61986143053747
+                        ],
+                        [
+                            14.926750556803995,
+                            57.61982561911384
+                        ]
+                    ]
+                ],
+                "type": "Polygon"
+            }
+        },
+        {
+            "id": "291b81ce-3532-4913-8f5a-36b025b3f8c8",
+            "type": "Feature",
+            "properties": {
+                "fill": "#e89422",
+                "fill-opacity": 0.3,
+                "stroke-width": 0,
+                "sound-class-num": 4,
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "title": "forest-cave p3",
+                "sound-direction-comment": "Higher ground -- sendin sound into the hill is best",
+                "sound-direction-azimuth": 300
+            },
+            "geometry": {
+                "coordinates": [
+                    [
+                        [
+                            14.926008297208462,
+                            57.61986143053747
+                        ],
+                        [
+                            14.926090770566148,
+                            57.61909719874106
+                        ],
+                        [
+                            14.926750556803995,
+                            57.61962387933127
+                        ],
+                        [
+                            14.926750556803995,
+                            57.61982561911384
+                        ],
+                        [
+                            14.926008297208462,
+                            57.61986143053747
                         ]
                     ]
                 ],
@@ -513,7 +599,7 @@
                 "fill": "#e89422",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
-                "title": "fields1 p2",
+                "title": "bison fields 4",
                 "sound-class-num": 6,
                 "sound-class": "B",
                 "marker-color": "#e89422",
@@ -708,7 +794,7 @@
                 "fill": "#3cc954",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
-                "title": "fields6",
+                "title": "bison hill",
                 "sound-class-num": 1,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
@@ -2055,8 +2141,8 @@
                             57.6242064706598
                         ],
                         [
-                            14.91501605729951,
-                            57.62441322008948
+                            14.915168047251655,
+                            57.6244882164726
                         ],
                         [
                             14.91680503484821,
@@ -2369,8 +2455,8 @@
                             57.62405321691611
                         ],
                         [
-                            14.91501605729951,
-                            57.62441322008948
+                            14.915168047251655,
+                            57.6244882164726
                         ],
                         [
                             14.917191145110223,
@@ -2460,8 +2546,8 @@
                             57.62181297355275
                         ],
                         [
-                            14.924815222209673,
-                            57.62189256882945
+                            14.924983080528904,
+                            57.6218955942235
                         ],
                         [
                             14.923578838262443,
@@ -2491,7 +2577,8 @@
                 "sound-class-num": 7,
                 "sound-class": "A",
                 "marker-color": "#cc1b15",
-                "fill": "#cc1b15"
+                "fill": "#cc1b15",
+                "sound-direction-azimuth": 270
             },
             "geometry": {
                 "coordinates": [
@@ -2745,9 +2832,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#e75480",
-                "fill": "#e75480",
+                "sound-class": "B",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
                 "sound-direction-azimuth": 250
             },
             "geometry": {
@@ -2758,20 +2845,20 @@
                             57.62356353897269
                         ],
                         [
-                            14.925290135132371,
-                            57.62335573370228
+                            14.924964202566116,
+                            57.623192925810315
                         ],
                         [
-                            14.9256284033018,
-                            57.62295605154969
+                            14.92503342176326,
+                            57.622657150329076
                         ],
                         [
-                            14.925184913024793,
-                            57.62217574056098
+                            14.924882398061015,
+                            57.622333659420406
                         ],
                         [
-                            14.925193569210506,
-                            57.62181297355275
+                            14.924983080528904,
+                            57.6218955942235
                         ],
                         [
                             14.924815222209673,
@@ -3113,9 +3200,9 @@
             "type": "Feature",
             "properties": {
                 "sound-class-num": 4,
-                "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "sound-class": "D",
+                "marker-color": "#ffcc01",
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "coordinates": [
@@ -3296,7 +3383,9 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth": 255
+                "sound-direction-azimuth": 255,
+                "title": "bison fields 3",
+                "sound-direction-comment": "West or East - both work. NOT North!"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3334,7 +3423,8 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth": 255
+                "sound-direction-azimuth": 255,
+                "title": "bison fields 2"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3421,7 +3511,8 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth": 240
+                "sound-direction-azimuth": 240,
+                "title": "bison fields 1"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3519,7 +3610,8 @@
                 "sound-class-num": 3,
                 "sound-class": "C",
                 "marker-color": "#e75480",
-                "fill": "#e75480"
+                "fill": "#e75480",
+                "sound-direction-azimuth": 230
             },
             "geometry": {
                 "type": "Polygon",
@@ -4798,7 +4890,7 @@
             "type": "Feature",
             "properties": {
                 "point-num": 18,
-                "description": "Natural reserve. In forest, direction into the hill. Close to the lake. A bit down hill from the Glade 2024 spot. Natural reserve - need special permissions probably.",
+                "description": "NATURAL RESERVE. In forest, direction into the hill. Close to the lake. A bit down hill from the Glade 2024 spot. Natural reserve - need special permissions probably.",
                 "title": "deep forest shore",
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
@@ -4827,7 +4919,7 @@
                 "sound-direction-comment": "West. into the hill",
                 "point-num": 18,
                 "title": "the moss",
-                "description": "Natural reserve. Hidden in the forest there is a cosy spot with lots of moss and trees, well suited for sound. Approach from the path leading form the big barn to the west field.",
+                "description": "NATURAL RESERVE. Hidden in the forest there is a cosy spot with lots of moss and trees, well suited for sound. Approach from the path leading form the big barn to the west field.",
                 "sound-class-num": 8,
                 "sound-class": "A",
                 "upgrade-actions": "dir subs",
@@ -4846,17 +4938,18 @@
             "id": "286e2282-eecb-4c2e-ae54-b807e5c2882e",
             "type": "Feature",
             "properties": {
-                "description": "Down by the end of the hills in the corner, the sound is protected by the hill if speakers are put in the lowest part. Might interfere with the \"power slope\" spot if playing at the same time.",
+                "description": "Down by the end of the hills in the corner, the sound is protected by the hill if speakers are put in the lowest part. Might interfere with the \"power slope\" spot (usually DOET camp). ",
                 "title": "back2back",
                 "sound-class-num": 6,
                 "sound-class": "B",
                 "sound-direction-azimuth": 220,
-                "sound-direction-comment": "W-SW",
+                "sound-direction-comment": "W-SW, but possible to reverse to NW. ",
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none",
                 "marker-color": "#e89422",
-                "fill": "#e89422"
+                "fill": "#e89422",
+                "upgrade-actions": "sound block to NE"
             },
             "geometry": {
                 "coordinates": [
@@ -4946,7 +5039,7 @@
             "id": "8558dcd9-7066-450d-9acb-680b6296cd61",
             "type": "Feature",
             "properties": {
-                "description": "OUTSIDE alversjö. Forest location, on a crossing. Not on Borderland-land. need special permission probably. Playing NE straight into a hill, with trees in all four directions.",
+                "description": "OUTSIDE ALVERSJÖ. Forest location, on a crossing. Not on Borderland-land. need special permission probably. Playing NE straight into a hill, with trees in all four directions.\n\nOUTSIDE ALVERSJÖ = special permissions needed. may not be possible",
                 "title": "forest gump",
                 "sound-class": "A",
                 "sound-class-num": 7,
@@ -4958,8 +5051,8 @@
             },
             "geometry": {
                 "coordinates": [
-                    14.934260320669921,
-                    57.618880309033926
+                    14.934351330547372,
+                    57.61880216833774
                 ],
                 "type": "Point"
             }
@@ -5220,6 +5313,57 @@
                 "coordinates": [
                     14.902994224788728,
                     57.6106063372886
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "7095f6cb-4c27-4ca9-9c57-40956c562c2f",
+            "properties": {
+                "title": "forest power ridge: east slope ",
+                "description": "Elevated lands. no good for sound"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            14.924834575548914,
+                            57.62356353897269
+                        ],
+                        [
+                            14.925290135132371,
+                            57.62335573370228
+                        ],
+                        [
+                            14.9256284033018,
+                            57.62295605154969
+                        ],
+                        [
+                            14.925193569210506,
+                            57.62181297355275
+                        ],
+                        [
+                            14.924983080528904,
+                            57.6218955942235
+                        ],
+                        [
+                            14.924882398061015,
+                            57.622333659420406
+                        ],
+                        [
+                            14.92503342176326,
+                            57.622657150329076
+                        ],
+                        [
+                            14.924945413442828,
+                            57.62323380978248
+                        ],
+                        [
+                            14.924834575548914,
+                            57.62356353897269
+                        ]
+                    ]
                 ]
             }
         }
