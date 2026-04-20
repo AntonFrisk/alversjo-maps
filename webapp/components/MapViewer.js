@@ -20,7 +20,13 @@ const LAYER_IDS = {
   point: 'layer-point',
   pointArrow: 'layer-point-arrow',
 };
-const LAYER_IDS_AZ = { circle: 'layer-azimuth-circle', sector: 'layer-azimuth-sector', polygonArrow: 'layer-azimuth-polygon-arrow' };
+const LAYER_IDS_AZ = {
+  circle: 'layer-azimuth-circle',
+  sector: 'layer-azimuth-sector',
+  polyCircle: 'layer-azimuth-poly-circle',
+  polySector: 'layer-azimuth-poly-sector',
+  polygonArrow: 'layer-azimuth-polygon-arrow',
+};
 const AZIMUTH_SECTORS_SOURCE_ID = 'azimuth-sectors';
 const AZIMUTH_SECTOR_RADIUS_M =20; // base radius at ZOOM level; scaled by zoom → constant ~22 px on screen
 const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.polygonFill, LAYER_IDS.line];
@@ -157,14 +163,15 @@ function buildAzimuthSectorFeatures(geojson, radiusM = AZIMUTH_SECTOR_RADIUS_M) 
     const fromNum = Number(rawFrom);
     const toNum = Number(rawTo);
     if (!Number.isFinite(fromNum) || !Number.isFinite(toNum)) continue;
+    const srcGeom = isPolygon ? 'polygon' : 'point';
     out.push({
       type: 'Feature',
-      properties: { fill, _kind: 'circle' },
+      properties: { fill, _kind: 'circle', _srcGeom: srcGeom },
       geometry: { type: 'Polygon', coordinates: [buildCirclePoly(origin, r)] },
     });
     out.push({
       type: 'Feature',
-      properties: { fill, _kind: 'sector' },
+      properties: { fill, _kind: 'sector', _srcGeom: srcGeom },
       geometry: { type: 'Polygon', coordinates: [buildSectorPoly(origin, r, fromNum, toNum)] },
     });
   }
@@ -404,6 +411,8 @@ export default function MapViewer({ layers, defaultLayer }) {
   // Pattern (B&W) mode — null = off, 'dots' | 'grid' | 'stripes'
   const [patternType, setPatternType] = useState(null);
   const patternTypeRef = useRef(null);
+  const [bwOpen, setBwOpen] = useState(false);
+  const [advOpen, setAdvOpen] = useState(false);
 
   // Grayscale satellite background
   const [grayscale, setGrayscale] = useState(true);
@@ -433,6 +442,8 @@ export default function MapViewer({ layers, defaultLayer }) {
   const [showPoints, setShowPoints] = useState(true);
   const showPolygonsRef = useRef(true);
   const showPointsRef = useRef(true);
+  const [showPolygonSectors, setShowPolygonSectors] = useState(false);
+  const showPolygonSectorsRef = useRef(false);
 
   // Global polygon border width
   const [globalLineWidth, setGlobalLineWidth] = useState(1);
@@ -1127,12 +1138,25 @@ export default function MapViewer({ layers, defaultLayer }) {
     [LAYER_IDS.point, LAYER_IDS.pointArrow].forEach((id) => {
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', pointVis);
     });
-    const azVis = showPolygons || showPoints ? 'visible' : 'none';
     [LAYER_IDS_AZ.circle, LAYER_IDS_AZ.sector].forEach((id) => {
-      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', azVis);
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', pointVis);
+    });
+    const polySectorVis = showPolygons && showPolygonSectorsRef.current ? 'visible' : 'none';
+    [LAYER_IDS_AZ.polyCircle, LAYER_IDS_AZ.polySector].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', polySectorVis);
     });
     if (map.getLayer(LAYER_IDS_AZ.polygonArrow)) map.setLayoutProperty(LAYER_IDS_AZ.polygonArrow, 'visibility', polyVis);
-  }, [showPolygons, showPoints, mapReady]);
+  }, [showPolygons, showPoints, mapReady]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    showPolygonSectorsRef.current = showPolygonSectors;
+    const map = mapRef.current;
+    if (!map) return;
+    const vis = showPolygonsRef.current && showPolygonSectors ? 'visible' : 'none';
+    [LAYER_IDS_AZ.polyCircle, LAYER_IDS_AZ.polySector].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
+    });
+  }, [showPolygonSectors, mapReady]);
 
   // Sync global line width to polygon outline layer
   useEffect(() => {
@@ -1194,12 +1218,22 @@ export default function MapViewer({ layers, defaultLayer }) {
       });
       map.addLayer({
         id: LAYER_IDS_AZ.circle, type: 'fill', source: AZIMUTH_SECTORS_SOURCE_ID,
-        filter: ['==', ['get', '_kind'], 'circle'],
+        filter: ['all', ['==', ['get', '_kind'], 'circle'], ['==', ['get', '_srcGeom'], 'point']],
         paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.28 },
       });
       map.addLayer({
         id: LAYER_IDS_AZ.sector, type: 'fill', source: AZIMUTH_SECTORS_SOURCE_ID,
-        filter: ['==', ['get', '_kind'], 'sector'],
+        filter: ['all', ['==', ['get', '_kind'], 'sector'], ['==', ['get', '_srcGeom'], 'point']],
+        paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.72 },
+      });
+      map.addLayer({
+        id: LAYER_IDS_AZ.polyCircle, type: 'fill', source: AZIMUTH_SECTORS_SOURCE_ID,
+        filter: ['all', ['==', ['get', '_kind'], 'circle'], ['==', ['get', '_srcGeom'], 'polygon']],
+        paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.28 },
+      });
+      map.addLayer({
+        id: LAYER_IDS_AZ.polySector, type: 'fill', source: AZIMUTH_SECTORS_SOURCE_ID,
+        filter: ['all', ['==', ['get', '_kind'], 'sector'], ['==', ['get', '_srcGeom'], 'polygon']],
         paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.72 },
       });
       map.addLayer({
@@ -1283,9 +1317,12 @@ export default function MapViewer({ layers, defaultLayer }) {
         map.setLayoutProperty(LAYER_IDS.point, 'visibility', 'none');
         map.setLayoutProperty(LAYER_IDS.pointArrow, 'visibility', 'none');
       }
-      const azVis = showPolygonsRef.current || showPointsRef.current ? 'visible' : 'none';
-      if (map.getLayer(LAYER_IDS_AZ.circle)) map.setLayoutProperty(LAYER_IDS_AZ.circle, 'visibility', azVis);
-      if (map.getLayer(LAYER_IDS_AZ.sector)) map.setLayoutProperty(LAYER_IDS_AZ.sector, 'visibility', azVis);
+      const ptVis2 = showPointsRef.current ? 'visible' : 'none';
+      if (map.getLayer(LAYER_IDS_AZ.circle)) map.setLayoutProperty(LAYER_IDS_AZ.circle, 'visibility', ptVis2);
+      if (map.getLayer(LAYER_IDS_AZ.sector)) map.setLayoutProperty(LAYER_IDS_AZ.sector, 'visibility', ptVis2);
+      const polySectorVis = showPolygonsRef.current && showPolygonSectorsRef.current ? 'visible' : 'none';
+      if (map.getLayer(LAYER_IDS_AZ.polyCircle)) map.setLayoutProperty(LAYER_IDS_AZ.polyCircle, 'visibility', polySectorVis);
+      if (map.getLayer(LAYER_IDS_AZ.polySector)) map.setLayoutProperty(LAYER_IDS_AZ.polySector, 'visibility', polySectorVis);
       if (map.getLayer(LAYER_IDS_AZ.polygonArrow)) map.setLayoutProperty(LAYER_IDS_AZ.polygonArrow, 'visibility', showPolygonsRef.current ? 'visible' : 'none');
       // Re-apply pattern mode if active (layers were just recreated)
       if (patternTypeRef.current) applyPatternToMap(map, patternTypeRef.current);
@@ -1607,30 +1644,19 @@ export default function MapViewer({ layers, defaultLayer }) {
               ● Points
             </button>
             <button
+              className={`visibility-toggle-btn ${showPolygonSectors ? 'is-on' : ''}`}
+              onClick={() => setShowPolygonSectors((v) => !v)}
+              title={showPolygonSectors ? 'Hide polygon sectors' : 'Show polygon sectors'}
+            >
+              ◔ Poly sectors
+            </button>
+            <button
               className={`visibility-toggle-btn ${showSchedule ? 'is-on' : ''}`}
-              onClick={() => setShowSchedule((v) => !v)}
+              onClick={() => { setShowSchedule((v) => !v); setMenuOpen(false); }}
               title="Show sound schedule"
             >
               Schedule
             </button>
-          </div>
-
-          <div className="menu-pattern-row">
-            <span className="menu-visibility-label">B&W</span>
-            {[
-              { type: 'dots',    label: '· Dots' },
-              { type: 'grid',    label: '# Grid' },
-              { type: 'stripes', label: '/ Stripes' },
-            ].map(({ type, label }) => (
-              <button
-                key={type}
-                className={`visibility-toggle-btn ${patternType === type ? 'is-on' : ''}`}
-                onClick={() => setPatternType((v) => v === type ? null : type)}
-                title={patternType === type ? 'Turn off B&W mode' : `B&W: ${label}`}
-              >
-                {label}
-              </button>
-            ))}
           </div>
 
           <div className="menu-visibility-row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '8px' }}>
@@ -1657,57 +1683,87 @@ export default function MapViewer({ layers, defaultLayer }) {
             </div>
           </div>
 
-          <div className="menu-auth-row">
-            {!viewingRef && (
-              <button
-                className={`edit-toggle-btn ${editMode ? 'is-editing' : ''}`}
-                onClick={handleEditClick}
-                title={editMode ? 'Exit edit mode' : 'Edit this map'}
-              >
-                {editMode ? '✎ Editing' : '✎ Edit'}
-              </button>
-            )}
-            <AuthButton />
-          </div>
-
-          {editMode && session?.user?.isEditor && (
-            <div className="menu-global-settings">
-              <div className="menu-global-title">Global settings</div>
-              <div className="menu-global-row">
-                <label className="menu-global-label" htmlFor="line-width-input">
-                  Border width
-                  <span className="menu-global-value">{globalLineWidth}px</span>
-                </label>
-                <input
-                  id="line-width-input"
-                  type="range" min={0} max={8} step={0.5}
-                  value={globalLineWidth}
-                  onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
-                  className="menu-global-slider"
-                />
-              </div>
-              <div className="menu-global-row">
-                <label className="menu-global-label" htmlFor="snap-dist-input">
-                  Snap distance
-                  <span className="menu-global-value">{snapDistance}px</span>
-                </label>
-                <input
-                  id="snap-dist-input"
-                  type="range" min={4} max={40} step={1}
-                  value={snapDistance}
-                  onChange={(e) => setSnapDistance(Number(e.target.value))}
-                  className="menu-global-slider"
-                />
-              </div>
-              <div className="menu-global-divider" />
-              <button className="menu-map-edits-btn" onClick={syncFeatureColors}>
-                Sync colors from sound class
-              </button>
-              <button className="menu-map-edits-btn" onClick={() => setShowImportDialog(true)}>
-                Import from map…
-              </button>
+          <div className="menu-bw-accordion">
+            <div className="menu-bw-header" onClick={() => setAdvOpen((v) => !v)}>
+              <span className="menu-visibility-label">Advanced options</span>
+              {patternType && <span className="visibility-toggle-btn is-on" style={{ pointerEvents: 'none', padding: '2px 8px', fontSize: '11px' }}>{patternType}</span>}
+              {editMode && <span className="visibility-toggle-btn is-on" style={{ pointerEvents: 'none', padding: '2px 8px', fontSize: '11px' }}>editing</span>}
+              <span className={`menu-bw-chevron ${advOpen ? 'is-open' : ''}`}>▼</span>
             </div>
-          )}
+            {advOpen && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '2px 12px 12px' }}>
+                <div>
+                  <div className="menu-visibility-label" style={{ marginBottom: '6px' }}>B&W patterns</div>
+                  <div className="menu-bw-body" style={{ padding: 0 }}>
+                    {[
+                      { type: 'dots',    label: '· Dots' },
+                      { type: 'grid',    label: '# Grid' },
+                      { type: 'stripes', label: '/ Stripes' },
+                    ].map(({ type, label }) => (
+                      <button
+                        key={type}
+                        className={`visibility-toggle-btn ${patternType === type ? 'is-on' : ''}`}
+                        onClick={() => setPatternType((v) => v === type ? null : type)}
+                        title={patternType === type ? 'Turn off B&W mode' : `B&W: ${label}`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {!viewingRef && (
+                    <button
+                      className={`edit-toggle-btn ${editMode ? 'is-editing' : ''}`}
+                      onClick={handleEditClick}
+                      title={editMode ? 'Exit edit mode' : 'Edit this map'}
+                    >
+                      {editMode ? '✎ Editing' : '✎ Edit'}
+                    </button>
+                  )}
+                  <AuthButton />
+                </div>
+                {editMode && session?.user?.isEditor && (
+                  <div className="menu-global-settings" style={{ margin: 0 }}>
+                    <div className="menu-global-title">Global settings</div>
+                    <div className="menu-global-row">
+                      <label className="menu-global-label" htmlFor="line-width-input">
+                        Border width
+                        <span className="menu-global-value">{globalLineWidth}px</span>
+                      </label>
+                      <input
+                        id="line-width-input"
+                        type="range" min={0} max={8} step={0.5}
+                        value={globalLineWidth}
+                        onChange={(e) => setGlobalLineWidth(Number(e.target.value))}
+                        className="menu-global-slider"
+                      />
+                    </div>
+                    <div className="menu-global-row">
+                      <label className="menu-global-label" htmlFor="snap-dist-input">
+                        Snap distance
+                        <span className="menu-global-value">{snapDistance}px</span>
+                      </label>
+                      <input
+                        id="snap-dist-input"
+                        type="range" min={4} max={40} step={1}
+                        value={snapDistance}
+                        onChange={(e) => setSnapDistance(Number(e.target.value))}
+                        className="menu-global-slider"
+                      />
+                    </div>
+                    <div className="menu-global-divider" />
+                    <button className="menu-map-edits-btn" onClick={syncFeatureColors}>
+                      Sync colors from sound class
+                    </button>
+                    <button className="menu-map-edits-btn" onClick={() => setShowImportDialog(true)}>
+                      Import from map…
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           {mapsConfig && (
             <MapInfoCard
               mapName={activeLayer}

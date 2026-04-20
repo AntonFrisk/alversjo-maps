@@ -46,14 +46,14 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
-  width: 40px;
-  height: 40px;
+  gap: 4px;
+  width: 34px;
+  height: 34px;
   background: rgba(10, 10, 18, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   padding: 0;
@@ -79,15 +79,16 @@ html, body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 8px 12px;
+  border-radius: 10px;
+  padding: 6px 10px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 .menu-visibility-label {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -99,12 +100,12 @@ html, body {
   appearance: none;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #555;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   font-family: inherit;
-  padding: 5px 10px;
+  padding: 4px 8px;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -125,15 +126,15 @@ html, body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(80, 160, 255, 0.2);
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 10px;
+  padding: 8px 11px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .menu-global-title {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -142,18 +143,18 @@ html, body {
 .menu-global-row {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 .menu-global-label {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 10px;
   color: #bbb;
 }
 .menu-global-value {
   font-family: monospace;
-  font-size: 11px;
+  font-size: 9px;
   color: #888;
 }
 .menu-global-slider {
@@ -171,12 +172,12 @@ html, body {
   appearance: none;
   background: rgba(80, 160, 255, 0.14);
   border: 1px solid rgba(80, 160, 255, 0.35);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #8ecfff;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   font-family: inherit;
-  padding: 7px 10px;
+  padding: 5px 8px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
@@ -199,11 +200,11 @@ html, body {
   appearance: none;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #eee;
-  font-size: 12px;
+  font-size: 10px;
   font-family: inherit;
-  padding: 6px 8px;
+  padding: 5px 6px;
 }
 .menu-map-edits-import select option {
   background: #14141e;
@@ -214,12 +215,12 @@ html, body {
   flex-shrink: 0;
   background: rgba(80, 160, 255, 0.14);
   border: 1px solid rgba(80, 160, 255, 0.35);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #8ecfff;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   font-family: inherit;
-  padding: 6px 10px;
+  padding: 5px 8px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   white-space: nowrap;
@@ -233,17 +234,41 @@ html, body {
   cursor: default;
 }
 
-.menu-pattern-row {
+.menu-bw-accordion {
   background: rgba(10, 10, 18, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 8px 12px;
+  border-radius: 10px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.menu-bw-header {
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.menu-bw-header:hover .menu-visibility-label {
+  color: #999;
+}
+.menu-bw-chevron {
+  font-size: 10px;
+  color: #555;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+.menu-bw-chevron.is-open {
+  transform: rotate(180deg);
+}
+.menu-bw-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px 10px;
 }
 
 .menu-auth-row {
@@ -261,13 +286,13 @@ html, body {
 
 .hamburger-menu {
   position: absolute;
-  top: 60px;
+  top: 56px;
   right: 16px;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 200px;
+  gap: 6px;
+  width: 240px;
 }
 
 .layer-switcher {
@@ -275,12 +300,12 @@ html, body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 10px;
+  padding: 7px 11px;
   color: #f0f0f0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
   transition: border-color 0.3s;
 }
@@ -290,7 +315,7 @@ html, body {
 }
 
 .layer-switcher label {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -303,18 +328,18 @@ html, body {
   -webkit-appearance: none;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #fff;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   font-family: inherit;
-  padding: 7px 32px 7px 12px;
+  padding: 5px 28px 5px 10px;
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  background-position: right 8px center;
 }
 
 .layer-switcher select:hover {
@@ -597,11 +622,11 @@ html, body {
 
 /* ===== Schedule panel ===== */
 .schedule-panel {
-  position: absolute;
+  position: fixed;
   left: 16px;
-  top: 16px;
+  top: 60px;
   z-index: 10;
-  max-width: min(560px, calc(100vw - 32px));
+  max-width: min(480px, calc(100vw - 32px));
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
