@@ -4636,7 +4636,7 @@
                 "camp-in-2023": "Muumimaa",
                 "point-num": 1,
                 "sound-direction-comment": "South east into forest: 100 to 180 deg",
-                "sound-direction-azimuth": 130,
+                "sound-direction-azimuth": 160,
                 "fill": "#e89422",
                 "marker-color": "#e89422",
                 "upgrade-actions": "NB! This spot is planned to get a haybale wall to the north. \n\nUpgrade with cardioid bass to make this Red.",
@@ -4660,7 +4660,7 @@
             "properties": {
                 "title": "sniff",
                 "description": "Sniff is a bit further south, making better use of the forest blocking than sibling \"little mu\". Also directed more south.",
-                "sound-direction-azimuth": 140,
+                "sound-direction-azimuth": 150,
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none",
