@@ -136,6 +136,31 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundM
           />
         </div>
 
+        <div className="edit-field edit-field-row">
+          <div>
+            <label className="edit-label">Range from (°)</label>
+            <input
+              type="number"
+              min={0}
+              max={359}
+              value={props['sound-direction-azimuth-from'] ?? ''}
+              onChange={(e) => set('sound-direction-azimuth-from', e.target.value === '' ? undefined : Number(e.target.value))}
+              placeholder="from"
+            />
+          </div>
+          <div>
+            <label className="edit-label">Range to (°)</label>
+            <input
+              type="number"
+              min={0}
+              max={359}
+              value={props['sound-direction-azimuth-to'] ?? ''}
+              onChange={(e) => set('sound-direction-azimuth-to', e.target.value === '' ? undefined : Number(e.target.value))}
+              placeholder="to"
+            />
+          </div>
+        </div>
+
         <div className="edit-field">
           <label className="edit-label">Direction comment</label>
           <input

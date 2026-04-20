@@ -20,6 +20,9 @@ const LAYER_IDS = {
   point: 'layer-point',
   pointArrow: 'layer-point-arrow',
 };
+const LAYER_IDS_AZ = { circle: 'layer-azimuth-circle', sector: 'layer-azimuth-sector', polygonArrow: 'layer-azimuth-polygon-arrow' };
+const AZIMUTH_SECTORS_SOURCE_ID = 'azimuth-sectors';
+const AZIMUTH_SECTOR_RADIUS_M =20; // base radius at ZOOM level; scaled by zoom → constant ~22 px on screen
 const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.polygonFill, LAYER_IDS.line];
 
 const CENTER = [14.923, 57.620]; // Alversjö
@@ -27,8 +30,8 @@ const ZOOM = 15.5;
 const SMART_IMPORT_FIELDS = {
   names:       ['title', 'point-num'],
   soundClass:  ['sound-class', 'sound-class-num'],
-  otherFields: ['description', 'sound-direction-azimuth', 'sound-direction-comment',
-                'camp-in-2025', 'camp-in-2024', 'camp-in-2023', 'upgrade-actions'],
+  otherFields: ['description', 'sound-direction-azimuth', 'sound-direction-azimuth-from', 'sound-direction-azimuth-to',
+                'sound-direction-comment', 'camp-in-2025', 'camp-in-2024', 'camp-in-2023', 'upgrade-actions'],
 };
 const NAME_MATCH_TOLERANCE = 0.00012;
 const NAME_MATCH_CONFIDENCE = 0.72;
@@ -53,6 +56,126 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function destPoint(lng, lat, bearingDeg, meters) {
+  const R = 6378137;
+  const br = (bearingDeg * Math.PI) / 180;
+  const lat1 = (lat * Math.PI) / 180;
+  const dR = meters / R;
+  const lat2 = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(br));
+  const lng2 = (lng * Math.PI) / 180 + Math.atan2(
+    Math.sin(br) * Math.sin(dR) * Math.cos(lat1),
+    Math.cos(dR) - Math.sin(lat1) * Math.sin(lat2),
+  );
+  return [(lng2 * 180) / Math.PI, (lat2 * 180) / Math.PI];
+}
+
+function norm360(x) {
+  return ((x % 360) + 360) % 360;
+}
+
+function sweepClockwise(fromDeg, toDeg) {
+  let s = norm360(toDeg - fromDeg);
+  if (s === 0) s = 360;
+  return s;
+}
+
+function ringCentroid(ring) {
+  const n = ring.length;
+  if (n < 1) return null;
+  const closed = n > 1 && ring[0][0] === ring[n - 1][0] && ring[0][1] === ring[n - 1][1];
+  const open = closed ? ring.slice(0, -1) : ring;
+  if (!open.length) return null;
+  let sx = 0; let sy = 0;
+  open.forEach(([x, y]) => { sx += x; sy += y; });
+  return [sx / open.length, sy / open.length];
+}
+
+function featureAzimuthOrigin(feature) {
+  const g = feature?.geometry;
+  if (g?.type === 'Point') return g.coordinates;
+  if (g?.type === 'Polygon' && g.coordinates?.[0]) return ringCentroid(g.coordinates[0]);
+  return null;
+}
+
+function featureAccentColor(props) {
+  return props['marker-color'] || props.fill || '#cc1b15';
+}
+
+function buildCirclePoly(origin, radiusM) {
+  const [lng, lat] = origin;
+  const ring = [];
+  for (let i = 0; i < 32; i += 1) ring.push(destPoint(lng, lat, (i / 32) * 360, radiusM));
+  ring.push(ring[0]);
+  return ring;
+}
+
+function buildSectorPoly(origin, radiusM, fromDeg, toDeg) {
+  const [lng, lat] = origin;
+  const sweep = sweepClockwise(fromDeg, toDeg);
+  const steps = 16;
+  const ring = [[lng, lat]];
+  for (let i = 0; i <= steps; i += 1) {
+    ring.push(destPoint(lng, lat, norm360(fromDeg + (sweep * i) / steps), radiusM));
+  }
+  ring.push([lng, lat]);
+  return ring;
+}
+
+function azimuthRadiusForZoom(zoom) {
+  return AZIMUTH_SECTOR_RADIUS_M * Math.pow(1.1, ZOOM - zoom);
+}
+
+function buildAzimuthSectorFeatures(geojson, radiusM = AZIMUTH_SECTOR_RADIUS_M) {
+  if (!geojson?.features?.length) return [];
+  const out = [];
+  for (const f of geojson.features) {
+    const p = f.properties || {};
+    const isPolygon = f.geometry?.type === 'Polygon';
+    const origin = featureAzimuthOrigin(f);
+    if (!origin) continue;
+    const fill = featureAccentColor(p);
+    const r = isPolygon ? radiusM * 0.7 : radiusM;
+
+    // Centroid point for polygon arrows — ensures arrow uses same origin as sector circle
+    if (isPolygon) {
+      const azRaw = p['sound-direction-azimuth'];
+      if (azRaw !== null && azRaw !== undefined && azRaw !== '') {
+        out.push({
+          type: 'Feature',
+          properties: { azimuth: Number(azRaw), fill, _kind: 'centroid' },
+          geometry: { type: 'Point', coordinates: origin },
+        });
+      }
+    }
+
+    const rawFrom = p['sound-direction-azimuth-from'];
+    const rawTo = p['sound-direction-azimuth-to'];
+    if (rawFrom === null || rawFrom === undefined || rawFrom === '') continue;
+    if (rawTo === null || rawTo === undefined || rawTo === '') continue;
+    const fromNum = Number(rawFrom);
+    const toNum = Number(rawTo);
+    if (!Number.isFinite(fromNum) || !Number.isFinite(toNum)) continue;
+    out.push({
+      type: 'Feature',
+      properties: { fill, _kind: 'circle' },
+      geometry: { type: 'Polygon', coordinates: [buildCirclePoly(origin, r)] },
+    });
+    out.push({
+      type: 'Feature',
+      properties: { fill, _kind: 'sector' },
+      geometry: { type: 'Polygon', coordinates: [buildSectorPoly(origin, r, fromNum, toNum)] },
+    });
+  }
+  return out;
+}
+
+function syncMainAndSectors(map, geojson) {
+  if (!map?.getSource(SOURCE_ID)) return;
+  map.getSource(SOURCE_ID).setData(geojson);
+  const radiusM = azimuthRadiusForZoom(map.getZoom());
+  map.getSource(AZIMUTH_SECTORS_SOURCE_ID)?.setData({ type: 'FeatureCollection', features: buildAzimuthSectorFeatures(geojson, radiusM) });
 }
 
 function getNumColor(num) {
@@ -186,15 +309,22 @@ function buildPopupHTML(props, soundMode = null) {
   const dirComment = props['sound-direction-comment'];
   const hasAzimuth = azimuthRaw !== null && azimuthRaw !== undefined && azimuthRaw !== '';
   const azimuth = hasAzimuth ? Number(azimuthRaw) : null;
-  if (hasAzimuth || dirComment) {
+  const rf = props['sound-direction-azimuth-from'];
+  const rt = props['sound-direction-azimuth-to'];
+  const hasRange = rf !== null && rf !== undefined && rf !== '' && rt !== null && rt !== undefined && rt !== '';
+  const fromDeg = hasRange ? Number(rf) : null;
+  const toDeg = hasRange ? Number(rt) : null;
+  const rangeOk = hasRange && Number.isFinite(fromDeg) && Number.isFinite(toDeg);
+  if (hasAzimuth || rangeOk || dirComment) {
     let row = '<div class="popup-direction">';
     row += '<span class="popup-label">Direction:</span> ';
     if (hasAzimuth) {
       row += `<span class="popup-arrow" style="--az:${azimuth}deg">↑</span> `;
       row += `<span class="popup-dir-text popup-dir-deg">${azimuth}°</span> `;
     }
-    if (dirComment) row += `<span class="popup-dir-text">${escapeHtml(dirComment)}</span>`;
+    if (rangeOk) row += `<span class="popup-dir-text popup-dir-deg">[${fromDeg}° → ${toDeg}°]</span>`;
     row += '</div>';
+    if (dirComment) row += `<div class="popup-dir-comment">${escapeHtml(dirComment)}</div>`;
     parts.push(row);
   }
 
@@ -481,6 +611,15 @@ export default function MapViewer({ layers, defaultLayer }) {
       setMapReady(true);
     });
 
+    map.on('zoomend', () => {
+      const src = map.getSource(AZIMUTH_SECTORS_SOURCE_ID);
+      if (!src) return;
+      const geojson = editedGeoJSONRef.current || originalGeoJSONRef.current;
+      if (!geojson) return;
+      const radiusM = azimuthRadiusForZoom(map.getZoom());
+      src.setData({ type: 'FeatureCollection', features: buildAzimuthSectorFeatures(geojson, radiusM) });
+    });
+
     map.on('mousemove', (e) => {
       // Node drag
       if (draggingNodeIdxRef.current != null) {
@@ -713,7 +852,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     const updated = { ...base, features: [...base.features, newFeature] };
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    map.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(map, updated);
     setDirtyFeatureIds((prev) => new Set([...prev, newFeature.id]));
 
     // Clear draw state
@@ -737,7 +876,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     const updated = { ...base, features: [...base.features, newFeature] };
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    map.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(map, updated);
     setDirtyFeatureIds((prev) => new Set([...prev, newFeature.id]));
     setPlacingPoint(false);
   };
@@ -752,7 +891,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     const updatedFeat = { ...feat, geometry: { ...feat.geometry, coordinates: coord } };
     const updated = { ...base, features: base.features.map((f) => f.id === pointId ? updatedFeat : f) };
     editedGeoJSONRef.current = updated;
-    map.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(map, updated);
     setEditedGeoJSON(updated);
     setDirtyFeatureIds((prev) => new Set([...prev, pointId]));
   };
@@ -813,7 +952,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     const updated = { ...base, features: base.features.filter((f) => f.id !== featureId) };
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(mapRef.current, updated);
     setDirtyFeatureIds((prev) => { const s = new Set(prev); s.add(featureId); return s; });
     setSelectedFeatureId(null);
   }
@@ -886,7 +1025,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     const updated = { ...base, features: base.features.map((f) => f.id === polygonId ? updatedFeat : f) };
 
     editedGeoJSONRef.current = updated;
-    map.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(map, updated);
     // Update node handles live (without going through React state for perf); hide midpoints while dragging
     map.getSource(NODE_SOURCE_ID)?.setData(nodeSourceData(updatedFeat, snapCoord, true));
     // Commit to React state (debounced via the mouseup)
@@ -907,7 +1046,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     const updated = { ...base, features: base.features.map((f) => f.id === polygonId ? updatedFeat : f) };
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    map.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(map, updated);
     map.getSource(NODE_SOURCE_ID)?.setData(nodeSourceData(updatedFeat));
     setDirtyFeatureIds((prev) => new Set([...prev, polygonId]));
   };
@@ -936,7 +1075,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     };
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(mapRef.current, updated);
     setDirtyFeatureIds((prev) => new Set([...prev, featureId, feature1.id, feature2.id]));
     setSelectedFeatureId(feature1.id);
   };
@@ -988,6 +1127,11 @@ export default function MapViewer({ layers, defaultLayer }) {
     [LAYER_IDS.point, LAYER_IDS.pointArrow].forEach((id) => {
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', pointVis);
     });
+    const azVis = showPolygons || showPoints ? 'visible' : 'none';
+    [LAYER_IDS_AZ.circle, LAYER_IDS_AZ.sector].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', azVis);
+    });
+    if (map.getLayer(LAYER_IDS_AZ.polygonArrow)) map.setLayoutProperty(LAYER_IDS_AZ.polygonArrow, 'visibility', polyVis);
   }, [showPolygons, showPoints, mapReady]);
 
   // Sync global line width to polygon outline layer
@@ -1017,7 +1161,9 @@ export default function MapViewer({ layers, defaultLayer }) {
 
     map.getSource(NODE_SOURCE_ID)?.setData({ type: 'FeatureCollection', features: [] });
     Object.values(LAYER_IDS).forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
+    Object.values(LAYER_IDS_AZ).forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
     if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
+    if (map.getSource(AZIMUTH_SECTORS_SOURCE_ID)) map.removeSource(AZIMUTH_SECTORS_SOURCE_ID);
 
     try {
       let geojson;
@@ -1036,11 +1182,25 @@ export default function MapViewer({ layers, defaultLayer }) {
       // generateId: true assigns sequential numeric IDs (0, 1, 2…) matching the features array index.
       // This is the reliable way to identify clicked features since MapLibre doesn't support UUID string IDs.
       map.addSource(SOURCE_ID, { type: 'geojson', data: geojson, generateId: true });
+      map.addSource(AZIMUTH_SECTORS_SOURCE_ID, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: buildAzimuthSectorFeatures(geojson, azimuthRadiusForZoom(map.getZoom())) },
+      });
 
       map.addLayer({
         id: LAYER_IDS.polygonFill, type: 'fill', source: SOURCE_ID,
         filter: ['==', '$type', 'Polygon'],
         paint: { 'fill-color': ['coalesce', ['get', 'fill'], '#3cc954'], 'fill-opacity': 0.35 },
+      });
+      map.addLayer({
+        id: LAYER_IDS_AZ.circle, type: 'fill', source: AZIMUTH_SECTORS_SOURCE_ID,
+        filter: ['==', ['get', '_kind'], 'circle'],
+        paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.28 },
+      });
+      map.addLayer({
+        id: LAYER_IDS_AZ.sector, type: 'fill', source: AZIMUTH_SECTORS_SOURCE_ID,
+        filter: ['==', ['get', '_kind'], 'sector'],
+        paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.72 },
       });
       map.addLayer({
         id: LAYER_IDS.polygonOutline, type: 'line', source: SOURCE_ID,
@@ -1072,11 +1232,25 @@ export default function MapViewer({ layers, defaultLayer }) {
       });
       map.addLayer({
         id: LAYER_IDS.pointArrow, type: 'symbol', source: SOURCE_ID,
-        filter: ['has', 'sound-direction-azimuth'],
+        filter: ['all', ['==', '$type', 'Point'], ['has', 'sound-direction-azimuth']],
         layout: {
           'text-field': '^',
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 6, 15.5, 14, 18, 18],
           'text-rotate': ['get', 'sound-direction-azimuth'],
+          'text-rotation-alignment': 'map',
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
+          'text-font': ['Open Sans bold'],
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+      map.addLayer({
+        id: LAYER_IDS_AZ.polygonArrow, type: 'symbol', source: AZIMUTH_SECTORS_SOURCE_ID,
+        filter: ['==', ['get', '_kind'], 'centroid'],
+        layout: {
+          'text-field': '^',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 6, 15.5, 14, 18, 18],
+          'text-rotate': ['get', 'azimuth'],
           'text-rotation-alignment': 'map',
           'text-allow-overlap': true,
           'text-ignore-placement': true,
@@ -1109,6 +1283,10 @@ export default function MapViewer({ layers, defaultLayer }) {
         map.setLayoutProperty(LAYER_IDS.point, 'visibility', 'none');
         map.setLayoutProperty(LAYER_IDS.pointArrow, 'visibility', 'none');
       }
+      const azVis = showPolygonsRef.current || showPointsRef.current ? 'visible' : 'none';
+      if (map.getLayer(LAYER_IDS_AZ.circle)) map.setLayoutProperty(LAYER_IDS_AZ.circle, 'visibility', azVis);
+      if (map.getLayer(LAYER_IDS_AZ.sector)) map.setLayoutProperty(LAYER_IDS_AZ.sector, 'visibility', azVis);
+      if (map.getLayer(LAYER_IDS_AZ.polygonArrow)) map.setLayoutProperty(LAYER_IDS_AZ.polygonArrow, 'visibility', showPolygonsRef.current ? 'visible' : 'none');
       // Re-apply pattern mode if active (layers were just recreated)
       if (patternTypeRef.current) applyPatternToMap(map, patternTypeRef.current);
     } catch (err) {
@@ -1171,7 +1349,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     }
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(mapRef.current, updated);
     setDirtyFeatureIds((prev) => new Set([...prev, ...changedIds]));
     alert(`Synced colors for ${changedIds.length} feature${changedIds.length === 1 ? '' : 's'}.`);
   }
@@ -1257,7 +1435,7 @@ export default function MapViewer({ layers, defaultLayer }) {
 
       editedGeoJSONRef.current = updated;
       setEditedGeoJSON(updated);
-      mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+      syncMainAndSectors(mapRef.current, updated);
       setDirtyFeatureIds((prev) => new Set([...prev, ...dirtyIds]));
       setShowImportDialog(false);
     } catch (err) {
@@ -1275,7 +1453,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     };
     editedGeoJSONRef.current = updated;
     setEditedGeoJSON(updated);
-    mapRef.current?.getSource(SOURCE_ID)?.setData(updated);
+    syncMainAndSectors(mapRef.current, updated);
     setDirtyFeatureIds((prev) => new Set([...prev, featureId]));
   }
 
@@ -1292,7 +1470,7 @@ export default function MapViewer({ layers, defaultLayer }) {
     sliceNodesRef.current = [];
     setShowCommitInput(false);
     clearDrawPreview(mapRef.current);
-    mapRef.current?.getSource(SOURCE_ID)?.setData(original);
+    syncMainAndSectors(mapRef.current, original);
   }
 
   function handleRevert() {
