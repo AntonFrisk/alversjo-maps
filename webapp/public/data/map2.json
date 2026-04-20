@@ -848,13 +848,13 @@
             "id": "38e497fc-4f48-40a9-b1e4-6ac169dafc28",
             "type": "Feature",
             "properties": {
-                "fill": "#3cc954",
+                "fill": "#ffcc01",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields7",
                 "sound-class-num": 5,
-                "sound-class": "E",
-                "marker-color": "#3cc954",
+                "sound-class": "D",
+                "marker-color": "#ffcc01",
                 "sound-direction-azimuth": 110
             },
             "geometry": {
@@ -3608,10 +3608,11 @@
             "id": "9346a3cb-0ce3-473a-8461-93f062eb179a",
             "properties": {
                 "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#e75480",
-                "fill": "#e75480",
-                "sound-direction-azimuth": 230
+                "sound-class": "D",
+                "marker-color": "#ffcc01",
+                "fill": "#ffcc01",
+                "sound-direction-azimuth": 230,
+                "description": "Yellow / Pink -- neighborhood decision"
             },
             "geometry": {
                 "type": "Polygon",
@@ -5062,7 +5063,7 @@
             "type": "Feature",
             "properties": {
                 "title": "scott eastwood",
-                "description": "Lowlands next to the forest. Playing straight into a hill. Grass gets wet further from the trees. May be swampy if it rains a lot (2024 was OK).",
+                "description": "Lowlands next to the forest. Playing straight into a hill. Grass gets wet further from the trees. May be swampy if it rains a lot (2024 was OK).\n\nThere is approx 30 meters from the treeline that is dry enough on an average summer day. Large enough for a smaller dance floor (maybe one that reaches a bit into the woods? if allowed?)",
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none",
@@ -5070,9 +5071,10 @@
                 "point-num": 16,
                 "sound-direction-azimuth": 120,
                 "sound-direction-comment": "E-SE",
-                "upgrade-actions": "dir subs",
-                "marker-color": "#888",
-                "fill": "#888"
+                "upgrade-actions": "directional subs",
+                "marker-color": "#e89422",
+                "fill": "#e89422",
+                "sound-class": "B"
             },
             "geometry": {
                 "coordinates": [
@@ -5094,9 +5096,10 @@
                 "title": "clint eastwood",
                 "sound-direction-azimuth": 130,
                 "sound-direction-comment": "SE/E",
-                "marker-color": "#888",
-                "fill": "#888",
-                "upgrade-actions": "Sound block wall to the north."
+                "marker-color": "#e89422",
+                "fill": "#e89422",
+                "upgrade-actions": "Sound block wall to the north.",
+                "sound-class": "B"
             },
             "geometry": {
                 "coordinates": [
