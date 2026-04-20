@@ -106,8 +106,8 @@
                 "sound-class-num": 0,
                 "sound-direction-azimuth": 280,
                 "marker-color": "#3cc954",
-                "sound-direction-azimuth-from": 250,
-                "sound-direction-azimuth-to": 310
+                "sound-direction-azimuth-from": 182,
+                "sound-direction-azimuth-to": 320
             },
             "geometry": {
                 "type": "Polygon",
@@ -572,7 +572,7 @@
                 "marker-color": "#e89422",
                 "sound-direction-azimuth": 100,
                 "sound-direction-azimuth-from": 70,
-                "sound-direction-azimuth-to": 130
+                "sound-direction-azimuth-to": 160
             },
             "geometry": {
                 "coordinates": [
@@ -615,7 +615,7 @@
                 "marker-color": "#e89422",
                 "sound-direction-azimuth": 100,
                 "sound-direction-azimuth-from": 70,
-                "sound-direction-azimuth-to": 130
+                "sound-direction-azimuth-to": 170
             },
             "geometry": {
                 "coordinates": [
@@ -873,9 +873,8 @@
                 "sound-class-num": 5,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "sound-direction-azimuth": 110,
-                "sound-direction-azimuth-from": 80,
-                "sound-direction-azimuth-to": 140
+                "sound-direction-azimuth-to": 140,
+                "sound-direction-azimuth": 110
             },
             "geometry": {
                 "coordinates": [
@@ -1496,7 +1495,7 @@
                 "title": "slope-times p2 p1",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
-                "sound-direction-azimuth-to": 285
+                "sound-direction-azimuth-to": 265
             },
             "geometry": {
                 "coordinates": [
@@ -1549,7 +1548,7 @@
                 "title": "slope-times p2 p2",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
-                "sound-direction-azimuth-to": 285
+                "sound-direction-azimuth-to": 265
             },
             "geometry": {
                 "coordinates": [
@@ -2377,7 +2376,7 @@
                 "sound-direction-azimuth": 160,
                 "title": "valley NE",
                 "sound-direction-azimuth-from": 130,
-                "sound-direction-azimuth-to": 190
+                "sound-direction-azimuth-to": 220
             },
             "geometry": {
                 "coordinates": [
@@ -3430,7 +3429,7 @@
                 "sound-direction-azimuth": 255,
                 "title": "bison fields 3",
                 "sound-direction-comment": "West or East - both work. NOT North!",
-                "sound-direction-azimuth-from": 225,
+                "sound-direction-azimuth-from": 180,
                 "sound-direction-azimuth-to": 285
             },
             "geometry": {
@@ -3471,7 +3470,7 @@
                 "fill": "#e89422",
                 "sound-direction-azimuth": 255,
                 "title": "bison fields 2",
-                "sound-direction-azimuth-from": 225,
+                "sound-direction-azimuth-from": 180,
                 "sound-direction-azimuth-to": 285
             },
             "geometry": {
@@ -3561,7 +3560,7 @@
                 "fill": "#e89422",
                 "sound-direction-azimuth": 240,
                 "title": "bison fields 1",
-                "sound-direction-azimuth-from": 210,
+                "sound-direction-azimuth-from": 170,
                 "sound-direction-azimuth-to": 270
             },
             "geometry": {
@@ -3663,7 +3662,7 @@
                 "fill": "#ffcc01",
                 "sound-direction-azimuth": 230,
                 "description": "Yellow / Pink -- neighborhood decision",
-                "sound-direction-azimuth-from": 200,
+                "sound-direction-azimuth-from": 130,
                 "sound-direction-azimuth-to": 260
             },
             "geometry": {
@@ -3714,9 +3713,9 @@
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
                 "fill": "#ffcc01",
-                "sound-direction-azimuth": 240,
-                "sound-direction-azimuth-from": 210,
-                "sound-direction-azimuth-to": 270
+                "sound-direction-azimuth": 200,
+                "sound-direction-azimuth-to": 250,
+                "sound-direction-azimuth-from": 90
             },
             "geometry": {
                 "type": "Polygon",
@@ -3849,7 +3848,7 @@
                 "marker-color": "#ffcc01",
                 "fill": "#ffcc01",
                 "sound-direction-azimuth": 240,
-                "sound-direction-azimuth-from": 210,
+                "sound-direction-azimuth-from": 170,
                 "sound-direction-azimuth-to": 270
             },
             "geometry": {
@@ -4106,8 +4105,12 @@
             "id": "d253211b-b328-47ae-914c-af37d28a8f61",
             "properties": {
                 "sound-direction-azimuth": 310,
-                "sound-direction-azimuth-from": 280,
-                "sound-direction-azimuth-to": 340
+                "sound-direction-azimuth-to": 338,
+                "sound-class": "E",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954",
+                "camp-in-2025": "none",
+                "description": "On the hilltop. bad for sound making"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4604,7 +4607,7 @@
                 "fill": "#3cc954",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
-                "sound-direction-azimuth-to": 285
+                "sound-direction-azimuth-to": 256
             },
             "geometry": {
                 "type": "Polygon",
@@ -4692,8 +4695,8 @@
                 "description": "Top floor of barn. Wooden walls don't block sound much. Elevated position.",
                 "upgrade-actions": "Sound proofing on walls, especially N and NE",
                 "marker-color": "#e75480",
-                "sound-direction-azimuth-from": 170,
-                "sound-direction-azimuth-to": 230
+                "sound-direction-azimuth-to": 230,
+                "sound-direction-azimuth-from": 150
             },
             "id": "3d0e26d6-abda-44b7-9764-b194ad0dc0ff"
         },
@@ -4726,8 +4729,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    14.925969528220406,
-                    57.62151978080482
+                    14.925917965383633,
+                    57.6215084870401
                 ]
             },
             "properties": {
@@ -4765,7 +4768,7 @@
                 "sound-class": "B",
                 "description": "North part of Field in the west. Access  through a forest road. Muumima's blue house placed here. Play directly towards forest. No sound blocking to the north unfortunately",
                 "sound-direction-azimuth-from": 100,
-                "sound-direction-azimuth-to": 160
+                "sound-direction-azimuth-to": 230
             },
             "geometry": {
                 "coordinates": [
@@ -4793,7 +4796,7 @@
                 "marker-color": "#e89422",
                 "fill": "#e89422",
                 "sound-direction-azimuth-from": 110,
-                "sound-direction-azimuth-to": 170
+                "sound-direction-azimuth-to": 230
             },
             "geometry": {
                 "coordinates": [
@@ -4813,7 +4816,7 @@
                 "sound-class-num": 7,
                 "fill": "#cc1b15",
                 "sound-direction-comment": "into forest hill. not east (lake and flat grounds)",
-                "sound-direction-azimuth": 120,
+                "sound-direction-azimuth": 150,
                 "description": " Field in the west. Between the bridge and Little Mu you find a spot with panorama view. If speakers are pointed towards the forest, the sound is captivated by the terrain in the forest.",
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
@@ -4821,7 +4824,7 @@
                 "sound-class": "A",
                 "upgrade-actions": "directional subs or sound block north",
                 "sound-direction-azimuth-from": 90,
-                "sound-direction-azimuth-to": 150
+                "sound-direction-azimuth-to": 190
             },
             "geometry": {
                 "coordinates": [
@@ -4876,7 +4879,7 @@
                 "camp-in-2025": "none",
                 "sound-direction-comment": "west",
                 "upgrade-actions": "dir subs",
-                "sound-direction-azimuth-from": 230,
+                "sound-direction-azimuth-from": 200,
                 "sound-direction-azimuth-to": 290
             },
             "geometry": {
@@ -4923,7 +4926,7 @@
                 "sound-class-num": 7,
                 "sound-class": "A",
                 "point-num": 5,
-                "sound-direction-azimuth": 270,
+                "sound-direction-azimuth": 260,
                 "sound-direction-comment": "west into forest",
                 "marker-color": "#cc1b15",
                 "description": "On the far lower west side, the slope inside the forest to the west will absorb sound. Grass is moist but not wet usually.",
@@ -4932,8 +4935,8 @@
                 "camp-in-2025": "none",
                 "fill": "#cc1b15",
                 "upgrade-actions": "dir subs + sound block north",
-                "sound-direction-azimuth-from": 240,
-                "sound-direction-azimuth-to": 300
+                "sound-direction-azimuth-from": 200,
+                "sound-direction-azimuth-to": 280
             },
             "geometry": {
                 "coordinates": [
@@ -4959,7 +4962,7 @@
                 "sound-direction-azimuth": 345,
                 "marker-color": "#cc1b15",
                 "fill": "#cc1b15",
-                "sound-direction-azimuth-from": 315,
+                "sound-direction-azimuth-from": 290,
                 "sound-direction-azimuth-to": 15
             },
             "geometry": {
@@ -5039,8 +5042,8 @@
                 "marker-color": "#e89422",
                 "fill": "#e89422",
                 "upgrade-actions": "sound block to NE",
-                "sound-direction-azimuth-from": 190,
-                "sound-direction-azimuth-to": 250
+                "sound-direction-azimuth-from": 150,
+                "sound-direction-azimuth-to": 350
             },
             "geometry": {
                 "coordinates": [
@@ -5067,8 +5070,8 @@
                 "sound-direction-azimuth": 315,
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth-from": 285,
-                "sound-direction-azimuth-to": 345
+                "sound-direction-azimuth-from": 250,
+                "sound-direction-azimuth-to": 325
             },
             "geometry": {
                 "coordinates": [
@@ -5145,13 +5148,13 @@
                 "sound-direction-comment": "NW",
                 "fill": "#cc1b15",
                 "marker-color": "#cc1b15",
-                "sound-direction-azimuth-from": 150,
-                "sound-direction-azimuth-to": 210
+                "sound-direction-azimuth-to": 250,
+                "sound-direction-azimuth-from": 110
             },
             "geometry": {
                 "coordinates": [
-                    14.934351330547372,
-                    57.61880216833774
+                    14.93430151984947,
+                    57.61880350722484
                 ],
                 "type": "Point"
             }
@@ -5200,8 +5203,8 @@
                 "fill": "#e89422",
                 "upgrade-actions": "Sound block wall to the north.",
                 "sound-class": "B",
-                "sound-direction-azimuth-from": 100,
-                "sound-direction-azimuth-to": 160
+                "sound-direction-azimuth-to": 170,
+                "sound-direction-azimuth-from": 100
             },
             "geometry": {
                 "coordinates": [
