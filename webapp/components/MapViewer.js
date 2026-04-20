@@ -1652,7 +1652,7 @@ export default function MapViewer({ layers, defaultLayer }) {
             </button>
             <button
               className={`visibility-toggle-btn ${showSchedule ? 'is-on' : ''}`}
-              onClick={() => { setShowSchedule((v) => !v); setMenuOpen(false); }}
+              onClick={() => setShowSchedule((v) => !v)}
               title="Show sound schedule"
             >
               Schedule
