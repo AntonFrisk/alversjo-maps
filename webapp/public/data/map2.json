@@ -815,8 +815,7 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "sound-direction-azimuth": 240,
-                "sound-direction-azimuth-from": 210,
-                "sound-direction-azimuth-to": 270
+                "sound-direction-azimuth-from": 210
             },
             "geometry": {
                 "coordinates": [
@@ -2616,7 +2615,6 @@
                 "marker-color": "#cc1b15",
                 "fill": "#cc1b15",
                 "sound-direction-azimuth": 270,
-                "sound-direction-azimuth-from": 240,
                 "sound-direction-azimuth-to": 300
             },
             "geometry": {
