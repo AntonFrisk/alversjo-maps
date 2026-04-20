@@ -399,7 +399,9 @@
                 "title": "forest-cave p1",
                 "sound-direction-azimuth": 110,
                 "sound-direction-comment": "East to avoid sound on the sunny hills",
-                "upgrade-actions": "New spots may be found in this area for updrade"
+                "upgrade-actions": "New spots may be found in this area for updrade",
+                "sound-direction-azimuth-from": 80,
+                "sound-direction-azimuth-to": 140
             },
             "geometry": {
                 "coordinates": [
@@ -469,7 +471,9 @@
                 "marker-color": "#e89422",
                 "title": "forest-cave p2",
                 "sound-direction-comment": "Higher ground -- sendin sound into the hill is best",
-                "sound-direction-azimuth": 270
+                "sound-direction-azimuth": 270,
+                "sound-direction-azimuth-from": 240,
+                "sound-direction-azimuth-to": 300
             },
             "geometry": {
                 "coordinates": [
@@ -523,7 +527,9 @@
                 "marker-color": "#e89422",
                 "title": "forest-cave p3",
                 "sound-direction-comment": "Higher ground -- sendin sound into the hill is best",
-                "sound-direction-azimuth": 300
+                "sound-direction-azimuth": 300,
+                "sound-direction-azimuth-from": 270,
+                "sound-direction-azimuth-to": 330
             },
             "geometry": {
                 "coordinates": [
@@ -867,7 +873,9 @@
                 "sound-class-num": 5,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "sound-direction-azimuth": 110
+                "sound-direction-azimuth": 110,
+                "sound-direction-azimuth-from": 80,
+                "sound-direction-azimuth-to": 140
             },
             "geometry": {
                 "coordinates": [
@@ -2608,7 +2616,9 @@
                 "sound-class": "A",
                 "marker-color": "#cc1b15",
                 "fill": "#cc1b15",
-                "sound-direction-azimuth": 270
+                "sound-direction-azimuth": 270,
+                "sound-direction-azimuth-from": 240,
+                "sound-direction-azimuth-to": 300
             },
             "geometry": {
                 "coordinates": [
@@ -2867,7 +2877,9 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth": 250
+                "sound-direction-azimuth": 250,
+                "sound-direction-azimuth-from": 220,
+                "sound-direction-azimuth-to": 280
             },
             "geometry": {
                 "coordinates": [
@@ -3417,7 +3429,9 @@
                 "fill": "#e89422",
                 "sound-direction-azimuth": 255,
                 "title": "bison fields 3",
-                "sound-direction-comment": "West or East - both work. NOT North!"
+                "sound-direction-comment": "West or East - both work. NOT North!",
+                "sound-direction-azimuth-from": 225,
+                "sound-direction-azimuth-to": 285
             },
             "geometry": {
                 "type": "Polygon",
@@ -3456,7 +3470,9 @@
                 "marker-color": "#e89422",
                 "fill": "#e89422",
                 "sound-direction-azimuth": 255,
-                "title": "bison fields 2"
+                "title": "bison fields 2",
+                "sound-direction-azimuth-from": 225,
+                "sound-direction-azimuth-to": 285
             },
             "geometry": {
                 "type": "Polygon",
@@ -3544,7 +3560,9 @@
                 "marker-color": "#e89422",
                 "fill": "#e89422",
                 "sound-direction-azimuth": 240,
-                "title": "bison fields 1"
+                "title": "bison fields 1",
+                "sound-direction-azimuth-from": 210,
+                "sound-direction-azimuth-to": 270
             },
             "geometry": {
                 "type": "Polygon",
@@ -3644,7 +3662,9 @@
                 "marker-color": "#ffcc01",
                 "fill": "#ffcc01",
                 "sound-direction-azimuth": 230,
-                "description": "Yellow / Pink -- neighborhood decision"
+                "description": "Yellow / Pink -- neighborhood decision",
+                "sound-direction-azimuth-from": 200,
+                "sound-direction-azimuth-to": 260
             },
             "geometry": {
                 "type": "Polygon",
@@ -3694,7 +3714,9 @@
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
                 "fill": "#ffcc01",
-                "sound-direction-azimuth": 240
+                "sound-direction-azimuth": 240,
+                "sound-direction-azimuth-from": 210,
+                "sound-direction-azimuth-to": 270
             },
             "geometry": {
                 "type": "Polygon",
@@ -4580,7 +4602,9 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "sound-direction-azimuth": 255
+                "sound-direction-azimuth": 255,
+                "sound-direction-azimuth-from": 225,
+                "sound-direction-azimuth-to": 285
             },
             "geometry": {
                 "type": "Polygon",
@@ -4739,7 +4763,9 @@
                 "upgrade-actions": "NB! This spot is planned to get a haybale wall to the north. \n\nUpgrade with cardioid bass to make this Red.",
                 "sound-class-num": 4,
                 "sound-class": "B",
-                "description": "North part of Field in the west. Access  through a forest road. Muumima's blue house placed here. Play directly towards forest. No sound blocking to the north unfortunately"
+                "description": "North part of Field in the west. Access  through a forest road. Muumima's blue house placed here. Play directly towards forest. No sound blocking to the north unfortunately",
+                "sound-direction-azimuth-from": 100,
+                "sound-direction-azimuth-to": 160
             },
             "geometry": {
                 "coordinates": [
@@ -5012,7 +5038,9 @@
                 "camp-in-2025": "none",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "upgrade-actions": "sound block to NE"
+                "upgrade-actions": "sound block to NE",
+                "sound-direction-azimuth-from": 190,
+                "sound-direction-azimuth-to": 250
             },
             "geometry": {
                 "coordinates": [
@@ -5064,7 +5092,9 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth": 120
+                "sound-direction-azimuth": 120,
+                "sound-direction-azimuth-from": 90,
+                "sound-direction-azimuth-to": 150
             },
             "geometry": {
                 "coordinates": [
@@ -5142,7 +5172,9 @@
                 "upgrade-actions": "directional subs",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-class": "B"
+                "sound-class": "B",
+                "sound-direction-azimuth-from": 90,
+                "sound-direction-azimuth-to": 150
             },
             "geometry": {
                 "coordinates": [
@@ -5167,7 +5199,9 @@
                 "marker-color": "#e89422",
                 "fill": "#e89422",
                 "upgrade-actions": "Sound block wall to the north.",
-                "sound-class": "B"
+                "sound-class": "B",
+                "sound-direction-azimuth-from": 100,
+                "sound-direction-azimuth-to": 160
             },
             "geometry": {
                 "coordinates": [
@@ -5191,7 +5225,9 @@
                 "point-num": 14,
                 "marker-color": "#e75480",
                 "fill": "#e75480",
-                "upgrade-actions": "Upgrade using haybales + cardioid to extend night hours."
+                "upgrade-actions": "Upgrade using haybales + cardioid to extend night hours.",
+                "sound-direction-azimuth-from": 115,
+                "sound-direction-azimuth-to": 175
             },
             "geometry": {
                 "coordinates": [
