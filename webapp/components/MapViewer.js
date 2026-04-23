@@ -4,11 +4,13 @@ import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSession, signIn } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
 import { deriveFromNum, SOUND_NUM_COLORS, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/sound-class';
 import AuthButton from '@/components/AuthButton';
 import MapInfoCard from '@/components/MapInfoCard';
 import EditPanel from '@/components/EditPanel';
 import ImportDialog from '@/components/ImportDialog';
+import InteractiveSchedule from '@/components/InteractiveSchedule';
 
 const SOURCE_ID = 'geojson-data';
 const DRAW_SOURCE_ID = 'draw-preview';
@@ -374,11 +376,13 @@ function buildPopupHTML(props, soundMode = null) {
   return parts.join('');
 }
 
-export default function MapViewer({ layers, defaultLayer }) {
+export default function MapViewer({ layers, defaultLayer, openInteractiveSchedule = false }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
   const originalGeoJSONRef = useRef(null);
   const editedGeoJSONRef = useRef(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [mapReady, setMapReady] = useState(false);
   const [activeLayer, setActiveLayer] = useState(defaultLayer || layers[0]);
@@ -442,6 +446,15 @@ export default function MapViewer({ layers, defaultLayer }) {
   // Schedule panel
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduleLightbox, setScheduleLightbox] = useState(false);
+  const [showInteractiveSchedule, setShowInteractiveSchedule] = useState(false);
+
+  // Direct-link support: /:mapId/schedule opens interactive schedule by default
+  useEffect(() => {
+    if (openInteractiveSchedule) setShowInteractiveSchedule(true);
+  }, [openInteractiveSchedule]);
+  useEffect(() => {
+    if (pathname?.endsWith('/schedule')) setShowInteractiveSchedule(true);
+  }, [pathname]);
 
   // Help / tutorial
   const [showHelp, setShowHelp] = useState(false);
@@ -1670,6 +1683,9 @@ export default function MapViewer({ layers, defaultLayer }) {
             onClick={() => setScheduleLightbox(true)}
             title="Click to enlarge"
           />
+          <button type="button" className="schedule-open-interactive" onClick={() => setShowInteractiveSchedule(true)}>
+            Open interactive schedule
+          </button>
         </div>
       )}
 
@@ -1679,6 +1695,14 @@ export default function MapViewer({ layers, defaultLayer }) {
           <img src="/schedule/sound-schedule-v2.png" alt="Sound schedule" className="schedule-lightbox-img" />
         </div>
       )}
+
+      <InteractiveSchedule
+        open={showInteractiveSchedule}
+        onClose={() => {
+          setShowInteractiveSchedule(false);
+          if (pathname?.endsWith('/schedule')) router.replace(pathname.replace(/\/schedule$/, '') || '/');
+        }}
+      />
 
       {/* Archived map notice */}
       {showArchived && (
