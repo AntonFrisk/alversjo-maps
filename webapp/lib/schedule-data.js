@@ -148,7 +148,7 @@ export function getScheduleRow(zoneId, dayMode, tier) {
 
 export const SOUND_LEVEL_REF = [
   { dB: 50, text: 'Quiet café' },
-  { dB: 80, text: 'Living room' },
+  { dB: 80, text: 'Street traffic' },
   { dB: 92, text: 'Lively bar' },
   { dB: 98, text: 'Bar dance floor' },
   { dB: 104, text: 'Club dance floor' },
