@@ -32,6 +32,25 @@ const AZIMUTH_SECTOR_RADIUS_M =20; // base radius at ZOOM level; scaled by zoom 
 const INTERACTIVE_LAYERS = [LAYER_IDS.pointArrow, LAYER_IDS.point, LAYER_IDS.polygonFill, LAYER_IDS.line];
 
 const CENTER = [14.923, 57.620]; // Alversjö
+const REGION_SOURCE_ID = 'region-labels';
+const REGION_LAYER_ID = 'layer-region-labels';
+const REGION_LABELS = [
+  { name: 'PRETTY\nPARKING',     coordinates: [14.9228, 57.6282] },
+  { name: 'ARC-TIC\nCHILL',      coordinates: [14.9268, 57.6273] },
+  { name: 'COTTAGE',             coordinates: [14.9289, 57.6275] },
+  { name: 'FAR\nFLUNG\nFIELD',   coordinates: [14.9356, 57.6280] },
+  { name: 'MUUMIN\nVALLEY',      coordinates: [14.9180, 57.6240] },
+  { name: 'HIGH-\nLANDS',        coordinates: [14.9271, 57.6258] },
+  { name: 'LOW-\nLANDS',         coordinates: [14.9299, 57.6252] },
+  { name: 'THE\nVILLA',          coordinates: [14.9248, 57.6239] },
+  { name: 'MISSING PIECE\n2026', coordinates: [14.9275, 57.6235] },
+  { name: 'EASTERN\nVOID',       coordinates: [14.9350, 57.6228] },
+  { name: 'SWAMP',               coordinates: [14.9320, 57.6228] },
+  { name: 'SUNNY\nHILL',         coordinates: [14.9242, 57.6210] },
+  { name: 'DOWN-\nTOWN',         coordinates: [14.9265, 57.6213] },
+  { name: 'BISON',               coordinates: [14.9279, 57.6208] },
+  { name: 'FOREST\nCAVE',        coordinates: [14.9260, 57.6201] },
+];
 const ZOOM = 15.5;
 const SMART_IMPORT_FIELDS = {
   names:       ['title', 'point-num'],
@@ -436,6 +455,17 @@ export default function MapViewer({ layers, defaultLayer }) {
     setShowWelcome(false);
     localStorage.setItem('soundmaps-welcomed', '1');
   };
+
+  // Archived notice (re-shown each time archived map is opened)
+  const [showArchived, setShowArchived] = useState(false);
+  useEffect(() => {
+    if (['map4', 'map5', 'map6'].includes(activeLayer)) setShowArchived(true);
+    else setShowArchived(false);
+  }, [activeLayer]);
+
+  // Region name labels
+  const [showRegionNames, setShowRegionNames] = useState(true);
+  const showRegionNamesRef = useRef(true);
 
   // Feature type visibility
   const [showPolygons, setShowPolygons] = useState(true);
@@ -1158,6 +1188,14 @@ export default function MapViewer({ layers, defaultLayer }) {
     });
   }, [showPolygonSectors, mapReady]);
 
+  // Sync region label visibility
+  useEffect(() => {
+    showRegionNamesRef.current = showRegionNames;
+    const map = mapRef.current;
+    if (!map?.getLayer(REGION_LAYER_ID)) return;
+    map.setLayoutProperty(REGION_LAYER_ID, 'visibility', showRegionNames ? 'visible' : 'none');
+  }, [showRegionNames, mapReady]);
+
   // Sync global line width to polygon outline layer
   useEffect(() => {
     globalLineWidthRef.current = globalLineWidth;
@@ -1292,6 +1330,39 @@ export default function MapViewer({ layers, defaultLayer }) {
         },
         paint: { 'text-color': '#ffffff' },
       });
+      // Region label layer
+      if (map.getLayer(REGION_LAYER_ID)) map.removeLayer(REGION_LAYER_ID);
+      if (!map.getSource(REGION_SOURCE_ID)) {
+        map.addSource(REGION_SOURCE_ID, {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: REGION_LABELS.map(({ name, coordinates }) => ({
+              type: 'Feature', properties: { name }, geometry: { type: 'Point', coordinates },
+            })),
+          },
+        });
+      }
+      map.addLayer({
+        id: REGION_LAYER_ID, type: 'symbol', source: REGION_SOURCE_ID,
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Open Sans bold'],
+          'text-size': 13,
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
+          'text-anchor': 'center',
+          'text-letter-spacing': 0.08,
+          'text-line-height': 1.3,
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': 'rgba(0,0,0,0.75)',
+          'text-halo-width': 1.5,
+        },
+      });
+      if (!showRegionNamesRef.current) map.setLayoutProperty(REGION_LAYER_ID, 'visibility', 'none');
+
       // Node-edit layers — must be added last so they render above polygon fill/outline
       if (map.getLayer('node-handles')) map.removeLayer('node-handles');
       if (map.getLayer('node-midpoints')) map.removeLayer('node-midpoints');
@@ -1609,16 +1680,41 @@ export default function MapViewer({ layers, defaultLayer }) {
         </div>
       )}
 
+      {/* Archived map notice */}
+      {showArchived && (
+        <div
+          className="archived-overlay"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowArchived(false); }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Archived map notice"
+        >
+          <div className="archived-card" onClick={(e) => e.stopPropagation()}>
+            <div className="archived-header">
+              <div className="archived-title">Archived Map</div>
+              <button className="archived-close" onClick={() => setShowArchived(false)} aria-label="Close">✕</button>
+            </div>
+            <div className="archived-body">This map is no longer relevant and has been archived.</div>
+          </div>
+        </div>
+      )}
+
       {/* First-visit welcome tooltip */}
       {showWelcome && (
         <div className="welcome-tooltip" onClick={dismissWelcome} role="button" aria-label="Dismiss welcome">
           <div className="welcome-arrow-right" />
           <div className="welcome-title">Welcome to Sound maps</div>
-          <div className="welcome-hint">Have a look at these three map proposals — switch using the dropdown →</div>
+          <div className="welcome-hint">Start with these maps — switch using the dropdown →</div>
           <ul className="welcome-proposals">
-            <li><span className="welcome-proposal-num">#1</span> Quiet North &amp; Dirty South</li>
-            <li><span className="welcome-proposal-num">#2</span> Day Land &amp; Night Land</li>
-            <li><span className="welcome-proposal-num">#3</span> Double Night Lands</li>
+            {['map1', 'map2', 'map3'].map((id, idx) => (
+              <li key={id}>
+                <span className="welcome-proposal-num">#{idx + 1}</span>
+                <span className="welcome-proposal-text">
+                  <span className="welcome-proposal-title">{mapsConfig?.[id]?.name || id}</span>
+                  <span className="welcome-proposal-desc">{mapsConfig?.[id]?.description || ''}</span>
+                </span>
+              </li>
+            ))}
           </ul>
           <div className="welcome-dismiss">Tap anywhere to dismiss</div>
         </div>
@@ -1656,6 +1752,13 @@ export default function MapViewer({ layers, defaultLayer }) {
               title="Show sound schedule"
             >
               Schedule
+            </button>
+            <button
+              className={`visibility-toggle-btn ${showRegionNames ? 'is-on' : ''}`}
+              onClick={() => setShowRegionNames((v) => !v)}
+              title={showRegionNames ? 'Hide region names' : 'Show region names'}
+            >
+              T Region names
             </button>
           </div>
 
