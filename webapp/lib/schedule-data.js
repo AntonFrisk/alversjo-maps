@@ -95,7 +95,7 @@ function pink(day, tier) {
   if (tier <= 0) return mergeSegs([[0, absMin(12), 92], [absMin(12), absMin(2), 104], [absMin(2), END, 80]]);
   if (tier === 1) return mergeSegs([[0, absMin(12), 92], [absMin(12), absMin(3), 104], [absMin(3), END, 80]]);
   if (tier === 2) return mergeSegs([[0, absMin(12), 92], [absMin(12), absMin(4), 104], [absMin(4), END, 80]]);
-  return mergeSegs([[0, absMin(12), 92], [absMin(12), END, 107]]);
+  return mergeSegs([[0, absMin(12), 92], [absMin(12), absMin(4, 30), 107], [absMin(4, 30), END, 80]]);
 }
 
 function orange(day, tier) {

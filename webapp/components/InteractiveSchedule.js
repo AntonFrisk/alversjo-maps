@@ -114,7 +114,7 @@ export default function InteractiveSchedule({ open, onClose }) {
                     {cells.map((c, i) => (
                       <div
                         key={i}
-                        className="schedule-cell"
+                        className={`schedule-cell${c.hours <= 1.5 ? ' schedule-cell--compact' : ''}`}
                         style={{
                           flex: c.hours,
                           background: `rgba(${rgb},${dbToAlpha(c.dB)})`,

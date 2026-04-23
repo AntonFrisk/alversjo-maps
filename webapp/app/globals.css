@@ -994,6 +994,13 @@ html, body {
   color: #0f172a;
   word-break: break-word;
 }
+.schedule-cell--compact .schedule-cell-db {
+  font-size: clamp(8px, 1.1vw, 11px);
+  font-weight: 800;
+}
+.schedule-cell--compact .schedule-cell-time {
+  font-size: 9px;
+}
 .schedule-cell-time {
   font-size: 10px;
   color: #475569;
