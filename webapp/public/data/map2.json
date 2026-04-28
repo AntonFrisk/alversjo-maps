@@ -56,6 +56,10 @@
                             57.620853983102876
                         ],
                         [
+                            14.923738375671377,
+                            57.620687916567306
+                        ],
+                        [
                             14.923764,
                             57.620422
                         ],
@@ -4198,9 +4202,9 @@
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
                 "fill": "#ffcc01",
-                "sound-direction-azimuth": 350,
-                "sound-direction-azimuth-from": 320,
-                "sound-direction-azimuth-to": 20
+                "sound-direction-azimuth": 335,
+                "sound-direction-azimuth-to": 20,
+                "sound-direction-azimuth-from": 260
             },
             "geometry": {
                 "type": "Polygon",
@@ -5367,6 +5371,30 @@
                             57.62356353897269
                         ]
                     ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "62ce95f8-21e4-4ca0-9845-a3bba396f2e7",
+            "properties": {
+                "sound-class": "C",
+                "marker-color": "#e75480",
+                "fill": "#e75480",
+                "sound-direction-azimuth": 330,
+                "sound-direction-azimuth-from": 230,
+                "sound-direction-azimuth-to": 10,
+                "title": "shallow cleave",
+                "description": "Shallow cleavage. some sound block from hills to east and west, but not as much blocking north (only trees)",
+                "camp-in-2025": "n/a",
+                "upgrade-actions": "dir subs mainly",
+                "sound-direction-comment": "N: into the forest. W: into the hill. "
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.92322673823756,
+                    57.62094043328224
                 ]
             }
         }
