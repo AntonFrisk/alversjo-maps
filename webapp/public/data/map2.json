@@ -4934,7 +4934,8 @@
                 "fill": "#e89422",
                 "upgrade-actions": "sound block to NE",
                 "sound-direction-azimuth-from": 150,
-                "sound-direction-azimuth-to": 350
+                "sound-direction-azimuth-to": 350,
+                "point-num": 10
             },
             "geometry": {
                 "coordinates": [
@@ -5150,8 +5151,8 @@
             },
             "geometry": {
                 "coordinates": [
-                    14.926764990437619,
-                    57.62204325852613
+                    14.92679121139534,
+                    57.62202164862208
                 ],
                 "type": "Point"
             }
@@ -5169,7 +5170,7 @@
                 "upgrade-actions": "dir subs. Sound block north. ",
                 "sound-direction-comment": "S or SW",
                 "sound-direction-azimuth": 180,
-                "point-num": 26,
+                "point-num": 27,
                 "marker-color": "#e75480",
                 "fill": "#e75480",
                 "sound-direction-azimuth-from": 150,
@@ -5384,11 +5385,12 @@
                 "sound-direction-azimuth": 330,
                 "sound-direction-azimuth-from": 230,
                 "sound-direction-azimuth-to": 10,
-                "title": "shallow cleave",
+                "title": "shallow valley",
                 "description": "Shallow cleavage. some sound block from hills to east and west, but not as much blocking north (only trees)",
                 "camp-in-2025": "n/a",
                 "upgrade-actions": "dir subs mainly",
-                "sound-direction-comment": "N: into the forest. W: into the hill. "
+                "sound-direction-comment": "N: into the forest. W: into the hill. ",
+                "point-num": 28
             },
             "geometry": {
                 "type": "Point",
