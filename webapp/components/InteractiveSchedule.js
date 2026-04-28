@@ -60,20 +60,20 @@ export default function InteractiveSchedule({ open, onClose }) {
                 Select a tier to see upgrade rewards (generic table — some locations may differ).
               </p>
             </div>
-            <div className="interactive-schedule-header-actions">
+            <button type="button" className="interactive-schedule-close" onClick={onClose} aria-label="Close">✕</button>
+          </div>
+
+          <div className="schedule-tier-bar">
+            <div className="schedule-tier-controls">
+              <div className="schedule-tier-selector" role="group" aria-label="Tier">
+                {TIERS.map((t) => (
+                  <button key={t.id} type="button" className={tier === t.id ? 'is-active' : ''} onClick={() => setTier(t.id)}>{t.label}</button>
+                ))}
+              </div>
               <div className="schedule-daymode-toggle" role="group" aria-label="Day type">
                 <button type="button" className={dayMode === 'weekday' ? 'is-active' : ''} onClick={() => setDayMode('weekday')}>Sun – Thu</button>
                 <button type="button" className={dayMode === 'weekend' ? 'is-active' : ''} onClick={() => setDayMode('weekend')}>Fri &amp; Sat</button>
               </div>
-              <button type="button" className="interactive-schedule-close" onClick={onClose} aria-label="Close">✕</button>
-            </div>
-          </div>
-
-          <div className="schedule-tier-bar">
-            <div className="schedule-tier-selector" role="group" aria-label="Tier">
-              {TIERS.map((t) => (
-                <button key={t.id} type="button" className={tier === t.id ? 'is-active' : ''} onClick={() => setTier(t.id)}>{t.label}</button>
-              ))}
             </div>
             <p className="schedule-tier-summary">{tierInfo?.summary}</p>
           </div>
