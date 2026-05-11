@@ -4775,8 +4775,8 @@
             },
             "geometry": {
                 "coordinates": [
-                    14.916017928616867,
-                    57.62373725989704
+                    14.91621495472586,
+                    57.62373797898056
                 ],
                 "type": "Point"
             }
@@ -5397,6 +5397,46 @@
                 "coordinates": [
                     14.92322673823756,
                     57.62094043328224
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "8f90ddad-344a-4ec4-8923-6cdba6c6ba72",
+            "properties": {
+                "sound-direction-azimuth-from": 210,
+                "sound-direction-azimuth-to": 270,
+                "sound-direction-azimuth": 240,
+                "title": "Vortex",
+                "description": "Unscouted point within the red zone WIP. Play towards the hill. No path. 2026: Just so in the radius for heavy power from TF1.",
+                "point-num": 32
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.92211967252939,
+                    57.622897108338435
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "f66267cc-ef79-4dcd-9245-69ed4ed8a813",
+            "properties": {
+                "marker-color": "#888",
+                "fill": "#888",
+                "description": "Unscouted and ungraded point WIP. Close to or on path between Sunny Hills and Moomin Valley. 2026: Just so in the radius for heavy power from TF1. If normal power suffices, go more west and play towards the steeper hill.",
+                "title": "The Detour",
+                "sound-direction-azimuth": 300,
+                "sound-direction-azimuth-from": 270,
+                "sound-direction-azimuth-to": 330,
+                "point-num": 31
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.921142034718542,
+                    57.62168348976644
                 ]
             }
         }
