@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = ROOT / "webapp" / "public" / "data"
+DATA_DIR = ROOT / "public" / "data"
 CONFIG = json.loads((DATA_DIR / "maps-config.json").read_text(encoding="utf-8"))
 
 POINT_TYPES = {"Point", "MultiPoint"}
