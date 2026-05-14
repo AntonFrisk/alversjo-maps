@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm run build --prefix webapp",
+  "outputDirectory": "webapp/.next",
+  "framework": "nextjs",
+  "functions": {
+    "api/index.py": {
+      "runtime": "@vercel/python@4.3.0",
+      "includeFiles": "webapp/public/data/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/geoapi/(.*)", "destination": "/api/index.py" }
+  ]
+}

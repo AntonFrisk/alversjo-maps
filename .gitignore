@@ -210,3 +210,5 @@ __marimo__/
 
 # App config (contains API key)
 app/config.js
+.vercel
+.env*.local
