@@ -17,7 +17,12 @@ KEEP = {
     "both": POINT_TYPES | POLYGON_TYPES,
 }
 
-app = FastAPI(title="Alversjö Maps GeoJSON API")
+app = FastAPI(
+    title="Alversjö Maps GeoJSON API",
+    docs_url="/geoapi/docs",
+    redoc_url="/geoapi/redoc",
+    openapi_url="/geoapi/openapi.json",
+)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"])
 
 
