@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/index.py": {
+      "runtime": "@vercel/python@4.3.0",
+      "includeFiles": "public/data/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/geoapi/(.*)", "destination": "/api/index.py" }
+  ]
+}
