@@ -1,7 +1,7 @@
 'use client';
 import { deriveFromNum, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/sound-class';
 
-const LETTER_OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const LETTER_OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'none'];
 
 export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundMode, onSlice }) {
   if (!feature) return null;
@@ -83,10 +83,9 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundM
               )}
             </label>
             <select
-              value={soundClass}
-              onChange={(e) => set('sound-class', e.target.value || undefined)}
+              value={soundClass || 'none'}
+              onChange={(e) => set('sound-class', e.target.value)}
             >
-              <option value="">— none —</option>
               {LETTER_OPTIONS.map((l) => (
                 <option key={l} value={l}>{l}</option>
               ))}

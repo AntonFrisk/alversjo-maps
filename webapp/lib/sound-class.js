@@ -20,6 +20,7 @@ export const SOUND_CLASS_COLORS = {
   C: '#f1ae29',
   D: '#ffcc01',
   E: '#3cc954',
+  none: '#888',
 };
 
 // Letter-mode feature colors (used for map4/map5 where only letter class matters)
@@ -30,6 +31,7 @@ export const SOUND_LETTER_COLORS = {
   D: '#ffcc01',  // yellow
   E: '#3cc954',  // green
   F: '#4a90d9',  // blue
+  none: '#888',  // gray
 };
 
 const CLASS_RANGES = [

@@ -1059,7 +1059,8 @@
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 3,
-                "marker-color": "#888"
+                "marker-color": "#888",
+                "sound-class": "none"
             },
             "geometry": {
                 "coordinates": [
@@ -1351,7 +1352,8 @@
                 "title": "slope-times p1",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
-                "sound-direction-azimuth-to": 285
+                "sound-direction-azimuth-to": 285,
+                "sound-class": "none"
             },
             "geometry": {
                 "coordinates": [
@@ -1494,7 +1496,8 @@
                 "sound-class-num": 1,
                 "marker-color": "#888",
                 "fill": "#888",
-                "title": "highland-plateau p1"
+                "title": "highland-plateau p1",
+                "sound-class": "none"
             },
             "geometry": {
                 "coordinates": [
@@ -3836,7 +3839,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "marker-color": "#888",
-                "fill": "#888"
+                "fill": "#888",
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3880,7 +3884,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "marker-color": "#888",
-                "fill": "#888"
+                "fill": "#888",
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3920,7 +3925,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "marker-color": "#888",
-                "fill": "#888"
+                "fill": "#888",
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4005,7 +4011,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "marker-color": "#888",
-                "fill": "#888"
+                "fill": "#888",
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -5072,7 +5079,8 @@
                 "marker-color": "#888",
                 "fill": "#888",
                 "sound-direction-azimuth-from": 90,
-                "sound-direction-azimuth-to": 150
+                "sound-direction-azimuth-to": 150,
+                "sound-class": "none"
             },
             "geometry": {
                 "coordinates": [
@@ -5098,7 +5106,8 @@
                 "fill": "#888",
                 "upgrade-actions": "Sound block wall to the north.",
                 "sound-direction-azimuth-to": 170,
-                "sound-direction-azimuth-from": 100
+                "sound-direction-azimuth-from": 100,
+                "sound-class": "none"
             },
             "geometry": {
                 "coordinates": [
@@ -5432,7 +5441,8 @@
                 "sound-direction-azimuth": 300,
                 "sound-direction-azimuth-from": 270,
                 "sound-direction-azimuth-to": 330,
-                "point-num": 31
+                "point-num": 31,
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Point",
