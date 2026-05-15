@@ -27,6 +27,7 @@ Returns a GeoJSON `FeatureCollection` for the requested map, optionally filtered
 |------|------|---------|-------------|
 | `features` | `points` \| `polygons` \| `both` | `both` | Which geometry kinds to include. `points` keeps `Point`/`MultiPoint`; `polygons` keeps `Polygon`/`MultiPolygon`. |
 | `properties` | comma-separated string | *(omit = all)* | Whitelist of feature property keys to retain. Omit the param to keep all properties. Pass an empty value (`?properties=`) to drop all properties. Unknown keys are silently ignored. |
+| `exclude_features_without_sound_class` | `true` \| `false` | `true` | When `true` (default), drops features whose original properties contain neither `sound-class` nor `sound-class-num`. Set to `false` to include unclassified features. The check runs on the original properties, so it composes correctly with `properties=`. |
 
 #### Status codes
 | Code | When |
@@ -81,7 +82,12 @@ curl "https://<your-domain>/geoapi/maps"
 }
 ```
 
-### 6. Geometry only, no properties
+### 6. Include features that lack a sound class
+```bash
+curl "https://<your-domain>/geoapi/maps/map2?exclude_features_without_sound_class=false"
+```
+
+### 7. Geometry only, no properties
 ```bash
 curl "https://<your-domain>/geoapi/maps/map2?properties="
 ```

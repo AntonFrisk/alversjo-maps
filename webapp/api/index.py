@@ -36,6 +36,7 @@ def get_map(
     map_id: str,
     features: Literal["points", "polygons", "both"] = "both",
     properties: str | None = Query(None),
+    exclude_features_without_sound_class: bool = True,
 ):
     meta = CONFIG.get(map_id)
     if not meta:
@@ -51,13 +52,11 @@ def get_map(
     for f in data.get("features", []):
         if f.get("geometry", {}).get("type") not in keep_types:
             continue
+        props = f.get("properties") or {}
+        if exclude_features_without_sound_class and "sound-class" not in props and "sound-class-num" not in props:
+            continue
         if prop_filter is not None:
-            f = {
-                **f,
-                "properties": {
-                    k: v for k, v in (f.get("properties") or {}).items() if k in prop_filter
-                },
-            }
+            f = {**f, "properties": {k: v for k, v in props.items() if k in prop_filter}}
         out.append(f)
 
     return JSONResponse(
