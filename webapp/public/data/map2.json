@@ -1155,7 +1155,7 @@
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
                 "fill": "#4a90d9",
-                "title": "eastern-void-916-rabbit"
+                "title": "magic lake"
             },
             "geometry": {
                 "coordinates": [
@@ -1677,7 +1677,7 @@
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
                 "fill": "#4a90d9",
-                "title": "low-lands-857-mouse"
+                "title": "cottage flung"
             },
             "geometry": {
                 "coordinates": [
@@ -1727,7 +1727,7 @@
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
                 "fill": "#4a90d9",
-                "title": "cottage-663-toad"
+                "title": "cottage"
             },
             "geometry": {
                 "coordinates": [
@@ -1811,7 +1811,7 @@
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
                 "fill": "#4a90d9",
-                "title": "cottage-173-frog"
+                "title": "northern lake"
             },
             "geometry": {
                 "coordinates": [
@@ -2338,7 +2338,7 @@
                 "marker-color": "#e89422",
                 "fill": "#e89422",
                 "sound-direction-azimuth": 160,
-                "title": "valley NE",
+                "title": "mumin lands",
                 "sound-direction-azimuth-from": 130,
                 "sound-direction-azimuth-to": 220
             },
@@ -2635,7 +2635,7 @@
             "id": "764493ff-e165-43df-a6a9-9c925ecdbb18",
             "type": "Feature",
             "properties": {
-                "title": "eclipe1",
+                "title": "villa1",
                 "sound-class": "E",
                 "sound-class-num": null,
                 "marker-color": "#3cc954",
@@ -2686,7 +2686,7 @@
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
                 "sound-direction-azimuth": 219,
-                "title": "eclipe-back",
+                "title": "villa-backyard",
                 "sound-direction-azimuth-from": 189,
                 "sound-direction-azimuth-to": 249
             },
@@ -2734,7 +2734,7 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "title": "the-villa-774-toad"
+                "title": "mumin path"
             },
             "geometry": {
                 "coordinates": [
@@ -2784,7 +2784,7 @@
                 "sound-class": "B",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "title": "the-villa-778-grouse"
+                "title": "electric valley 1"
             },
             "geometry": {
                 "coordinates": [
@@ -2857,7 +2857,7 @@
                 "sound-direction-azimuth": 250,
                 "sound-direction-azimuth-from": 220,
                 "sound-direction-azimuth-to": 280,
-                "title": "the-villa-524-pike"
+                "title": "power ridge west slope"
             },
             "geometry": {
                 "coordinates": [
@@ -5418,7 +5418,7 @@
             "type": "Feature",
             "id": "7095f6cb-4c27-4ca9-9c57-40956c562c2f",
             "properties": {
-                "title": "forest power ridge: east slope ",
+                "title": "power ridge east slope ",
                 "sound-class": "E",
                 "sound-class-num": null,
                 "description": "Elevated lands. no good for sound",
