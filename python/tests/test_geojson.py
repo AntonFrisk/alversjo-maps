@@ -16,3 +16,13 @@ def test_sound_class_num_set_for_all_features(map_features):
         if "sound-class-num" not in f["properties"]
     ]
     assert not missing, f"{map_name}: features missing sound-class-num:\n" + "\n".join(missing)
+
+
+def test_title_set_for_all_features(map_features):
+    map_name, features = map_features
+    missing = [
+        f"id={f['id']}"
+        for f in features
+        if not f["properties"].get("title")
+    ]
+    assert not missing, f"{map_name}: features missing title:\n" + "\n".join(missing)
