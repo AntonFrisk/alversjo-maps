@@ -1453,10 +1453,9 @@ export default function MapViewer({ layers, defaultLayer, openInteractiveSchedul
         let color = null;
         if (soundMode === 'letter') {
           color = props['sound-class'] ? (SOUND_LETTER_COLORS[props['sound-class']] || null) : null;
-        } else if (props['sound-class-num'] !== undefined && props['sound-class-num'] !== null && props['sound-class-num'] !== '') {
-          color = deriveFromNum(Number(props['sound-class-num'])).featureColor;
-        } else if (props['sound-class']) {
-          color = SOUND_LETTER_COLORS[props['sound-class']] || null;
+        } else {
+          const num = props['sound-class-num'];
+          color = (num != null && num !== '') ? deriveFromNum(Number(num)).featureColor : '#888';
         }
         if (!color) return feature;
         if (props.fill === color && props['marker-color'] === color) return feature;

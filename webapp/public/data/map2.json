@@ -1240,7 +1240,8 @@
             "properties": {
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9"
+                "fill": "#4a90d9",
+                "sound-class-num": null
             },
             "geometry": {
                 "coordinates": [
@@ -1924,7 +1925,8 @@
                 "title": "forest parking NW3",
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9"
+                "fill": "#4a90d9",
+                "sound-class-num": null
             },
             "geometry": {
                 "coordinates": [
@@ -2131,7 +2133,8 @@
                 "title": "forest parking NW2",
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9"
+                "fill": "#4a90d9",
+                "sound-class-num": null
             },
             "geometry": {
                 "coordinates": [
@@ -2168,7 +2171,8 @@
                 "title": "forest parking NW",
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9"
+                "fill": "#4a90d9",
+                "sound-class-num": null
             },
             "geometry": {
                 "coordinates": [
@@ -4058,7 +4062,8 @@
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
                 "camp-in-2025": "none",
-                "description": "On the hilltop. bad for sound making"
+                "description": "On the hilltop. bad for sound making",
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -4464,7 +4469,8 @@
             "properties": {
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "fill": "#3cc954",
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -4511,7 +4517,8 @@
                 "fill": "#3cc954",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
-                "sound-direction-azimuth-to": 256
+                "sound-direction-azimuth-to": 256,
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -5327,7 +5334,8 @@
                 "marker-color": "#4a90d9",
                 "fill": "#4a90d9",
                 "title": "Neighbour Lodges",
-                "description": "1750 m South West from the Hills"
+                "description": "1750 m South West from the Hills",
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Point",
@@ -5405,7 +5413,8 @@
                 "camp-in-2025": "n/a",
                 "upgrade-actions": "dir subs mainly",
                 "sound-direction-comment": "N: into the forest. W: into the hill. ",
-                "point-num": 28
+                "point-num": 28,
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Point",
@@ -5448,7 +5457,8 @@
                 "sound-direction-azimuth-from": 270,
                 "sound-direction-azimuth-to": 330,
                 "point-num": 31,
-                "sound-class": "none"
+                "sound-class": "none",
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Point",
@@ -5467,7 +5477,8 @@
                 "fill": "#cc1b15",
                 "sound-direction-azimuth": 210,
                 "sound-direction-azimuth-from": 160,
-                "sound-direction-azimuth-to": 260
+                "sound-direction-azimuth-to": 260,
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -5517,7 +5528,8 @@
                 "sound-direction-azimuth-to": 300,
                 "title": "hills next to HQ",
                 "sound-direction-comment": "West, into the hill",
-                "upgrade-actions": "Cardoid bass is the main thing here"
+                "upgrade-actions": "Cardoid bass is the main thing here",
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
