@@ -53,6 +53,14 @@ const REGION_LABELS = [
   { name: 'BISON',               coordinates: [14.9279, 57.6208] },
   { name: 'FOREST\nCAVE',        coordinates: [14.9260, 57.6201] },
 ];
+const ANIMALS = [
+  'badger','beaver','bison','boar','crane','deer','dormouse','eagle','elk','falcon',
+  'ferret','finch','fox','frog','goose','grouse','hare','hawk','hedgehog','heron',
+  'jay','kite','lemming','linx','magpie','marten','mink','moose','mouse','muskrat',
+  'newt','nightjar','otter','owl','pike','pipit','plover','polecat','quail','rabbit',
+  'raven','reindeer','robin','salamander','shrew','snipe','sparrow','stoat','stork',
+  'swan','toad','vole','weasel','wolf','wolverine','woodpecker','wren',
+];
 const ZOOM = 15.5;
 const SMART_IMPORT_FIELDS = {
   names:       ['title', 'point-num'],
@@ -128,6 +136,25 @@ function featureAzimuthOrigin(feature) {
 
 function featureAccentColor(props) {
   return props['marker-color'] || props.fill || '#cc1b15';
+}
+
+function generatePlaceholderTitle(feature) {
+  const g = feature?.geometry;
+  const center = g?.type === 'Point'
+    ? g.coordinates
+    : ringCentroid(g?.coordinates?.[0] ?? []);
+  if (!center) return 'unknown';
+
+  const region = REGION_LABELS.reduce((best, r) => {
+    const d = (r.coordinates[0] - center[0]) ** 2 + (r.coordinates[1] - center[1]) ** 2;
+    return d < best.d ? { r, d } : best;
+  }, { r: REGION_LABELS[0], d: Infinity }).r;
+
+  const slug = region.name.replace(/\n/g, ' ').trim().toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
+  const hash = parseInt(String(feature.id).replace(/-/g, '').slice(-8), 16);
+  const num = String(100 + (hash % 900));
+  const animal = ANIMALS[hash % ANIMALS.length];
+  return `${slug}-${num}-${animal}`;
 }
 
 function buildCirclePoly(origin, radiusM) {
@@ -306,10 +333,11 @@ function splitPolygonByLine(closedRing, cutA, cutB) {
   return [part1, part2];
 }
 
-function buildPopupHTML(props, soundMode = null) {
+function buildPopupHTML(feature, soundMode = null) {
+  const props = feature.properties || {};
   const parts = [];
 
-  const title = props.title || '';
+  const title = props.title || generatePlaceholderTitle(feature);
   if (title) {
     const pointNum = props['point-num'];
     const prefix = pointNum != null ? `${pointNum}: ` : '';
@@ -763,8 +791,7 @@ export default function MapViewer({ layers, defaultLayer, openInteractiveSchedul
       }
 
       // View mode: popup
-      const props = feat.properties || {};
-      const html = buildPopupHTML(props, soundModeRef.current);
+      const html = buildPopupHTML(feat, soundModeRef.current);
       if (!html) return;
 
       const coords =
@@ -901,6 +928,7 @@ export default function MapViewer({ layers, defaultLayer, openInteractiveSchedul
       properties: {},
       geometry: { type: 'Polygon', coordinates: [[...nodes, nodes[0]]] },
     };
+    newFeature.properties.title = generatePlaceholderTitle(newFeature);
 
     const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
     const updated = { ...base, features: [...base.features, newFeature] };
@@ -926,6 +954,7 @@ export default function MapViewer({ layers, defaultLayer, openInteractiveSchedul
       properties: {},
       geometry: { type: 'Point', coordinates: coord },
     };
+    newFeature.properties.title = generatePlaceholderTitle(newFeature);
     const base = editedGeoJSONRef.current || originalGeoJSONRef.current;
     const updated = { ...base, features: [...base.features, newFeature] };
     editedGeoJSONRef.current = updated;
@@ -1946,6 +1975,7 @@ export default function MapViewer({ layers, defaultLayer, openInteractiveSchedul
           onDelete={handleFeatureDelete}
           soundMode={soundMode}
           onSlice={selectedFeature.geometry?.type === 'Polygon' ? startSlicePolygon : null}
+          placeholderTitle={generatePlaceholderTitle(selectedFeature)}
         />
       )}
 

@@ -3,14 +3,17 @@ import { deriveFromNum, SOUND_CLASS_COLORS, SOUND_LETTER_COLORS } from '@/lib/so
 
 const LETTER_OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'none'];
 
-export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundMode, onSlice }) {
+export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundMode, onSlice, placeholderTitle }) {
   if (!feature) return null;
 
   const props = feature.properties || {};
 
   function set(key, value) {
     const updated = { ...props };
-    if (value === undefined || value === '') {
+    if (key === 'title') {
+      updated['title'] = value || placeholderTitle || '';
+      if (!updated['title']) delete updated['title'];
+    } else if (value === undefined || value === '') {
       delete updated[key];
     } else {
       updated[key] = value;
@@ -58,7 +61,7 @@ export default function EditPanel({ feature, onUpdate, onClose, onDelete, soundM
             type="text"
             value={props.title || ''}
             onChange={(e) => set('title', e.target.value)}
-            placeholder="e.g. Power slope"
+            placeholder={placeholderTitle || 'e.g. Power slope'}
           />
         </div>
 
