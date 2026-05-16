@@ -2605,7 +2605,9 @@
             "id": "764493ff-e165-43df-a6a9-9c925ecdbb18",
             "type": "Feature",
             "properties": {
-                "title": "eclipe1"
+                "title": "eclipe1",
+                "sound-class": "none",
+                "sound-class-num": null
             },
             "geometry": {
                 "coordinates": [
@@ -5340,6 +5342,8 @@
             "id": "7095f6cb-4c27-4ca9-9c57-40956c562c2f",
             "properties": {
                 "title": "forest power ridge: east slope ",
+                "sound-class": "none",
+                "sound-class-num": null,
                 "description": "Elevated lands. no good for sound"
             },
             "geometry": {
@@ -5420,7 +5424,9 @@
                 "sound-direction-azimuth": 240,
                 "title": "Vortex",
                 "description": "Unscouted point within the red zone WIP. Play towards the hill. No path. 2026: Just so in the radius for heavy power from TF1.",
-                "point-num": 32
+                "point-num": 32,
+                "sound-class": "none",
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Point",
