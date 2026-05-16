@@ -833,8 +833,7 @@
                 "marker-color": "#3cc954",
                 "sound-direction-azimuth": 180,
                 "sound-direction-azimuth-from": 150,
-                "sound-direction-azimuth-to": 210,
-                "title": "eastern-void-652-stork"
+                "sound-direction-azimuth-to": 210
             },
             "geometry": {
                 "coordinates": [
@@ -896,8 +895,8 @@
                             57.62288734759131
                         ],
                         [
-                            14.9336337536663,
-                            57.6231766445014
+                            14.93354203979834,
+                            57.623184944959064
                         ],
                         [
                             14.933763693472542,
@@ -932,8 +931,7 @@
                 "marker-color": "#e75480",
                 "sound-class": "C",
                 "sound-direction-azimuth-from": 150,
-                "sound-direction-azimuth-to": 210,
-                "title": "eastern-void-490-rabbit"
+                "sound-direction-azimuth-to": 210
             },
             "geometry": {
                 "coordinates": [
@@ -976,8 +974,7 @@
                 "stroke-width": 0,
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "title": "swamp-104-raven"
+                "marker-color": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -1024,8 +1021,7 @@
                 "stroke-width": 0,
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "title": "eastern-void-393-reindeer"
+                "marker-color": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -1072,8 +1068,7 @@
                 "stroke-width": 0,
                 "sound-class-num": 3,
                 "marker-color": "#888",
-                "sound-class": "none",
-                "title": "eastern-void-401-beaver"
+                "sound-class": "none"
             },
             "geometry": {
                 "coordinates": [
@@ -1116,8 +1111,7 @@
                 "stroke-width": 0,
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "title": "bison-572-marten"
+                "marker-color": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -1154,8 +1148,7 @@
                 "sound-class-num": 0,
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9",
-                "title": "eastern-void-916-rabbit"
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1256,8 +1249,7 @@
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
                 "fill": "#4a90d9",
-                "sound-class-num": null,
-                "title": "far-flung-field-937-wolverine"
+                "sound-class-num": null
             },
             "geometry": {
                 "coordinates": [
@@ -1309,8 +1301,7 @@
                 "fill": "#3cc954",
                 "sound-direction-azimuth": 180,
                 "sound-direction-azimuth-from": 150,
-                "sound-direction-azimuth-to": 210,
-                "title": "far-flung-field-502-kite"
+                "sound-direction-azimuth-to": 210
             },
             "geometry": {
                 "coordinates": [
@@ -1626,8 +1617,7 @@
                 "sound-class-num": 1,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954",
-                "title": "cottage-768-shrew"
+                "fill": "#3cc954"
             },
             "geometry": {
                 "coordinates": [
@@ -1676,8 +1666,7 @@
                 "sound-class-num": 1,
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9",
-                "title": "low-lands-857-mouse"
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1726,8 +1715,7 @@
                 "sound-class-num": 1,
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9",
-                "title": "cottage-663-toad"
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1810,8 +1798,7 @@
                 "sound-class-num": 0,
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9",
-                "title": "cottage-173-frog"
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1860,8 +1847,7 @@
                 "sound-class-num": 0,
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9",
-                "title": "far-flung-field-453-hawk"
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -1910,8 +1896,7 @@
                 "sound-class-num": 0,
                 "sound-class": "F",
                 "marker-color": "#4a90d9",
-                "fill": "#4a90d9",
-                "title": "pretty-parking-766-kite"
+                "fill": "#4a90d9"
             },
             "geometry": {
                 "coordinates": [
@@ -2286,8 +2271,7 @@
                 "sound-class-num": 3,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "the-villa-199-vole"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -2540,8 +2524,7 @@
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "sunny-hill-363-finch"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -2588,8 +2571,7 @@
                 "marker-color": "#cc1b15",
                 "fill": "#cc1b15",
                 "sound-direction-azimuth": 270,
-                "sound-direction-azimuth-to": 300,
-                "title": "sunny-hill-551-sparrow"
+                "sound-direction-azimuth-to": 300
             },
             "geometry": {
                 "coordinates": [
@@ -2733,8 +2715,7 @@
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "the-villa-774-toad"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -2783,8 +2764,7 @@
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "the-villa-778-grouse"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -2856,8 +2836,7 @@
                 "fill": "#e89422",
                 "sound-direction-azimuth": 250,
                 "sound-direction-azimuth-from": 220,
-                "sound-direction-azimuth-to": 280,
-                "title": "the-villa-524-pike"
+                "sound-direction-azimuth-to": 280
             },
             "geometry": {
                 "coordinates": [
@@ -2922,8 +2901,7 @@
                 "sound-class-num": 6,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "muumin-valley-984-wolf"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -2968,8 +2946,7 @@
                 "sound-class-num": 7,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "sunny-hill-379-kite"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3010,8 +2987,7 @@
                 "sound-class-num": 6,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "muumin-valley-685-kite"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3060,8 +3036,7 @@
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "muumin-valley-585-muskrat"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3114,8 +3089,7 @@
                 "sound-class-num": 4,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "muumin-valley-995-swan"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3160,8 +3134,7 @@
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "fill": "#ffcc01",
-                "title": "sunny-hill-797-sparrow"
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "coordinates": [
@@ -3230,8 +3203,7 @@
                 "sound-class-num": 4,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "fill": "#ffcc01",
-                "title": "muumin-valley-289-kite"
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "coordinates": [
@@ -3268,8 +3240,7 @@
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "muumin-valley-660-deer"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3306,8 +3277,7 @@
                 "sound-class-num": 3,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "forest-cave-385-plover"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3352,8 +3322,7 @@
                 "sound-class-num": 5,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "muumin-valley-707-ferret"
+                "fill": "#e89422"
             },
             "geometry": {
                 "coordinates": [
@@ -3509,8 +3478,7 @@
                 "sound-class-num": 3,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954",
-                "title": "bison-567-jay"
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3604,8 +3572,7 @@
                 "sound-class-num": 3,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954",
-                "title": "swamp-225-otter"
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3654,8 +3621,7 @@
                 "sound-direction-azimuth": 230,
                 "description": "Yellow / Pink -- neighborhood decision",
                 "sound-direction-azimuth-from": 130,
-                "sound-direction-azimuth-to": 260,
-                "title": "swamp-370-hedgehog"
+                "sound-direction-azimuth-to": 260
             },
             "geometry": {
                 "type": "Polygon",
@@ -3711,8 +3677,7 @@
                 "fill": "#ffcc01",
                 "sound-direction-azimuth": 200,
                 "sound-direction-azimuth-to": 250,
-                "sound-direction-azimuth-from": 90,
-                "title": "swamp-869-mouse"
+                "sound-direction-azimuth-from": 90
             },
             "geometry": {
                 "type": "Polygon",
@@ -3747,12 +3712,12 @@
                             57.62288734759131
                         ],
                         [
-                            14.9336337536663,
-                            57.6231766445014
+                            14.93354203979834,
+                            57.623184944959064
                         ],
                         [
-                            14.931784966723484,
-                            57.623951533471796
+                            14.93197357049445,
+                            57.62404809010005
                         ],
                         [
                             14.93080245630972,
@@ -3769,20 +3734,19 @@
                 "sound-class-num": 2,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954",
-                "title": "swamp-804-shrew"
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
                 "coordinates": [
                     [
                         [
-                            14.93318784316753,
-                            57.62336922671392
+                            14.933184120515449,
+                            57.62337995071846
                         ],
                         [
-                            14.9336337536663,
-                            57.6231766445014
+                            14.93354203979834,
+                            57.623184944959064
                         ],
                         [
                             14.933763693472542,
@@ -3793,16 +3757,16 @@
                             57.62485558068059
                         ],
                         [
-                            14.931784966723484,
-                            57.623951533471796
+                            14.93197357049445,
+                            57.62404809010005
                         ],
                         [
-                            14.932418321899974,
-                            57.623687994059935
+                            14.93257379499559,
+                            57.62372162402198
                         ],
                         [
-                            14.93318784316753,
-                            57.62336922671392
+                            14.933184120515449,
+                            57.62337995071846
                         ]
                     ]
                 ]
@@ -3815,8 +3779,7 @@
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "fill": "#ffcc01",
-                "title": "swamp-444-otter"
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3852,8 +3815,7 @@
                 "fill": "#ffcc01",
                 "sound-direction-azimuth": 240,
                 "sound-direction-azimuth-from": 170,
-                "sound-direction-azimuth-to": 270,
-                "title": "swamp-557-pike"
+                "sound-direction-azimuth-to": 270
             },
             "geometry": {
                 "type": "Polygon",
@@ -3902,8 +3864,7 @@
                 "sound-class-num": 2,
                 "marker-color": "#888",
                 "fill": "#888",
-                "sound-class": "none",
-                "title": "missing-piece-2026-972-mink"
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3948,8 +3909,7 @@
                 "sound-class-num": 2,
                 "marker-color": "#888",
                 "fill": "#888",
-                "sound-class": "none",
-                "title": "missing-piece-2026-170-eagle"
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -3990,8 +3950,7 @@
                 "sound-class-num": 2,
                 "marker-color": "#888",
                 "fill": "#888",
-                "sound-class": "none",
-                "title": "low-lands-858-linx"
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4006,8 +3965,8 @@
                             57.62420529744111
                         ],
                         [
-                            14.931784966723484,
-                            57.623951533471796
+                            14.93197357049445,
+                            57.62404809010005
                         ],
                         [
                             14.929879258636902,
@@ -4028,8 +3987,7 @@
                 "sound-class-num": 1,
                 "sound-class": "E",
                 "marker-color": "#3cc954",
-                "fill": "#3cc954",
-                "title": "low-lands-805-rabbit"
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4078,8 +4036,7 @@
                 "sound-class-num": 1,
                 "marker-color": "#888",
                 "fill": "#888",
-                "sound-class": "none",
-                "title": "low-lands-152-woodpecker"
+                "sound-class": "none"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4094,8 +4051,8 @@
                             57.62420529744111
                         ],
                         [
-                            14.931784966723484,
-                            57.623951533471796
+                            14.93197357049445,
+                            57.62404809010005
                         ],
                         [
                             14.933376877560903,
@@ -4124,8 +4081,7 @@
                 "fill": "#3cc954",
                 "camp-in-2025": "none",
                 "description": "On the hilltop. bad for sound making",
-                "sound-class-num": null,
-                "title": "sunny-hill-433-stork"
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -4240,8 +4196,7 @@
                 "sound-class-num": 3,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "forest-cave-619-moose"
+                "fill": "#e89422"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4285,8 +4240,7 @@
                 "fill": "#ffcc01",
                 "sound-direction-azimuth": 335,
                 "sound-direction-azimuth-to": 20,
-                "sound-direction-azimuth-from": 260,
-                "title": "sunny-hill-771-hawk"
+                "sound-direction-azimuth-from": 260
             },
             "geometry": {
                 "type": "Polygon",
@@ -4351,8 +4305,7 @@
                 "sound-class-num": 4,
                 "sound-class": "B",
                 "marker-color": "#e89422",
-                "fill": "#e89422",
-                "title": "sunny-hill-824-swan"
+                "fill": "#e89422"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4413,8 +4366,7 @@
                 "sound-class-num": 1,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "fill": "#ffcc01",
-                "title": "down-town-460-wolverine"
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4479,8 +4431,7 @@
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#ffcc01",
-                "fill": "#ffcc01",
-                "title": "forest-cave-438-muskrat"
+                "fill": "#ffcc01"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4537,8 +4488,7 @@
                 "sound-class": "E",
                 "marker-color": "#3cc954",
                 "fill": "#3cc954",
-                "sound-class-num": null,
-                "title": "cottage-871-owl"
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -4586,8 +4536,7 @@
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
                 "sound-direction-azimuth-to": 256,
-                "sound-class-num": null,
-                "title": "low-lands-884-crane"
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
@@ -5549,8 +5498,7 @@
                 "sound-direction-azimuth": 210,
                 "sound-direction-azimuth-from": 160,
                 "sound-direction-azimuth-to": 260,
-                "sound-class-num": null,
-                "title": "the-villa-311-weasel"
+                "sound-class-num": null
             },
             "geometry": {
                 "type": "Polygon",
