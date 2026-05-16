@@ -2610,8 +2610,10 @@
             "type": "Feature",
             "properties": {
                 "title": "eclipe1",
-                "sound-class": "none",
-                "sound-class-num": null
+                "sound-class": "E",
+                "sound-class-num": null,
+                "marker-color": "#3cc954",
+                "fill": "#3cc954"
             },
             "geometry": {
                 "coordinates": [
@@ -5350,9 +5352,11 @@
             "id": "7095f6cb-4c27-4ca9-9c57-40956c562c2f",
             "properties": {
                 "title": "forest power ridge: east slope ",
-                "sound-class": "none",
+                "sound-class": "E",
                 "sound-class-num": null,
-                "description": "Elevated lands. no good for sound"
+                "description": "Elevated lands. no good for sound",
+                "marker-color": "#3cc954",
+                "fill": "#3cc954"
             },
             "geometry": {
                 "type": "Polygon",
