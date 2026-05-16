@@ -11,7 +11,7 @@
                 ]
             },
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": "0",
                 "title": "Power slope",
@@ -24,7 +24,7 @@
                 "point-num": 11,
                 "sound-direction-azimuth": 0,
                 "sound-direction-comment": "N/NW",
-                "marker-color": "#cc4515",
+                "marker-color": "#ffc107",
                 "sound-direction-azimuth-from": 330,
                 "sound-direction-azimuth-to": 30
             },
@@ -40,7 +40,7 @@
                 ]
             },
             "properties": {
-                "fill": "#cfab2d",
+                "fill": "#4caf50",
                 "fill-opacity": 0.3,
                 "stroke-width": "0",
                 "title": "Barn Upper floor",
@@ -54,7 +54,7 @@
                 "camp-in-2023": "-",
                 "description": "Top floor of barn. Wooden walls don't block sound much. Elevated position.",
                 "upgrade-actions": "Sound proofing on walls, especially N and NE",
-                "marker-color": "#cfab2d",
+                "marker-color": "#4caf50",
                 "sound-direction-azimuth-from": 170,
                 "sound-direction-azimuth-to": 230
             },
@@ -70,7 +70,7 @@
                 ]
             },
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": "0",
                 "title": "Barn lower floor (insultated)",
@@ -78,7 +78,7 @@
                 "sound-class-num": 6,
                 "point-num": 24,
                 "sound-direction-azimuth": 180,
-                "marker-color": "#cc4515",
+                "marker-color": "#ffc107",
                 "sound-direction-azimuth-from": 150,
                 "sound-direction-azimuth-to": 210
             },
@@ -87,14 +87,14 @@
         {
             "type": "Feature",
             "properties": {
-                "fill": "#3cc954",
+                "fill": "#1565c0",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "sunny-hills-top",
                 "sound-class": "E",
                 "sound-class-num": 0,
                 "sound-direction-azimuth": 280,
-                "marker-color": "#3cc954",
+                "marker-color": "#1565c0",
                 "sound-direction-azimuth-from": 250,
                 "sound-direction-azimuth-to": 310
             },
@@ -185,7 +185,7 @@
                 ]
             },
             "properties": {
-                "fill": "#9e100c",
+                "fill": "#c62828",
                 "fill-opacity": 0.3,
                 "stroke-width": "0",
                 "title": "Sheep barn",
@@ -197,7 +197,7 @@
                 "camp-in-2024": "just storage space",
                 "camp-in-2025": "just storage space",
                 "upgrade-actions": "sound proof windows",
-                "marker-color": "#9e100c"
+                "marker-color": "#c62828"
             },
             "id": "ef537597-a246-4dfa-b6f3-a547b7204ec9"
         },
@@ -205,13 +205,13 @@
             "id": "9c6304ea-bc59-4aec-ba94-8d0c169d31eb",
             "type": "Feature",
             "properties": {
-                "fill": "#3cc954",
+                "fill": "#1565c0",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "alver-lake-east",
                 "sound-class": "E",
                 "sound-class-num": 0,
-                "marker-color": "#3cc954"
+                "marker-color": "#1565c0"
             },
             "geometry": {
                 "coordinates": [
@@ -289,13 +289,13 @@
             "id": "41e7b327-dc8f-482a-b3d0-c993a1a7ca15",
             "type": "Feature",
             "properties": {
-                "fill": "#3cc954",
+                "fill": "#1565c0",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "alver-lake-west",
                 "sound-class": "E",
                 "sound-class-num": 0,
-                "marker-color": "#3cc954"
+                "marker-color": "#1565c0"
             },
             "geometry": {
                 "coordinates": [
@@ -345,13 +345,13 @@
             "id": "6dbcbbd0-2a9c-44fb-9bbf-2a385ce4bd7d",
             "type": "Feature",
             "properties": {
-                "fill": "#9eb53a",
+                "fill": "#00bcd4",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "barn-area",
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a"
+                "marker-color": "#00bcd4"
             },
             "geometry": {
                 "coordinates": [
@@ -401,12 +401,12 @@
             "id": "60ab5f00-410e-4675-a800-4ee317f5368e",
             "type": "Feature",
             "properties": {
-                "fill": "#f1ae29",
+                "fill": "#cddc39",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
+                "marker-color": "#cddc39",
                 "title": "forest-cave",
                 "sound-direction-azimuth": 290,
                 "sound-direction-azimuth-from": 260,
@@ -484,13 +484,13 @@
             "id": "1c775f11-96ac-4d94-9bb2-f0b3242e2bb7",
             "type": "Feature",
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields1",
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
+                "marker-color": "#ffc107",
                 "sound-direction-azimuth": 100,
                 "sound-direction-azimuth-from": 70,
                 "sound-direction-azimuth-to": 130
@@ -535,13 +535,13 @@
             "id": "c155e6c4-7db8-4da7-8b69-9ec33dd6e2bb",
             "type": "Feature",
             "properties": {
-                "fill": "#cfab2d",
+                "fill": "#4caf50",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields3",
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d"
+                "marker-color": "#4caf50"
             },
             "geometry": {
                 "coordinates": [
@@ -591,13 +591,13 @@
             "id": "126cf23c-8eae-4c38-b08a-3c76649fcd0c",
             "type": "Feature",
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields4",
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
+                "marker-color": "#ffc107",
                 "sound-direction-azimuth": 100,
                 "sound-direction-azimuth-from": 70,
                 "sound-direction-azimuth-to": 130
@@ -638,14 +638,14 @@
             "id": "236a05cd-b13f-4c75-9ac9-cf921ebaabb2",
             "type": "Feature",
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "fields5",
                 "sound-direction-azimuth": 250,
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
+                "marker-color": "#ffc107",
                 "sound-direction-azimuth-from": 220,
                 "sound-direction-azimuth-to": 280
             },
@@ -685,13 +685,13 @@
             "id": "28208be2-1e0d-4791-82b5-0e8e725f0188",
             "type": "Feature",
             "properties": {
-                "fill": "#6dbf47",
+                "fill": "#0288d1",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "Bison Sirloin",
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
+                "marker-color": "#0288d1",
                 "description": "Highest parts of Bison"
             },
             "geometry": {
@@ -734,13 +734,13 @@
             "id": "8b6fd742-31fd-4a92-9136-22bd190447dc",
             "type": "Feature",
             "properties": {
-                "fill": "#e89422",
+                "fill": "#fdd835",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "Eastwood Marsh",
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
+                "marker-color": "#fdd835",
                 "sound-direction-azimuth": 110,
                 "sound-direction-azimuth-from": 80,
                 "sound-direction-azimuth-to": 140
@@ -781,12 +781,12 @@
             "id": "b5ab87c1-2448-4416-9838-168612f17530",
             "type": "Feature",
             "properties": {
-                "fill": "#9eb53a",
+                "fill": "#00bcd4",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
+                "marker-color": "#00bcd4",
                 "sound-direction-azimuth": 180,
                 "title": "Eastern Slope",
                 "sound-direction-azimuth-from": 150,
@@ -872,13 +872,13 @@
             "id": "28ca31d3-4fb6-4090-ac5e-c431d1ef417b",
             "type": "Feature",
             "properties": {
-                "fill": "#f1ae29",
+                "fill": "#cddc39",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-direction-azimuth": 180,
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
+                "marker-color": "#cddc39",
                 "title": "Eastern Slope South",
                 "sound-direction-azimuth-from": 150,
                 "sound-direction-azimuth-to": 210
@@ -919,12 +919,12 @@
             "id": "bf90ec83-c2af-4b26-8235-03fa4032a97a",
             "type": "Feature",
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515"
+                "marker-color": "#ffc107"
             },
             "geometry": {
                 "coordinates": [
@@ -966,12 +966,12 @@
             "id": "420acbe6-b3e6-48c8-9e58-54116e5952d9",
             "type": "Feature",
             "properties": {
-                "fill": "#cc4515",
+                "fill": "#ffc107",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515"
+                "marker-color": "#ffc107"
             },
             "geometry": {
                 "coordinates": [
@@ -1013,12 +1013,12 @@
             "id": "80369b2b-afb4-4cc4-8f64-6d5a81808b0e",
             "type": "Feature",
             "properties": {
-                "fill": "#cfab2d",
+                "fill": "#4caf50",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d"
+                "marker-color": "#4caf50"
             },
             "geometry": {
                 "coordinates": [
@@ -1056,12 +1056,12 @@
             "id": "af7cb786-d570-491f-9bfb-57187d1dbdf0",
             "type": "Feature",
             "properties": {
-                "fill": "#e89422",
+                "fill": "#fdd835",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422"
+                "marker-color": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -1097,8 +1097,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "marker-color": "#1565c0",
+                "fill": "#1565c0"
             },
             "geometry": {
                 "coordinates": [
@@ -1242,8 +1242,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#0288d1",
+                "fill": "#0288d1",
                 "sound-direction-azimuth": 180,
                 "sound-direction-azimuth-from": 150,
                 "sound-direction-azimuth-to": 210
@@ -1302,8 +1302,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#0288d1",
+                "fill": "#0288d1",
                 "title": "slope-times p1",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
@@ -1351,8 +1351,8 @@
             "properties": {
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29",
+                "marker-color": "#cddc39",
+                "fill": "#cddc39",
                 "title": "slope-times p2",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
@@ -1392,8 +1392,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#0288d1",
+                "fill": "#0288d1",
                 "title": "highland-plateau p1"
             },
             "geometry": {
@@ -1442,8 +1442,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#0288d1",
+                "fill": "#0288d1",
                 "title": "highland-plateau p2"
             },
             "geometry": {
@@ -1484,8 +1484,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "coordinates": [
@@ -1529,8 +1529,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "coordinates": [
@@ -1578,8 +1578,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "coordinates": [
@@ -1616,8 +1616,8 @@
                 "title": "artctic-chill",
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "coordinates": [
@@ -1661,8 +1661,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "marker-color": "#1565c0",
+                "fill": "#1565c0"
             },
             "geometry": {
                 "coordinates": [
@@ -1710,8 +1710,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "marker-color": "#1565c0",
+                "fill": "#1565c0"
             },
             "geometry": {
                 "coordinates": [
@@ -1759,8 +1759,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954"
+                "marker-color": "#1565c0",
+                "fill": "#1565c0"
             },
             "geometry": {
                 "coordinates": [
@@ -1830,8 +1830,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "marker-color": "#1565c0",
+                "fill": "#1565c0",
                 "title": "field parking"
             },
             "geometry": {
@@ -1880,8 +1880,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#0288d1",
+                "fill": "#0288d1",
                 "title": "valley top"
             },
             "geometry": {
@@ -1926,8 +1926,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "title": "valley-NW"
             },
             "geometry": {
@@ -2053,8 +2053,8 @@
                 "title": "valley NE2",
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "marker-color": "#4caf50",
+                "fill": "#4caf50"
             },
             "geometry": {
                 "coordinates": [
@@ -2098,8 +2098,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "marker-color": "#4caf50",
+                "fill": "#4caf50"
             },
             "geometry": {
                 "coordinates": [
@@ -2147,8 +2147,8 @@
             "properties": {
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29",
+                "marker-color": "#cddc39",
+                "fill": "#cddc39",
                 "sound-direction-azimuth": 160,
                 "title": "valley NE",
                 "sound-direction-azimuth-from": 130,
@@ -2188,8 +2188,8 @@
             "properties": {
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth": 160,
                 "title": "valley SE",
                 "sound-direction-azimuth-from": 130,
@@ -2238,8 +2238,8 @@
                 "sound-direction-azimuth": 250,
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "title": "valley-SW",
                 "sound-direction-azimuth-from": 220,
                 "sound-direction-azimuth-to": 280
@@ -2286,8 +2286,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "title": "valley middle"
             },
             "geometry": {
@@ -2344,8 +2344,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "marker-color": "#fdd835",
+                "fill": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -2389,8 +2389,8 @@
             "properties": {
                 "sound-class-num": 7,
                 "sound-class": "A",
-                "marker-color": "#cc1b15",
-                "fill": "#cc1b15"
+                "marker-color": "#ff5722",
+                "fill": "#ff5722"
             },
             "geometry": {
                 "coordinates": [
@@ -2480,8 +2480,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "sound-direction-azimuth": 219,
                 "title": "eclipe-back",
                 "sound-direction-azimuth-from": 189,
@@ -2529,8 +2529,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "marker-color": "#fdd835",
+                "fill": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -2578,8 +2578,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "marker-color": "#fdd835",
+                "fill": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -2647,8 +2647,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "sound-direction-azimuth": 250,
                 "sound-direction-azimuth-from": 220,
                 "sound-direction-azimuth-to": 280
@@ -2715,8 +2715,8 @@
             "properties": {
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515"
+                "marker-color": "#ffc107",
+                "fill": "#ffc107"
             },
             "geometry": {
                 "coordinates": [
@@ -2760,8 +2760,8 @@
             "properties": {
                 "sound-class-num": 7,
                 "sound-class": "A",
-                "marker-color": "#cc1b15",
-                "fill": "#cc1b15"
+                "marker-color": "#ff5722",
+                "fill": "#ff5722"
             },
             "geometry": {
                 "coordinates": [
@@ -2801,8 +2801,8 @@
             "properties": {
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515"
+                "marker-color": "#ffc107",
+                "fill": "#ffc107"
             },
             "geometry": {
                 "coordinates": [
@@ -2850,8 +2850,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "marker-color": "#fdd835",
+                "fill": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -2903,8 +2903,8 @@
             "properties": {
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29"
+                "marker-color": "#cddc39",
+                "fill": "#cddc39"
             },
             "geometry": {
                 "coordinates": [
@@ -2948,8 +2948,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "coordinates": [
@@ -3017,8 +3017,8 @@
             "properties": {
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29"
+                "marker-color": "#cddc39",
+                "fill": "#cddc39"
             },
             "geometry": {
                 "coordinates": [
@@ -3054,8 +3054,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "marker-color": "#fdd835",
+                "fill": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -3091,8 +3091,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "marker-color": "#4caf50",
+                "fill": "#4caf50"
             },
             "geometry": {
                 "coordinates": [
@@ -3136,8 +3136,8 @@
             "properties": {
                 "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#e89422",
-                "fill": "#e89422"
+                "marker-color": "#fdd835",
+                "fill": "#fdd835"
             },
             "geometry": {
                 "coordinates": [
@@ -3202,8 +3202,8 @@
                 "point-num": 1,
                 "sound-direction-comment": "South east into forest",
                 "sound-direction-azimuth": 130,
-                "fill": "#f1ae29",
-                "marker-color": "#f1ae29",
+                "fill": "#cddc39",
+                "marker-color": "#cddc39",
                 "upgrade-actions": "Sound block north",
                 "sound-class-num": 4,
                 "sound-class": "C",
@@ -3234,8 +3234,8 @@
                 "point-num": 26,
                 "sound-direction-comment": "south more than east.",
                 "upgrade-actions": "sound block north. Directional subs",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth-from": 110,
                 "sound-direction-azimuth-to": 170
             },
@@ -3253,9 +3253,9 @@
             "properties": {
                 "point-num": 2,
                 "title": "cosmonova",
-                "marker-color": "#cc1b15",
+                "marker-color": "#ff5722",
                 "sound-class-num": 7,
-                "fill": "#cc1b15",
+                "fill": "#ff5722",
                 "sound-direction-comment": "into forest hill. not east (lake and flat grounds)",
                 "sound-direction-azimuth": 120,
                 "description": " Field in the west. Between the bridge and Little Mu you find a spot with panorama view. If speakers are pointed towards the forest, the sound is captivated by the terrain in the forest.",
@@ -3279,8 +3279,8 @@
             "id": "26a89d68-9614-4511-9d20-94a38b552e6c",
             "type": "Feature",
             "properties": {
-                "fill": "#cc1b15",
-                "marker-color": "#cc1b15",
+                "fill": "#ff5722",
+                "marker-color": "#ff5722",
                 "title": "queendom",
                 "description": "Fairly close to the lake. Access from the north, but also through a forest road going from the hills. A small bridge is built to cross the ditch when going from forest to open field. Another bridge may be needed for better access",
                 "camp-in-2023": "none",
@@ -3309,8 +3309,8 @@
             "properties": {
                 "title": "kingdom",
                 "point-num": 4,
-                "fill": "#cc1b15",
-                "marker-color": "#cc1b15",
+                "fill": "#ff5722",
+                "marker-color": "#ff5722",
                 "sound-direction-azimuth": 260,
                 "sound-class-num": 7,
                 "sound-class": "A",
@@ -3335,8 +3335,8 @@
             "id": "a3af33bf-a575-4832-970e-c403ed6e5f84",
             "type": "Feature",
             "properties": {
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "description": "Access from the from parking. Road building may make this spot end up on the new road. Limited sound block to E and NE.",
                 "title": "sex on the field",
                 "sound-class": "B",
@@ -3369,12 +3369,12 @@
                 "point-num": 5,
                 "sound-direction-azimuth": 270,
                 "sound-direction-comment": "west into forest",
-                "marker-color": "#cc1b15",
+                "marker-color": "#ff5722",
                 "description": "On the far lower west side, the slope inside the forest to the west will absorb sound. Grass is moist but not wet usually.",
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none",
-                "fill": "#cc1b15",
+                "fill": "#ff5722",
                 "upgrade-actions": "dir subs + sound block north",
                 "sound-direction-azimuth-from": 240,
                 "sound-direction-azimuth-to": 300
@@ -3401,8 +3401,8 @@
                 "sound-class-num": 8,
                 "sound-direction-comment": "north or north-west",
                 "sound-direction-azimuth": 345,
-                "marker-color": "#b5140f",
-                "fill": "#b5140f",
+                "marker-color": "#f44336",
+                "fill": "#f44336",
                 "sound-direction-azimuth-from": 315,
                 "sound-direction-azimuth-to": 15
             },
@@ -3429,8 +3429,8 @@
                 "upgrade-actions": "dir subs",
                 "sound-direction-comment": "45",
                 "sound-direction-azimuth": 10,
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth-from": 340,
                 "sound-direction-azimuth-to": 40
             },
@@ -3454,8 +3454,8 @@
                 "sound-class-num": 8,
                 "sound-class": "A",
                 "upgrade-actions": "dir subs",
-                "marker-color": "#b5140f",
-                "fill": "#b5140f",
+                "marker-color": "#f44336",
+                "fill": "#f44336",
                 "sound-direction-azimuth-from": 240,
                 "sound-direction-azimuth-to": 300
             },
@@ -3480,8 +3480,8 @@
                 "camp-in-2023": "none",
                 "camp-in-2024": "none",
                 "camp-in-2025": "none",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth-from": 190,
                 "sound-direction-azimuth-to": 250
             },
@@ -3508,8 +3508,8 @@
                 "sound-class": "B",
                 "sound-direction-comment": "W-NW",
                 "sound-direction-azimuth": 315,
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth-from": 285,
                 "sound-direction-azimuth-to": 345
             },
@@ -3534,8 +3534,8 @@
                 "camp-in-2025": "Kismantle Castle [lead: yuimbo]",
                 "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth-from": 285,
                 "sound-direction-azimuth-to": 345
             },
@@ -3562,8 +3562,8 @@
                 "description": "Wooden building with a basement (concrete). Renovated in 2023 & 2024. Poor sound proofing of the walls. Elevated postition means more sound spread",
                 "sound-direction-comment": "West. ",
                 "sound-direction-azimuth": 270,
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "sound-direction-azimuth-from": 240,
                 "sound-direction-azimuth-to": 300
             },
@@ -3587,7 +3587,9 @@
                 "sound-direction-azimuth": 180,
                 "sound-direction-comment": "NW",
                 "sound-direction-azimuth-from": 150,
-                "sound-direction-azimuth-to": 210
+                "sound-direction-azimuth-to": 210,
+                "fill": "#ff5722",
+                "marker-color": "#ff5722"
             },
             "geometry": {
                 "coordinates": [
@@ -3612,8 +3614,8 @@
                 "sound-direction-azimuth": 120,
                 "sound-direction-comment": "E-SE",
                 "upgrade-actions": "dir subs",
-                "marker-color": "#cc4515",
-                "fill": "#cc4515",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "sound-direction-azimuth-from": 90,
                 "sound-direction-azimuth-to": 150
             },
@@ -3638,8 +3640,8 @@
                 "title": "clint eastwood",
                 "sound-direction-azimuth": 130,
                 "sound-direction-comment": "East",
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "sound-direction-azimuth-from": 100,
                 "sound-direction-azimuth-to": 160
             },
@@ -3663,8 +3665,8 @@
                 "sound-direction-azimuth": 145,
                 "sound-direction-comment": "S-SE-E",
                 "point-num": 14,
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29",
+                "marker-color": "#cddc39",
+                "fill": "#cddc39",
                 "sound-direction-azimuth-from": 115,
                 "sound-direction-azimuth-to": 175
             },
@@ -3690,8 +3692,8 @@
                 "upgrade-actions": "Doors closed. Sound proofing entrances better.",
                 "point-num": 20,
                 "sound-direction-comment": "Any",
-                "marker-color": "#b5140f",
-                "fill": "#b5140f"
+                "marker-color": "#f44336",
+                "fill": "#f44336"
             },
             "geometry": {
                 "coordinates": [
@@ -3715,8 +3717,8 @@
                 "sound-direction-comment": "S or SW",
                 "sound-direction-azimuth": 180,
                 "point-num": 26,
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "sound-direction-azimuth-from": 150,
                 "sound-direction-azimuth-to": 210
             },
@@ -3742,8 +3744,8 @@
                 "point-num": 7,
                 "sound-direction-azimuth": 220,
                 "sound-direction-comment": "SE",
-                "marker-color": "#e89422",
-                "fill": "#e89422",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "sound-direction-azimuth-from": 190,
                 "sound-direction-azimuth-to": 250
             },
@@ -3761,8 +3763,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "sound-direction-azimuth": 255,
                 "title": "Bison Flank",
                 "description": "Second to highest and lower parts of Bison",
@@ -3807,8 +3809,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "sound-direction-azimuth": 240,
                 "title": "Downtown + Bison Shank",
                 "description": "Park like area and lowest parts of Bison",
@@ -3865,8 +3867,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a",
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4",
                 "description": "Second to highest parts of Bison",
                 "title": "Bison Tenderloin"
             },
@@ -3912,8 +3914,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "title": "Wedge A"
             },
             "geometry": {
@@ -3962,8 +3964,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a",
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4",
                 "title": "Swamp"
             },
             "geometry": {
@@ -4016,8 +4018,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
                 "title": "Wedge B"
             },
             "geometry": {
@@ -4066,8 +4068,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4111,8 +4113,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4152,8 +4154,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4189,8 +4191,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4234,8 +4236,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4271,8 +4273,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "marker-color": "#1565c0",
+                "fill": "#1565c0",
                 "title": "Neighbour Farm West",
                 "description": "1000 m West from the Moomin Valley\n1500 m West from the Hills"
             },
@@ -4290,8 +4292,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "marker-color": "#1565c0",
+                "fill": "#1565c0",
                 "title": "Neighbour Community East",
                 "description": "500 m East from Hidden Meadow\n1000 m East from the Slope"
             },
@@ -4309,8 +4311,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "marker-color": "#1565c0",
+                "fill": "#1565c0",
                 "title": "Neighbour Dwellings North-East",
                 "description": "500 m NE from Hidden Meadow\n1000 m NE from the Slope\nObs! Behind Långanäsasjön which may carry sound."
             },
@@ -4328,8 +4330,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "marker-color": "#1565c0",
+                "fill": "#1565c0",
                 "description": "750 m North from the Hidden Meadow\n1000 North by North East from the Slope\nObs! Behind Långanäsasjön which may carry sound.",
                 "title": "Neighbour Dwellings North by North-East"
             },
@@ -4347,8 +4349,8 @@
             "properties": {
                 "sound-class-num": 0,
                 "sound-class": "E",
-                "marker-color": "#3cc954",
-                "fill": "#3cc954",
+                "marker-color": "#1565c0",
+                "fill": "#1565c0",
                 "description": "1500 m from the Moomin Valley\n2000 m from the Hills",
                 "title": "Neighbour Farm West by North West"
             },
@@ -4414,8 +4416,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4479,8 +4481,8 @@
             "properties": {
                 "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cfab2d",
-                "fill": "#cfab2d"
+                "marker-color": "#4caf50",
+                "fill": "#4caf50"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4520,8 +4522,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47",
+                "marker-color": "#0288d1",
+                "fill": "#0288d1",
                 "sound-direction-azimuth": 350,
                 "sound-direction-azimuth-from": 320,
                 "sound-direction-azimuth-to": 20
@@ -4584,8 +4586,8 @@
             "properties": {
                 "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#f1ae29",
-                "fill": "#f1ae29"
+                "marker-color": "#cddc39",
+                "fill": "#cddc39"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4645,8 +4647,8 @@
             "properties": {
                 "sound-class-num": 1,
                 "sound-class": "D",
-                "marker-color": "#6dbf47",
-                "fill": "#6dbf47"
+                "marker-color": "#0288d1",
+                "fill": "#0288d1"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4710,8 +4712,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "type": "Polygon",
@@ -4767,8 +4769,8 @@
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
-                "marker-color": "#9eb53a",
-                "fill": "#9eb53a"
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4"
             },
             "geometry": {
                 "type": "Polygon",
