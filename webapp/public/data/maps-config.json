@@ -14,10 +14,11 @@
     "soundMode": "letter"
   },
   "map3": {
-    "name": "Backup map for development",
-    "shortName": "(work in progress)",
-    "description": "Current sound classification map with full zone detail, sound direction, and camp history through 2025.",
-    "ext": "geojson"
+    "name": "Borderland 2026 - Sound Loudness Map",
+    "shortName": "BL26 Loundness Map",
+    "description": "This map is a GUESSTIMATE of the loundness across the area of borderland. This will be updated continuously up until build, since sound camps will move around and change their setups. The Loundess Map is not a guearantee, but an attempt to help you find the level of sound you prefer.",
+    "ext": "json",
+    "soundMode": "num"
   },
   "map4": {
     "name": "Sound Makers Map - Proposal #1: Quiet North & Dirty South",
