@@ -5454,8 +5454,10 @@
                 "title": "Vortex",
                 "description": "Unscouted point within the red zone WIP. Play towards the hill. No path. 2026: Just so in the radius for heavy power from TF1.",
                 "point-num": 32,
-                "sound-class": "none",
-                "sound-class-num": null
+                "sound-class": "A",
+                "sound-class-num": null,
+                "marker-color": "#cc1b15",
+                "fill": "#cc1b15"
             },
             "geometry": {
                 "type": "Point",
