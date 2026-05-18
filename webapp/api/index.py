@@ -101,3 +101,55 @@ def get_map(
         {"type": "FeatureCollection", "features": out},
         media_type="application/geo+json",
     )
+
+
+SOUND_POINT_PROPS = ("point-num", "title", "sound-class", "sound-class-num", "marker-color",
+                     "sound-direction-azimuth", "sound-direction-azimuth-from", "sound-direction-azimuth-to",
+                     "sound-direction-comment")
+
+
+@app.get(
+    "/geoapi/maps/{map_id}/sound-points",
+    summary="List sound points in a map",
+    description="""
+Return a list of all Point features that have a `point-num`, sorted by point number.
+
+Each item includes: `point-num`, `title`, `sound-class`, `sound-class-num`, `marker-color`,
+and azimuth fields (`sound-direction-azimuth`, `sound-direction-azimuth-from`,
+`sound-direction-azimuth-to`, `sound-direction-comment`).
+
+**Example requests:**
+```
+# All sound points sorted by point number
+GET /geoapi/maps/map1/sound-points
+
+# Exclude points with missing or "none" sound-class (default)
+GET /geoapi/maps/map1/sound-points?exclude_sound_class=-,none
+```
+""",
+)
+def list_sound_points(
+    map_id: str,
+    exclude_sound_class: str | None = Query("", description="Comma-separated sound-class values to exclude. Use `-` for missing. . Default: `` (no filtering)."),
+):
+    meta = CONFIG.get(map_id)
+    if not meta:
+        raise HTTPException(404, f"Unknown map '{map_id}'")
+
+    data = json.loads((DATA_DIR / f"{map_id}.{meta['ext']}").read_text(encoding="utf-8"))
+    excl = {v for v in exclude_sound_class.split(",") if v} if exclude_sound_class else set()
+
+    points = []
+    for f in data.get("features", []):
+        if f.get("geometry", {}).get("type") not in POINT_TYPES:
+            continue
+        props = f.get("properties") or {}
+        if "point-num" not in props:
+            continue
+        sc = props.get("sound-class")
+        if excl and (("-" in excl and sc is None) or sc in excl):
+            continue
+        points.append({k: props.get(k) for k in SOUND_POINT_PROPS})
+
+    points.sort(key=lambda p: p["point-num"] or 0)
+    return points
