@@ -4795,13 +4795,13 @@
                 "sound-class-num": 4,
                 "sound-class": "B",
                 "description": "North part of Field in the west. Access  through a forest road. Muumima's blue house placed here. Play directly towards forest. No sound blocking to the north unfortunately",
-                "sound-direction-azimuth-from": 100,
+                "sound-direction-azimuth-from": 130,
                 "sound-direction-azimuth-to": 230
             },
             "geometry": {
                 "coordinates": [
-                    14.920557524786801,
-                    57.62563830377053
+                    14.920562470809358,
+                    57.62563943278715
                 ],
                 "type": "Point"
             }
@@ -4823,7 +4823,7 @@
                 "upgrade-actions": "sound block north. Directional subs --> Red",
                 "marker-color": "#e89422",
                 "fill": "#e89422",
-                "sound-direction-azimuth-from": 110,
+                "sound-direction-azimuth-from": 130,
                 "sound-direction-azimuth-to": 230
             },
             "geometry": {
