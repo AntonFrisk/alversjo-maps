@@ -1,6 +1,6 @@
 // Extension for each map file as committed in the repo
 // Update this map if files are renamed or re-formatted.
-const MAP_EXT = { map1: 'json', map2: 'json', map3: 'geojson' };
+const MAP_EXT = { map1: 'json', map2: 'json', map3: 'json' };
 
 function mapRepoPath(mapName) {
   const ext = MAP_EXT[mapName] ?? 'json';
