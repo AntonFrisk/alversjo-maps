@@ -1,14 +1,14 @@
 {
   "map1": {
     "name": "Alversjö Evergreen Sound Makers Map",
-    "shortName": "Alversjö Evergreen SMM",
+    "shortName": "Alversjö Evergreen Map",
     "description": "Shows the best places to make loud noise in Alversjö. This map is updated every year to reflect the places which contain sound well, eg. buildings or natural formations. Sound class is on a scale 1-10 where 10 means the best place to be louds.",
     "ext": "json",
     "soundMode": "num"
   },
   "map2": {
     "name": "Borderland 2026 - Sound Makers Map",
-    "shortName": "Borderland 2026 SMM",
+    "shortName": "BL26 Sound Makers Map",
     "description": "The sound map for making sound at borderland 2026. Version 1.0. Pre-placement process still ongoing, minor updates may still happen.",
     "ext": "json",
     "soundMode": "letter"
