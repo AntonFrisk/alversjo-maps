@@ -4,14 +4,14 @@
         {
             "type": "Feature",
             "properties": {
-                "fill": "#ffc107",
+                "fill": "#ff5722",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
                 "title": "sunny-hills-top",
-                "sound-class": "B",
-                "sound-class-num": 6,
+                "sound-class": "A",
+                "sound-class-num": 7,
                 "sound-direction-azimuth": 280,
-                "marker-color": "#ffc107",
+                "marker-color": "#ff5722",
                 "sound-direction-azimuth-from": 182,
                 "sound-direction-azimuth-to": 320
             },
@@ -1185,27 +1185,23 @@
             }
         },
         {
-            "id": "27ec52cc-55c8-4059-a76c-ff7a397518f8",
+            "id": "a9c01c01-1d58-40c1-9c31-e9796824d79a",
             "type": "Feature",
             "properties": {
-                "fill": "#ffc107",
+                "fill": "#4caf50",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
-                "sound-class-num": 6,
-                "sound-class": "B",
-                "marker-color": "#ffc107",
-                "title": "eastern-void-393-reindeer"
+                "sound-class-num": 3,
+                "sound-class": "C",
+                "marker-color": "#4caf50",
+                "title": "eastern-void-393-reindeer p1"
             },
             "geometry": {
                 "coordinates": [
                     [
                         [
-                            14.93316348740845,
-                            57.6199244073365
-                        ],
-                        [
-                            14.93294272404816,
-                            57.6206662169123
+                            14.934776935963813,
+                            57.62072245300959
                         ],
                         [
                             14.93788176609658,
@@ -1214,6 +1210,38 @@
                         [
                             14.939433763255181,
                             57.62032152587969
+                        ],
+                        [
+                            14.940416052974781,
+                            57.61753009001123
+                        ],
+                        [
+                            14.934776935963813,
+                            57.62072245300959
+                        ]
+                    ]
+                ],
+                "type": "Polygon"
+            }
+        },
+        {
+            "id": "fc8484d3-20e6-456b-b66e-cd08f2fae5da",
+            "type": "Feature",
+            "properties": {
+                "fill": "#ffc107",
+                "fill-opacity": 0.3,
+                "stroke-width": 0,
+                "sound-class-num": 6,
+                "sound-class": "B",
+                "marker-color": "#ffc107",
+                "title": "eastern-void-393-reindeer p2"
+            },
+            "geometry": {
+                "coordinates": [
+                    [
+                        [
+                            14.940416052974781,
+                            57.61753009001123
                         ],
                         [
                             14.941208195482147,
@@ -1226,6 +1254,18 @@
                         [
                             14.93316348740845,
                             57.6199244073365
+                        ],
+                        [
+                            14.93294272404816,
+                            57.6206662169123
+                        ],
+                        [
+                            14.934776935963813,
+                            57.62072245300959
+                        ],
+                        [
+                            14.940416052974781,
+                            57.61753009001123
                         ]
                     ]
                 ],
@@ -1280,12 +1320,12 @@
             "id": "b49b36d8-8b59-4f5b-8cdd-225cf54c0463",
             "type": "Feature",
             "properties": {
-                "fill": "#fdd835",
+                "fill": "#cddc39",
                 "fill-opacity": 0.3,
                 "stroke-width": 0,
-                "sound-class-num": 5,
-                "sound-class": "B",
-                "marker-color": "#fdd835",
+                "sound-class-num": 4,
+                "sound-class": "C",
+                "marker-color": "#cddc39",
                 "title": "bison-572-marten"
             },
             "geometry": {
@@ -2926,10 +2966,10 @@
             "id": "bd96d377-33dc-47a5-b0da-916944ab6686",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 3,
+                "sound-class-num": 4,
                 "sound-class": "C",
-                "marker-color": "#4caf50",
-                "fill": "#4caf50",
+                "marker-color": "#cddc39",
+                "fill": "#cddc39",
                 "sound-direction-azimuth": 219,
                 "title": "villa-backyard",
                 "sound-direction-azimuth-from": 189,
@@ -3133,10 +3173,10 @@
             "id": "3930d2b1-67a8-48d2-8d6d-d53fb7cea85e",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 3,
+                "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#4caf50",
-                "fill": "#4caf50",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "sound-direction-azimuth": 250,
                 "sound-direction-azimuth-from": 220,
                 "sound-direction-azimuth-to": 280,
@@ -3629,29 +3669,21 @@
             }
         },
         {
-            "id": "c293a9fb-fe3d-4451-a335-a56335df365e",
+            "id": "3d65a08a-3d78-4798-bc4a-7ff47826b7ce",
             "type": "Feature",
             "properties": {
                 "sound-class-num": 2,
                 "sound-class": "D",
                 "marker-color": "#00bcd4",
                 "fill": "#00bcd4",
-                "title": "muumin-valley-707-ferret"
+                "title": "muumin-valley-707-ferret p1"
             },
             "geometry": {
                 "coordinates": [
                     [
                         [
-                            14.91255055940755,
-                            57.623014467521756
-                        ],
-                        [
-                            14.915324286672785,
-                            57.62298196604203
-                        ],
-                        [
-                            14.916363317352364,
-                            57.622660696773096
+                            14.916080215017455,
+                            57.62125755406025
                         ],
                         [
                             14.915880126643941,
@@ -3682,8 +3714,54 @@
                             57.61756206841582
                         ],
                         [
+                            14.913708457821658,
+                            57.61973906624566
+                        ],
+                        [
+                            14.916080215017455,
+                            57.62125755406025
+                        ]
+                    ]
+                ],
+                "type": "Polygon"
+            }
+        },
+        {
+            "id": "5a59837e-6a62-47a5-9b14-5a8a961ee433",
+            "type": "Feature",
+            "properties": {
+                "sound-class-num": 3,
+                "sound-class": "C",
+                "marker-color": "#4caf50",
+                "fill": "#4caf50",
+                "title": "muumin-valley-707-ferret p2"
+            },
+            "geometry": {
+                "coordinates": [
+                    [
+                        [
+                            14.913708457821658,
+                            57.61973906624566
+                        ],
+                        [
                             14.91255055940755,
                             57.623014467521756
+                        ],
+                        [
+                            14.915324286672785,
+                            57.62298196604203
+                        ],
+                        [
+                            14.916363317352364,
+                            57.622660696773096
+                        ],
+                        [
+                            14.916080215017455,
+                            57.62125755406025
+                        ],
+                        [
+                            14.913708457821658,
+                            57.61973906624566
                         ]
                     ]
                 ],
@@ -4909,11 +4987,11 @@
             "id": "4131d89b-ce7e-427c-827a-ef1878b6ebd0",
             "properties": {
                 "title": "power ridge east slope ",
-                "sound-class": "C",
-                "sound-class-num": 4,
+                "sound-class": "B",
+                "sound-class-num": 6,
                 "description": "Elevated lands. no good for sound",
-                "marker-color": "#cddc39",
-                "fill": "#cddc39"
+                "marker-color": "#ffc107",
+                "fill": "#ffc107"
             },
             "geometry": {
                 "type": "Polygon",
