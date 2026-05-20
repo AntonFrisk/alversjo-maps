@@ -1680,11 +1680,11 @@
             "id": "2fc86955-8884-4eac-b83f-4dd13adba233",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 1,
-                "marker-color": "#0288d1",
-                "fill": "#0288d1",
+                "sound-class-num": 2,
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4",
                 "title": "highland-plateau p1",
-                "sound-class": "none"
+                "sound-class": "D"
             },
             "geometry": {
                 "coordinates": [
