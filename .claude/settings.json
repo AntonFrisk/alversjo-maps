@@ -7,7 +7,8 @@
       "Bash(node -e ':*)",
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
-      "Bash(node scripts/download_tiles.mjs)"
+      "Bash(node scripts/download_tiles.mjs)",
+      "Bash(npm install *)"
     ],
     "additionalDirectories": [
       "\\tmp"
