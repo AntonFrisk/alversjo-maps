@@ -27,6 +27,19 @@ function wallWidthExpr() {
   ];
 }
 
+function ShareIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+    </svg>
+  );
+}
+
 function coordsText(feature) {
   const name = feature.properties?.name || 'wall';
   const coords = feature.geometry?.coordinates || [];
@@ -76,7 +89,11 @@ export default function WallBuilder() {
   const [camp, setCamp] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const deepLinkWallRef = useRef(null);
+  const deepLinkDoneRef = useRef(false);
 
   const draggingRef = useRef(null); // { idx }
   const finishDrawRef = useRef(() => {});
@@ -103,15 +120,56 @@ export default function WallBuilder() {
     if (c) c.style.cursor = on ? 'progress' : '';
   }, []);
 
+  // ---- node-handle source (selected wall vertices + midpoints) ----
+  const updateNodeSource = useCallback(() => {
+    const map = mapRef.current;
+    if (!map?.getSource(NODE_SOURCE)) return;
+    const wall = wallsRef.current.features.find((f) => f.id === selectedIdRef.current);
+    const features = [];
+    if (wall && buildModeRef.current && !drawingRef.current) {
+      const c = wall.geometry.coordinates;
+      c.forEach((pt, i) => features.push({
+        type: 'Feature', properties: { kind: 'node', idx: i },
+        geometry: { type: 'Point', coordinates: pt },
+      }));
+      for (let i = 0; i < c.length - 1; i += 1) {
+        features.push({
+          type: 'Feature', properties: { kind: 'mid', afterIdx: i },
+          geometry: { type: 'Point', coordinates: [(c[i][0] + c[i + 1][0]) / 2, (c[i][1] + c[i + 1][1]) / 2] },
+        });
+      }
+    }
+    map.getSource(NODE_SOURCE).setData({ type: 'FeatureCollection', features });
+  }, []);
+
+  // Select a wall and zoom the map to it (used by click + deep-link).
+  const focusWall = useCallback((id) => {
+    const wall = wallsRef.current.features.find((f) => f.id === id);
+    if (!wall || !mapRef.current) return;
+    setSelectedCamp(null);
+    selectedIdRef.current = id;
+    setSelectedId(id);
+    mapRef.current.setFilter('walls-selected', ['==', ['get', 'id'], id]);
+    updateNodeSource();
+    const coords = wall.geometry.coordinates;
+    const bounds = coords.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]));
+    mapRef.current.fitBounds(bounds, { padding: 140, maxZoom: 19, duration: 800 });
+  }, [updateNodeSource]);
+
   const refreshWalls = useCallback(async () => {
     try {
       const res = await fetch('/api/walls', { cache: 'no-store' });
       const fc = await res.json();
       setWallsData(fc.features ? fc : EMPTY);
+      // Honor a ?wall=<id> deep link once, after walls are loaded.
+      if (!deepLinkDoneRef.current && deepLinkWallRef.current) {
+        deepLinkDoneRef.current = true;
+        focusWall(deepLinkWallRef.current);
+      }
     } catch {
       /* ignore */
     }
-  }, [setWallsData]);
+  }, [setWallsData, focusWall]);
 
   // ---- other (non-sound) camps: browse + persistent pin ----
   const applyOtherCamps = useCallback(() => {
@@ -173,28 +231,6 @@ export default function WallBuilder() {
       mapRef.current?.setLayoutProperty('other-browse-outline', 'visibility', vis);
       return !v;
     });
-  }, []);
-
-  // ---- node-handle source (selected wall vertices + midpoints) ----
-  const updateNodeSource = useCallback(() => {
-    const map = mapRef.current;
-    if (!map?.getSource(NODE_SOURCE)) return;
-    const wall = wallsRef.current.features.find((f) => f.id === selectedIdRef.current);
-    const features = [];
-    if (wall && buildModeRef.current && !drawingRef.current) {
-      const c = wall.geometry.coordinates;
-      c.forEach((pt, i) => features.push({
-        type: 'Feature', properties: { kind: 'node', idx: i },
-        geometry: { type: 'Point', coordinates: pt },
-      }));
-      for (let i = 0; i < c.length - 1; i += 1) {
-        features.push({
-          type: 'Feature', properties: { kind: 'mid', afterIdx: i },
-          geometry: { type: 'Point', coordinates: [(c[i][0] + c[i + 1][0]) / 2, (c[i][1] + c[i + 1][1]) / 2] },
-        });
-      }
-    }
-    map.getSource(NODE_SOURCE).setData({ type: 'FeatureCollection', features });
   }, []);
 
   // ---- draw preview ----
@@ -418,12 +454,14 @@ export default function WallBuilder() {
       .catch(() => {});
   }, [mapReady, refreshWalls, refreshCamps]);
 
-  // Restore identity
+  // Restore identity + read ?wall=<id> deep link
   useEffect(() => {
     try {
       setBuilder(localStorage.getItem('wb-builder') || '');
       setCamp(localStorage.getItem('wb-camp') || '');
     } catch { /* ignore */ }
+    const w = new URLSearchParams(window.location.search).get('wall');
+    if (w) deepLinkWallRef.current = w;
   }, []);
 
   // ---- server mutations ----
@@ -613,6 +651,14 @@ export default function WallBuilder() {
     });
   };
 
+  const shareWall = (id) => {
+    const url = `${window.location.origin}${window.location.pathname}?wall=${encodeURIComponent(id)}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setShared(true);
+      setTimeout(() => setShared(false), 1800);
+    });
+  };
+
   // keep node handles in sync when selection/build mode changes
   useEffect(() => { updateNodeSource(); }, [selectedId, buildMode, walls, updateNodeSource]);
 
@@ -715,11 +761,17 @@ export default function WallBuilder() {
         <div style={panelStyle('top-right')}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <b>Wall details</b>
-            <button style={closeBtn} onClick={() => {
-              setSelectedId(null); selectedIdRef.current = null;
-              mapRef.current?.setFilter('walls-selected', ['==', ['get', 'id'], '__none__']);
-              updateNodeSource();
-            }}>×</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <button style={{ ...closeBtn, color: '#1a73e8', fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}
+                title="Copy a link to this wall" onClick={() => shareWall(selectedWall.id)}>
+                <ShareIcon />{shared ? 'Copied!' : 'Share'}
+              </button>
+              <button style={closeBtn} onClick={() => {
+                setSelectedId(null); selectedIdRef.current = null;
+                mapRef.current?.setFilter('walls-selected', ['==', ['get', 'id'], '__none__']);
+                updateNodeSource();
+              }}>×</button>
+            </div>
           </div>
 
           {buildMode ? (
