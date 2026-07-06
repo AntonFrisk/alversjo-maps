@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { CENTER, ZOOM, LOCAL_SATELLITE_STYLE, pixelsForMeters } from '@/lib/map-style';
 
 const CAMPS_SOURCE = 'sound-camps';
+const OTHER_SOURCE = 'other-camps';
 const WALLS_SOURCE = 'walls';
 const DRAW_SOURCE = 'wall-draw';
 const NODE_SOURCE = 'wall-nodes';
@@ -65,6 +66,11 @@ export default function WallBuilder() {
   const [selectedId, setSelectedId] = useState(null);
   const selectedIdRef = useRef(null);
 
+  const [showAllCamps, setShowAllCamps] = useState(false);
+  const otherCampsRef = useRef(EMPTY);
+  const pinnedIdsRef = useRef([]);
+  const [selectedCamp, setSelectedCamp] = useState(null); // pinned camp {id, name} for remove panel
+
   const [identityOpen, setIdentityOpen] = useState(false);
   const [builder, setBuilder] = useState('');
   const [camp, setCamp] = useState('');
@@ -106,6 +112,68 @@ export default function WallBuilder() {
       /* ignore */
     }
   }, [setWallsData]);
+
+  // ---- other (non-sound) camps: browse + persistent pin ----
+  const applyOtherCamps = useCallback(() => {
+    const pinned = new Set(pinnedIdsRef.current.map(Number));
+    const fc = {
+      type: 'FeatureCollection',
+      features: (otherCampsRef.current.features || []).map((f) => ({
+        ...f, properties: { ...f.properties, pinned: pinned.has(Number(f.id)) },
+      })),
+    };
+    mapRef.current?.getSource(OTHER_SOURCE)?.setData(fc);
+  }, []);
+
+  const refreshCamps = useCallback(async () => {
+    try {
+      const [other, vis] = await Promise.all([
+        fetch('/api/other-camps', { cache: 'no-store' }).then((r) => r.json()),
+        fetch('/api/visible-camps', { cache: 'no-store' }).then((r) => r.json()),
+      ]);
+      otherCampsRef.current = other.features ? other : EMPTY;
+      pinnedIdsRef.current = vis.ids || [];
+      applyOtherCamps();
+    } catch { /* ignore */ }
+  }, [applyOtherCamps]);
+
+  const pinCamp = useCallback(async (id) => {
+    if (!pinnedIdsRef.current.map(Number).includes(Number(id))) {
+      pinnedIdsRef.current = [...pinnedIdsRef.current, Number(id)];
+      applyOtherCamps();
+    }
+    try {
+      setBusy(true);
+      const r = await fetch('/api/visible-camps', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: Number(id) }),
+      });
+      const d = await r.json();
+      if (d.ids) { pinnedIdsRef.current = d.ids; applyOtherCamps(); }
+    } catch { /* ignore */ } finally { setBusy(false); }
+  }, [applyOtherCamps, setBusy]);
+  const pinCampRef = useRef(() => {});
+  pinCampRef.current = pinCamp;
+
+  const unpinCamp = useCallback(async (id) => {
+    pinnedIdsRef.current = pinnedIdsRef.current.map(Number).filter((x) => x !== Number(id));
+    applyOtherCamps();
+    setSelectedCamp(null);
+    try {
+      setBusy(true);
+      const r = await fetch(`/api/visible-camps?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const d = await r.json();
+      if (d.ids) { pinnedIdsRef.current = d.ids; applyOtherCamps(); }
+    } catch { /* ignore */ } finally { setBusy(false); }
+  }, [applyOtherCamps, setBusy]);
+
+  const toggleShowAll = useCallback(() => {
+    setShowAllCamps((v) => {
+      const vis = v ? 'none' : 'visible';
+      mapRef.current?.setLayoutProperty('other-browse-fill', 'visibility', vis);
+      mapRef.current?.setLayoutProperty('other-browse-outline', 'visibility', vis);
+      return !v;
+    });
+  }, []);
 
   // ---- node-handle source (selected wall vertices + midpoints) ----
   const updateNodeSource = useCallback(() => {
@@ -154,15 +222,36 @@ export default function WallBuilder() {
     });
 
     map.on('load', () => {
-      // Sound-camp context (read-only)
-      map.addSource(CAMPS_SOURCE, { type: 'geojson', data: EMPTY });
-      map.addLayer({ id: 'camps-fill', type: 'fill', source: CAMPS_SOURCE,
-        paint: { 'fill-color': '#3ba0ff', 'fill-opacity': 0.12 } });
-      map.addLayer({ id: 'camps-outline', type: 'line', source: CAMPS_SOURCE,
-        paint: { 'line-color': '#3ba0ff', 'line-width': 1.5, 'line-opacity': 0.7 } });
-      map.addLayer({ id: 'camps-label', type: 'symbol', source: CAMPS_SOURCE,
+      // Other camps (non-sound): light-gray browse layer (toggled) + blue pinned layer.
+      map.addSource(OTHER_SOURCE, { type: 'geojson', data: EMPTY });
+      map.addLayer({ id: 'other-browse-fill', type: 'fill', source: OTHER_SOURCE,
+        filter: ['!=', ['get', 'pinned'], true],
+        layout: { visibility: 'none' },
+        paint: { 'fill-color': '#9aa0a6', 'fill-opacity': 0.15 } });
+      map.addLayer({ id: 'other-browse-outline', type: 'line', source: OTHER_SOURCE,
+        filter: ['!=', ['get', 'pinned'], true],
+        layout: { visibility: 'none' },
+        paint: { 'line-color': '#9aa0a6', 'line-width': 1, 'line-opacity': 0.6 } });
+      map.addLayer({ id: 'other-pinned-fill', type: 'fill', source: OTHER_SOURCE,
+        filter: ['==', ['get', 'pinned'], true],
+        paint: { 'fill-color': '#3ba0ff', 'fill-opacity': 0.15 } });
+      map.addLayer({ id: 'other-pinned-outline', type: 'line', source: OTHER_SOURCE,
+        filter: ['==', ['get', 'pinned'], true],
+        paint: { 'line-color': '#3ba0ff', 'line-width': 1.5, 'line-opacity': 0.8 } });
+      map.addLayer({ id: 'other-pinned-label', type: 'symbol', source: OTHER_SOURCE,
+        filter: ['==', ['get', 'pinned'], true],
         layout: { 'text-field': ['get', 'name'], 'text-size': 12, 'text-allow-overlap': false },
         paint: { 'text-color': '#0a3a66', 'text-halo-color': '#fff', 'text-halo-width': 1.5 } });
+
+      // Sound-camp context (read-only) — pink, always shown with names.
+      map.addSource(CAMPS_SOURCE, { type: 'geojson', data: EMPTY });
+      map.addLayer({ id: 'camps-fill', type: 'fill', source: CAMPS_SOURCE,
+        paint: { 'fill-color': '#ff4da6', 'fill-opacity': 0.15 } });
+      map.addLayer({ id: 'camps-outline', type: 'line', source: CAMPS_SOURCE,
+        paint: { 'line-color': '#ff1f8f', 'line-width': 1.5, 'line-opacity': 0.8 } });
+      map.addLayer({ id: 'camps-label', type: 'symbol', source: CAMPS_SOURCE,
+        layout: { 'text-field': ['get', 'name'], 'text-size': 12, 'text-allow-overlap': false },
+        paint: { 'text-color': '#8a1155', 'text-halo-color': '#fff', 'text-halo-width': 1.5 } });
 
       // Walls
       map.addSource(WALLS_SOURCE, { type: 'geojson', data: EMPTY });
@@ -224,6 +313,7 @@ export default function WallBuilder() {
         e.preventDefault();
         const id = e.features[0]?.properties?.id;
         if (id != null) {
+          setSelectedCamp(null);
           selectedIdRef.current = String(id);
           setSelectedId(String(id));
           map.setFilter('walls-selected', ['==', ['get', 'id'], String(id)]);
@@ -232,6 +322,28 @@ export default function WallBuilder() {
       });
       map.on('mouseenter', 'walls-hit', () => { if (!drawingRef.current) map.getCanvas().style.cursor = 'pointer'; });
       map.on('mouseleave', 'walls-hit', () => { if (!drawingRef.current) map.getCanvas().style.cursor = ''; });
+
+      // Click a browse (unpinned) camp → pin it persistently for everyone.
+      map.on('click', 'other-browse-fill', (e) => {
+        if (drawingRef.current) return;
+        const id = e.features[0]?.properties?.id;
+        if (id != null) pinCampRef.current(Number(id));
+      });
+      map.on('mouseenter', 'other-browse-fill', () => { if (!drawingRef.current) map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', 'other-browse-fill', () => { if (!drawingRef.current) map.getCanvas().style.cursor = ''; });
+
+      // Click a pinned camp → open its panel (with a remove button).
+      map.on('click', 'other-pinned-fill', (e) => {
+        if (drawingRef.current) return;
+        const p = e.features[0]?.properties;
+        if (p?.id != null) {
+          setSelectedCamp({ id: Number(p.id), name: p.name });
+          selectedIdRef.current = null; setSelectedId(null);
+          map.setFilter('walls-selected', ['==', ['get', 'id'], '__none__']);
+        }
+      });
+      map.on('mouseenter', 'other-pinned-fill', () => { if (!drawingRef.current) map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', 'other-pinned-fill', () => { if (!drawingRef.current) map.getCanvas().style.cursor = ''; });
 
       // Node interaction: Ctrl/Cmd+click deletes the vertex, otherwise drag to move.
       map.on('mousedown', 'wall-node', (e) => {
@@ -299,11 +411,12 @@ export default function WallBuilder() {
   useEffect(() => {
     if (!mapReady) return;
     refreshWalls();
+    refreshCamps();
     fetch('/api/sound-camps', { cache: 'no-store' })
       .then((r) => r.json())
       .then((fc) => mapRef.current?.getSource(CAMPS_SOURCE)?.setData(fc.features ? fc : EMPTY))
       .catch(() => {});
-  }, [mapReady, refreshWalls]);
+  }, [mapReady, refreshWalls, refreshCamps]);
 
   // Restore identity
   useEffect(() => {
@@ -544,6 +657,18 @@ export default function WallBuilder() {
           </div>
         )}
         {error && <div style={{ color: '#c00', fontSize: 12, marginTop: 6 }}>{error}</div>}
+
+        <div style={{ borderTop: '1px solid #eee', marginTop: 10, paddingTop: 8 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer' }}>
+            <input type="checkbox" checked={showAllCamps} onChange={toggleShowAll} />
+            Show all camps
+          </label>
+          {showAllCamps && (
+            <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
+              Click a gray camp to pin it (show its name for everyone).
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Identity dialog */}
@@ -566,6 +691,22 @@ export default function WallBuilder() {
               <button style={btnPrimary} onClick={confirmIdentity}>OK</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Pinned camp panel */}
+      {selectedCamp && !selectedWall && (
+        <div style={panelStyle('top-right')}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <b>Pinned camp</b>
+            <button style={closeBtn} onClick={() => setSelectedCamp(null)}>×</button>
+          </div>
+          <div style={{ fontWeight: 600, marginTop: 6 }}>{selectedCamp.name || '(unnamed)'}</div>
+          <div style={{ fontSize: 12, color: '#777', margin: '4px 0 10px' }}>
+            Visible with its name to everyone.
+          </div>
+          <button style={{ ...btnSecondary, background: '#fce8e6', color: '#c5221f', borderColor: '#f5b5b0' }}
+            onClick={() => unpinCamp(selectedCamp.id)}>Hide this camp</button>
         </div>
       )}
 
