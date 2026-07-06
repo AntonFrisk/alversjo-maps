@@ -10,21 +10,68 @@ const OTHER_SOURCE = 'other-camps';
 const WALLS_SOURCE = 'walls';
 const DRAW_SOURCE = 'wall-draw';
 const NODE_SOURCE = 'wall-nodes';
+const MEASURE_SOURCE = 'measure';
+const PERIM_SOURCE = 'wall-perimeter-src';
 
 const WALL_WIDTH_M = 1.2; // hay-bale wall thickness
 const WALL_COLOR = '#d9c58c'; // yellow-beige hay bale
+const MEASURE_COLOR = '#1b5e20'; // dark green
+const PERIMETER_M = 5; // dashed safety perimeter shown around a selected wall
 const LAT = CENTER[1];
 
 const EMPTY = { type: 'FeatureCollection', features: [] };
 
-// A single static zoom-interpolated expression that renders WALL_WIDTH_M meters
-// of ground width in pixels at any zoom (pixels ∝ 2^zoom → exact with exponential base 2).
+// Zoom-interpolated expression rendering `meters` of ground width in pixels at any
+// zoom (pixels ∝ 2^zoom → exact with exponential base 2).
 function wallWidthExpr() {
   return [
     'interpolate', ['exponential', 2], ['zoom'],
     13, pixelsForMeters(WALL_WIDTH_M, LAT, 13),
     19, pixelsForMeters(WALL_WIDTH_M, LAT, 19),
   ];
+}
+
+// Build a real geographic buffer ring (constant `radiusM` on the ground at any zoom)
+// around a polyline, with round convex joins and round end caps. Concave joins bevel.
+function bufferPerimeter(coords, radiusM) {
+  if (!coords || coords.length < 2) return null;
+  const mLat = 111320;
+  const mLng = 111320 * Math.cos((coords[0][1] * Math.PI) / 180);
+  const ox = coords[0][0]; const oy = coords[0][1];
+  const toXY = ([lng, lat]) => [(lng - ox) * mLng, (lat - oy) * mLat];
+  const toLL = ([x, y]) => [ox + x / mLng, oy + y / mLat];
+  const P = coords.map(toXY);
+  const r = radiusM;
+  const out = [];
+  const leftNormal = (a, b) => { const dx = b[0] - a[0]; const dy = b[1] - a[1]; const L = Math.hypot(dx, dy) || 1; return [-dy / L, dx / L]; };
+  const arc = (c, a0, a1) => {
+    let d = a1 - a0;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    const steps = Math.max(1, Math.ceil(Math.abs(d) / (Math.PI / 12)));
+    for (let i = 1; i <= steps; i += 1) { const a = a0 + d * (i / steps); out.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); }
+  };
+  const side = (seq) => {
+    for (let k = 0; k < seq.length - 1; k += 1) {
+      const nrm = leftNormal(seq[k], seq[k + 1]);
+      out.push([seq[k][0] + r * nrm[0], seq[k][1] + r * nrm[1]]);
+      out.push([seq[k + 1][0] + r * nrm[0], seq[k + 1][1] + r * nrm[1]]);
+      if (k < seq.length - 2) {
+        const nrm2 = leftNormal(seq[k + 1], seq[k + 2]);
+        const a0 = Math.atan2(nrm[1], nrm[0]); const a1 = Math.atan2(nrm2[1], nrm2[0]);
+        let d = a1 - a0; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+        if (d < 0) arc(seq[k + 1], a0, a1); // convex on the left → round it
+      }
+    }
+    // end cap: semicircle over the far end
+    const nrm = leftNormal(seq[seq.length - 2], seq[seq.length - 1]);
+    const a0 = Math.atan2(nrm[1], nrm[0]);
+    arc(seq[seq.length - 1], a0, a0 - Math.PI);
+  };
+  side(P);
+  side([...P].reverse());
+  out.push(out[0]);
+  return out.map(toLL);
 }
 
 function ShareIcon() {
@@ -36,6 +83,55 @@ function ShareIcon() {
       <circle cx="18" cy="19" r="3" />
       <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
       <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+    </svg>
+  );
+}
+
+// Geodesic (haversine) distance in meters between two [lng, lat] points.
+function haversine([lng1, lat1], [lng2, lat2]) {
+  const R = 6371000;
+  const toRad = (d) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+// Per-segment (P1→P2, …) and total length in meters.
+function wallLengths(coords = []) {
+  const segments = [];
+  for (let i = 0; i < coords.length - 1; i += 1) segments.push(haversine(coords[i], coords[i + 1]));
+  return { segments, total: segments.reduce((a, b) => a + b, 0) };
+}
+
+// Build line + node + per-segment-length-label features for a live draw/measure preview.
+function previewFeatures(nodes, cursor, withTotal) {
+  const line = cursor ? [...nodes, cursor] : nodes;
+  const features = [];
+  if (line.length >= 2) features.push({ type: 'Feature', properties: { kind: 'line' }, geometry: { type: 'LineString', coordinates: line } });
+  nodes.forEach((pt) => features.push({ type: 'Feature', properties: { kind: 'node' }, geometry: { type: 'Point', coordinates: pt } }));
+  for (let i = 0; i < line.length - 1; i += 1) {
+    const a = line[i]; const b = line[i + 1];
+    features.push({
+      type: 'Feature', properties: { kind: 'label', label: `${haversine(a, b).toFixed(1)} m` },
+      geometry: { type: 'Point', coordinates: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] },
+    });
+  }
+  if (withTotal && line.length >= 2) {
+    features.push({
+      type: 'Feature', properties: { kind: 'total', label: `Σ ${wallLengths(line).total.toFixed(1)} m` },
+      geometry: { type: 'Point', coordinates: line[line.length - 1] },
+    });
+  }
+  return { type: 'FeatureCollection', features };
+}
+
+function RulerIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 8l5-5 13 13-5 5z" />
+      <path d="M8 7l2 2M11 4l2 2M14 7l2 2M5 10l2 2" />
     </svg>
   );
 }
@@ -84,6 +180,12 @@ export default function WallBuilder() {
   const pinnedIdsRef = useRef([]);
   const [selectedCamp, setSelectedCamp] = useState(null); // pinned camp {id, name} for remove panel
 
+  const [measuring, setMeasuring] = useState(false);
+  const measuringRef = useRef(false);
+  const measureNodesRef = useRef([]);
+  const measureDoneRef = useRef(false); // true once a measurement is finished (dbl-click)
+  const [measureTotal, setMeasureTotal] = useState(0);
+
   const [identityOpen, setIdentityOpen] = useState(false);
   const [builder, setBuilder] = useState('');
   const [camp, setCamp] = useState('');
@@ -120,8 +222,20 @@ export default function WallBuilder() {
     if (c) c.style.cursor = on ? 'progress' : '';
   }, []);
 
+  // 5 m geographic buffer around the selected wall (constant on the ground).
+  const updatePerimeter = useCallback(() => {
+    const src = mapRef.current?.getSource(PERIM_SOURCE);
+    if (!src) return;
+    const wall = wallsRef.current.features.find((f) => f.id === selectedIdRef.current);
+    const ring = wall ? bufferPerimeter(wall.geometry.coordinates, PERIMETER_M) : null;
+    src.setData(ring
+      ? { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ring } }] }
+      : EMPTY);
+  }, []);
+
   // ---- node-handle source (selected wall vertices + midpoints) ----
   const updateNodeSource = useCallback(() => {
+    updatePerimeter();
     const map = mapRef.current;
     if (!map?.getSource(NODE_SOURCE)) return;
     const wall = wallsRef.current.features.find((f) => f.id === selectedIdRef.current);
@@ -140,7 +254,7 @@ export default function WallBuilder() {
       }
     }
     map.getSource(NODE_SOURCE).setData({ type: 'FeatureCollection', features });
-  }, []);
+  }, [updatePerimeter]);
 
   // Select a wall and zoom the map to it (used by click + deep-link).
   const focusWall = useCallback((id) => {
@@ -233,18 +347,15 @@ export default function WallBuilder() {
     });
   }, []);
 
-  // ---- draw preview ----
+  // ---- draw preview (with live segment-length labels) ----
   const updateDrawPreview = useCallback((cursor) => {
-    const map = mapRef.current;
-    if (!map?.getSource(DRAW_SOURCE)) return;
-    const nodes = drawNodesRef.current;
-    const features = [];
-    const lineCoords = cursor ? [...nodes, cursor] : nodes;
-    if (lineCoords.length >= 2) {
-      features.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: lineCoords } });
-    }
-    nodes.forEach((pt) => features.push({ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: pt } }));
-    map.getSource(DRAW_SOURCE).setData({ type: 'FeatureCollection', features });
+    mapRef.current?.getSource(DRAW_SOURCE)?.setData(previewFeatures(drawNodesRef.current, cursor, true));
+  }, []);
+
+  // ---- measurement preview ----
+  const updateMeasurePreview = useCallback((cursor) => {
+    mapRef.current?.getSource(MEASURE_SOURCE)?.setData(previewFeatures(measureNodesRef.current, cursor, true));
+    setMeasureTotal(wallLengths(measureNodesRef.current).total);
   }, []);
 
   // ---- initialize map once ----
@@ -298,6 +409,11 @@ export default function WallBuilder() {
       map.addLayer({ id: 'walls-line', type: 'line', source: WALLS_SOURCE,
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': WALL_COLOR, 'line-opacity': 0.6, 'line-width': wallWidthExpr() } });
+      // 5 m dashed perimeter around the selected wall — a real geographic buffer ring.
+      map.addSource(PERIM_SOURCE, { type: 'geojson', data: EMPTY });
+      map.addLayer({ id: 'wall-perimeter', type: 'line', source: PERIM_SOURCE,
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: { 'line-color': WALL_COLOR, 'line-opacity': 0.85, 'line-width': 1.5, 'line-dasharray': [3, 3] } });
       map.addLayer({ id: 'walls-selected', type: 'line', source: WALLS_SOURCE,
         filter: ['==', ['get', 'id'], '__none__'],
         layout: { 'line-cap': 'round', 'line-join': 'round' },
@@ -306,10 +422,15 @@ export default function WallBuilder() {
       // Draw preview
       map.addSource(DRAW_SOURCE, { type: 'geojson', data: EMPTY });
       map.addLayer({ id: 'draw-line', type: 'line', source: DRAW_SOURCE,
+        filter: ['==', ['get', 'kind'], 'line'],
         paint: { 'line-color': '#ff5a1f', 'line-width': 2, 'line-dasharray': [3, 2] } });
       map.addLayer({ id: 'draw-nodes', type: 'circle', source: DRAW_SOURCE,
-        filter: ['==', '$type', 'Point'],
+        filter: ['==', ['get', 'kind'], 'node'],
         paint: { 'circle-radius': 5, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#ff5a1f' } });
+      map.addLayer({ id: 'draw-seg-labels', type: 'symbol', source: DRAW_SOURCE,
+        filter: ['==', ['get', 'kind'], 'label'],
+        layout: { 'text-field': ['get', 'label'], 'text-size': 12, 'text-allow-overlap': true, 'text-anchor': 'center' },
+        paint: { 'text-color': '#7a2b00', 'text-halo-color': '#fff', 'text-halo-width': 2 } });
 
       // Node handles (selected wall)
       map.addSource(NODE_SOURCE, { type: 'geojson', data: EMPTY });
@@ -320,9 +441,33 @@ export default function WallBuilder() {
         filter: ['==', ['get', 'kind'], 'node'],
         paint: { 'circle-radius': 6, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#ff5a1f' } });
 
+      // Measurement tool (ephemeral — never creates a wall)
+      map.addSource(MEASURE_SOURCE, { type: 'geojson', data: EMPTY });
+      map.addLayer({ id: 'measure-line', type: 'line', source: MEASURE_SOURCE,
+        filter: ['==', ['get', 'kind'], 'line'],
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: { 'line-color': MEASURE_COLOR, 'line-width': 2.5, 'line-dasharray': [2, 1.5] } });
+      map.addLayer({ id: 'measure-nodes', type: 'circle', source: MEASURE_SOURCE,
+        filter: ['==', ['get', 'kind'], 'node'],
+        paint: { 'circle-radius': 4, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': MEASURE_COLOR } });
+      map.addLayer({ id: 'measure-seg-labels', type: 'symbol', source: MEASURE_SOURCE,
+        filter: ['==', ['get', 'kind'], 'label'],
+        layout: { 'text-field': ['get', 'label'], 'text-size': 12, 'text-allow-overlap': true },
+        paint: { 'text-color': '#1b5e20', 'text-halo-color': '#fff', 'text-halo-width': 2 } });
+      map.addLayer({ id: 'measure-total', type: 'symbol', source: MEASURE_SOURCE,
+        filter: ['==', ['get', 'kind'], 'total'],
+        layout: { 'text-field': ['get', 'label'], 'text-size': 14, 'text-allow-overlap': true, 'text-offset': [0, -1.2] },
+        paint: { 'text-color': '#14481a', 'text-halo-color': '#fff', 'text-halo-width': 2 } });
+
       // ---- interactions ----
-      // Add point while drawing
+      // Add point while drawing or measuring
       map.on('click', (e) => {
+        if (measuringRef.current) {
+          if (measureDoneRef.current) { measureNodesRef.current = []; measureDoneRef.current = false; }
+          measureNodesRef.current = [...measureNodesRef.current, [e.lngLat.lng, e.lngLat.lat]];
+          updateMeasurePreview();
+          return;
+        }
         if (!drawingRef.current) return;
         drawNodesRef.current = [...drawNodesRef.current, [e.lngLat.lng, e.lngLat.lat]];
         setDrawCount(drawNodesRef.current.length);
@@ -330,13 +475,22 @@ export default function WallBuilder() {
       });
 
       map.on('mousemove', (e) => {
-        if (drawingRef.current && drawNodesRef.current.length) {
+        if (measuringRef.current && measureNodesRef.current.length && !measureDoneRef.current) {
+          updateMeasurePreview([e.lngLat.lng, e.lngLat.lat]);
+        } else if (drawingRef.current && drawNodesRef.current.length) {
           updateDrawPreview([e.lngLat.lng, e.lngLat.lat]);
         }
       });
 
-      // Double-click finishes the wall
+      // Double-click finishes the wall / measurement
       map.on('dblclick', (e) => {
+        if (measuringRef.current) {
+          e.preventDefault();
+          measureNodesRef.current = dedupeByPixels(map, [...measureNodesRef.current, [e.lngLat.lng, e.lngLat.lat]]);
+          measureDoneRef.current = true; // freeze; next click starts a new measurement
+          updateMeasurePreview();
+          return;
+        }
         if (!drawingRef.current) return;
         e.preventDefault();
         drawNodesRef.current = [...drawNodesRef.current, [e.lngLat.lng, e.lngLat.lat]];
@@ -345,7 +499,7 @@ export default function WallBuilder() {
 
       // Select existing wall
       map.on('click', 'walls-hit', (e) => {
-        if (drawingRef.current) return;
+        if (drawingRef.current || measuringRef.current) return;
         e.preventDefault();
         const id = e.features[0]?.properties?.id;
         if (id != null) {
@@ -361,7 +515,7 @@ export default function WallBuilder() {
 
       // Click a browse (unpinned) camp → pin it persistently for everyone.
       map.on('click', 'other-browse-fill', (e) => {
-        if (drawingRef.current) return;
+        if (drawingRef.current || measuringRef.current) return;
         const id = e.features[0]?.properties?.id;
         if (id != null) pinCampRef.current(Number(id));
       });
@@ -370,7 +524,7 @@ export default function WallBuilder() {
 
       // Click a pinned camp → open its panel (with a remove button).
       map.on('click', 'other-pinned-fill', (e) => {
-        if (drawingRef.current) return;
+        if (drawingRef.current || measuringRef.current) return;
         const p = e.features[0]?.properties;
         if (p?.id != null) {
           setSelectedCamp({ id: Number(p.id), name: p.name });
@@ -383,7 +537,7 @@ export default function WallBuilder() {
 
       // Node interaction: Ctrl/Cmd+click deletes the vertex, otherwise drag to move.
       map.on('mousedown', 'wall-node', (e) => {
-        if (!buildModeRef.current) return;
+        if (!buildModeRef.current || measuringRef.current) return;
         e.preventDefault();
         const idx = e.features[0].properties.idx;
         if (e.originalEvent.ctrlKey || e.originalEvent.metaKey) {
@@ -453,6 +607,25 @@ export default function WallBuilder() {
       .then((fc) => mapRef.current?.getSource(CAMPS_SOURCE)?.setData(fc.features ? fc : EMPTY))
       .catch(() => {});
   }, [mapReady, refreshWalls, refreshCamps]);
+
+  // Esc clears an in-progress measurement (or cancels a wall draw).
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      const map = mapRef.current;
+      if (drawingRef.current) {
+        drawingRef.current = false; setDrawing(false);
+        drawNodesRef.current = []; setDrawCount(0);
+        map?.getSource(DRAW_SOURCE)?.setData(EMPTY);
+        if (map) { map.doubleClickZoom.enable(); map.getCanvas().style.cursor = ''; }
+      } else if (measuringRef.current) {
+        measureNodesRef.current = []; measureDoneRef.current = false; setMeasureTotal(0);
+        map?.getSource(MEASURE_SOURCE)?.setData(EMPTY);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   // Restore identity + read ?wall=<id> deep link
   useEffect(() => {
@@ -619,7 +792,34 @@ export default function WallBuilder() {
     updateNodeSource();
   };
 
+  const clearMeasure = () => {
+    measureNodesRef.current = [];
+    measureDoneRef.current = false;
+    setMeasureTotal(0);
+    mapRef.current?.getSource(MEASURE_SOURCE)?.setData(EMPTY);
+  };
+
+  const stopMeasure = () => {
+    measuringRef.current = false;
+    setMeasuring(false);
+    clearMeasure();
+    if (mapRef.current) {
+      mapRef.current.doubleClickZoom.enable();
+      mapRef.current.getCanvas().style.cursor = '';
+    }
+  };
+
+  const toggleMeasure = () => {
+    if (measuringRef.current) { stopMeasure(); return; }
+    if (drawingRef.current) cancelDraw();
+    measuringRef.current = true;
+    setMeasuring(true);
+    mapRef.current.doubleClickZoom.disable();
+    mapRef.current.getCanvas().style.cursor = 'crosshair';
+  };
+
   const startDraw = () => {
+    if (measuringRef.current) stopMeasure();
     setSelectedId(null); selectedIdRef.current = null;
     mapRef.current?.setFilter('walls-selected', ['==', ['get', 'id'], '__none__']);
     updateNodeSource();
@@ -703,6 +903,20 @@ export default function WallBuilder() {
           </div>
         )}
         {error && <div style={{ color: '#c00', fontSize: 12, marginTop: 6 }}>{error}</div>}
+
+        <div style={{ borderTop: '1px solid #eee', marginTop: 10, paddingTop: 8 }}>
+          <button
+            style={{ ...(measuring ? btnPrimary : btnSecondary), display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'center' }}
+            onClick={toggleMeasure}>
+            <RulerIcon />{measuring ? 'Measuring — tap to stop' : 'Measure'}
+          </button>
+          {measuring && (
+            <div style={{ fontSize: 12, marginTop: 6 }}>
+              Click points, double-click to finish. Total: <b>{measureTotal.toFixed(1)} m</b>
+              <button style={{ ...btnGhost, padding: '0 0 0 8px', fontSize: 12 }} onClick={clearMeasure}>clear</button>
+            </div>
+          )}
+        </div>
 
         <div style={{ borderTop: '1px solid #eee', marginTop: 10, paddingTop: 8 }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer' }}>
@@ -800,6 +1014,18 @@ export default function WallBuilder() {
           <div style={{ fontSize: 12, color: '#777', margin: '8px 0 2px' }}>
             By {selectedWall.properties.builder || '—'} · {selectedWall.properties.camp || '—'}
           </div>
+
+          {(() => {
+            const { segments, total } = wallLengths(selectedWall.geometry.coordinates);
+            return (
+              <div style={{ fontSize: 13, margin: '4px 0 2px' }}>
+                <b>Length:</b> {total.toFixed(1)} m
+                {segments.length > 1 && (
+                  <span style={{ color: '#777' }}> ({segments.map((s) => s.toFixed(1)).join(' + ')})</span>
+                )}
+              </div>
+            );
+          })()}
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
             <b style={{ fontSize: 13 }}>Coordinates</b>
