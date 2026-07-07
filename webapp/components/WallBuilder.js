@@ -514,8 +514,10 @@ export default function WallBuilder() {
       map.on('mouseleave', 'walls-hit', () => { if (!drawingRef.current) map.getCanvas().style.cursor = ''; });
 
       // Click a browse (unpinned) camp → pin it persistently for everyone.
+      // Walls always win: if a wall is under the cursor, let its handler select it.
       map.on('click', 'other-browse-fill', (e) => {
         if (drawingRef.current || measuringRef.current) return;
+        if (map.queryRenderedFeatures(e.point, { layers: ['walls-hit'] }).length) return;
         const id = e.features[0]?.properties?.id;
         if (id != null) pinCampRef.current(Number(id));
       });
@@ -525,6 +527,7 @@ export default function WallBuilder() {
       // Click a pinned camp → open its panel (with a remove button).
       map.on('click', 'other-pinned-fill', (e) => {
         if (drawingRef.current || measuringRef.current) return;
+        if (map.queryRenderedFeatures(e.point, { layers: ['walls-hit'] }).length) return;
         const p = e.features[0]?.properties;
         if (p?.id != null) {
           setSelectedCamp({ id: Number(p.id), name: p.name });
