@@ -667,6 +667,20 @@ export default function WallBuilder() {
     } catch { /* ignore */ } finally { setBusy(false); }
   }, [setBusy]);
 
+  // Debounced variant for rapid-fire edits (typing into coordinate inputs) to avoid
+  // one Vercel Blob write per keystroke. One write per burst instead.
+  const persistGeometryTimersRef = useRef(new Map());
+  const persistGeometryDebounced = useCallback((id, coordinates) => {
+    const timers = persistGeometryTimersRef.current;
+    const existing = timers.get(id);
+    if (existing) clearTimeout(existing);
+    const t = setTimeout(() => {
+      timers.delete(id);
+      persistGeometry(id, coordinates);
+    }, 500);
+    timers.set(id, t);
+  }, [persistGeometry]);
+
   // Edit a single vertex coordinate from the panel (paste-in friendly).
   const updateWallPoint = useCallback((id, idx, which, valueStr) => {
     const v = parseFloat(valueStr);
@@ -680,8 +694,8 @@ export default function WallBuilder() {
       features: wallsRef.current.features.map((f) => (f.id === id ? { ...f, geometry: { ...f.geometry, coordinates: coords } } : f)),
     });
     updateNodeSource();
-    persistGeometry(id, coords);
-  }, [setWallsData, updateNodeSource, persistGeometry]);
+    persistGeometryDebounced(id, coords);
+  }, [setWallsData, updateNodeSource, persistGeometryDebounced]);
 
   const deleteWallPoint = useCallback((id, idx) => {
     const wall = wallsRef.current.features.find((f) => f.id === id);
@@ -751,20 +765,31 @@ export default function WallBuilder() {
   }, [builder, camp, setWallsData, setBusy, updateDrawPreview, updateNodeSource]);
   finishDrawRef.current = finishDraw;
 
-  const updateWallProp = useCallback(async (id, patch) => {
+  // Debounce name/notes edits so each keystroke doesn't trigger a Vercel Blob write.
+  const propTimersRef = useRef(new Map());
+  const updateWallProp = useCallback((id, patch) => {
     const fc = {
       type: 'FeatureCollection',
       features: wallsRef.current.features.map((f) =>
         f.id === id ? { ...f, properties: { ...f.properties, ...patch } } : f),
     };
     setWallsData(fc);
-    try {
-      await fetch('/api/walls', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...patch }),
-      });
-    } catch { /* ignore */ }
+    const timers = propTimersRef.current;
+    const key = `${id}`;
+    const prev = timers.get(key);
+    if (prev) { clearTimeout(prev.t); patch = { ...prev.patch, ...patch }; }
+    const finalPatch = patch;
+    const t = setTimeout(async () => {
+      timers.delete(key);
+      try {
+        await fetch('/api/walls', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...finalPatch }),
+        });
+      } catch { /* ignore */ }
+    }, 500);
+    timers.set(key, { t, patch: finalPatch });
   }, [setWallsData]);
 
   const deleteWall = useCallback(async (id) => {

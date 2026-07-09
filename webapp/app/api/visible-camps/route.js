@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readJson, writeJson, blobConfigured } from '@/lib/blob-json';
+import { readJson, readJsonForWrite, writeJsonWithBlobs, blobConfigured } from '@/lib/blob-json';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,6 +10,11 @@ const PREFIX = 'visible-camps/data';
 async function readIds() {
   const data = await readJson(PREFIX, []);
   return Array.isArray(data) ? data.map(Number) : [];
+}
+
+async function readIdsForWrite() {
+  const { data, blobs } = await readJsonForWrite(PREFIX, []);
+  return { ids: Array.isArray(data) ? data.map(Number) : [], blobs };
 }
 
 function storeGuard() {
@@ -34,9 +39,9 @@ export async function POST(request) {
     const { id } = await request.json();
     const n = Number(id);
     if (!Number.isFinite(n)) return NextResponse.json({ error: 'valid id required' }, { status: 400 });
-    const ids = await readIds();
+    const { ids, blobs } = await readIdsForWrite();
     if (!ids.includes(n)) ids.push(n);
-    await writeJson(PREFIX, ids);
+    await writeJsonWithBlobs(PREFIX, ids, blobs);
     return NextResponse.json({ ids });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -49,8 +54,9 @@ export async function DELETE(request) {
   try {
     const n = Number(new URL(request.url).searchParams.get('id'));
     if (!Number.isFinite(n)) return NextResponse.json({ error: 'valid id required' }, { status: 400 });
-    const ids = (await readIds()).filter((x) => x !== n);
-    await writeJson(PREFIX, ids);
+    const { ids: existing, blobs } = await readIdsForWrite();
+    const ids = existing.filter((x) => x !== n);
+    await writeJsonWithBlobs(PREFIX, ids, blobs);
     return NextResponse.json({ ids });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
