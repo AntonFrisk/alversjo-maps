@@ -136,6 +136,20 @@ function RulerIcon() {
   );
 }
 
+function ListIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="8" y1="6" x2="21" y2="6" />
+      <line x1="8" y1="12" x2="21" y2="12" />
+      <line x1="8" y1="18" x2="21" y2="18" />
+      <line x1="3" y1="6" x2="3.01" y2="6" />
+      <line x1="3" y1="12" x2="3.01" y2="12" />
+      <line x1="3" y1="18" x2="3.01" y2="18" />
+    </svg>
+  );
+}
+
 function coordsText(feature) {
   const name = feature.properties?.name || 'wall';
   const coords = feature.geometry?.coordinates || [];
@@ -193,6 +207,7 @@ export default function WallBuilder() {
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showList, setShowList] = useState(false);
 
   const deepLinkWallRef = useRef(null);
   const deepLinkDoneRef = useRef(false);
@@ -917,6 +932,46 @@ export default function WallBuilder() {
             <div style={{ fontSize: 12, marginTop: 6 }}>
               Click points, double-click to finish. Total: <b>{measureTotal.toFixed(1)} m</b>
               <button style={{ ...btnGhost, padding: '0 0 0 8px', fontSize: 12 }} onClick={clearMeasure}>clear</button>
+            </div>
+          )}
+        </div>
+
+        <div style={{ borderTop: '1px solid #eee', marginTop: 10, paddingTop: 8 }}>
+          <button
+            style={{ ...(showList ? btnPrimary : btnSecondary), display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'center' }}
+            onClick={() => setShowList((v) => !v)}>
+            <ListIcon />{showList ? 'Hide list' : 'Show list'}
+          </button>
+          {showList && (
+            <div style={{ marginTop: 8, maxHeight: 'min(40vh, 320px)', overflowY: 'auto' }}>
+              {walls.features.length === 0 ? (
+                <div style={{ fontSize: 12, color: '#888' }}>No walls yet.</div>
+              ) : (
+                [...walls.features]
+                  .sort((a, b) => (a.properties?.name || '').localeCompare(b.properties?.name || ''))
+                  .map((wall) => {
+                    const total = wallLengths(wall.geometry?.coordinates || []).total;
+                    const active = wall.id === selectedId;
+                    return (
+                      <button
+                        key={wall.id}
+                        type="button"
+                        onClick={() => focusWall(wall.id)}
+                        style={{
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8,
+                          width: '100%', boxSizing: 'border-box', marginBottom: 4, padding: '6px 8px',
+                          border: active ? '1px solid #1a73e8' : '1px solid #e0e0e0',
+                          borderRadius: 6, background: active ? '#e8f0fe' : '#fafafa',
+                          cursor: 'pointer', textAlign: 'left', fontSize: 12, fontFamily: 'inherit',
+                        }}>
+                        <span style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {wall.properties?.name || '(unnamed)'}
+                        </span>
+                        <span style={{ color: '#666', flexShrink: 0 }}>{total.toFixed(1)} m</span>
+                      </button>
+                    );
+                  })
+              )}
             </div>
           )}
         </div>
