@@ -1,0 +1,1115 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 22,
+    "links": [],
+    "panels": [
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 21,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "builder",
+            "expr": "sensor_sound_LCI",
+            "format": "time_series",
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "New panel",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "description": "All sound cameras vs their curfew. Zone, Campname and Allowed Max come from the curfew metric (per zone/day/hour); Difference is red when over, Status flags TOO LOUD.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "left",
+              "cellOptions": {
+                "type": "color-text"
+              },
+              "filterable": true,
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "dB"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Last Measured"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dB"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rolling Median"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dB"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Allowed Max"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dB"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Difference"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dB"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "thresholds"
+                  }
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      },
+                      {
+                        "color": "red",
+                        "value": 0
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Status"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "index": 0,
+                          "text": "OK"
+                        },
+                        "1": {
+                          "index": 1,
+                          "text": "TOO LOUD"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      },
+                      {
+                        "color": "red",
+                        "value": 1
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "thresholds"
+                  }
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 30,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        },
+        "id": 19,
+        "options": {
+          "cellHeight": "md",
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "frameIndex": 0,
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": false,
+              "displayName": "Device"
+            }
+          ]
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "label_replace(last_over_time(Milesight_WS302_LCeq[1h]), \"Device\", \"$1\", \"dev_name\", \"Sound_(.+)\") * ${correction_factor}",
+            "format": "time_series",
+            "hide": false,
+            "instant": true,
+            "legendFormat": "Last Measured",
+            "range": false,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "median_over_time(Milesight_WS302_LCeq[6m]) * ${correction_factor}",
+            "hide": false,
+            "instant": true,
+            "legendFormat": "Rolling Median",
+            "range": false,
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "sound_curfew_limit_dbc",
+            "hide": false,
+            "instant": true,
+            "legendFormat": "Allowed Max",
+            "range": false,
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "(median_over_time(Milesight_WS302_LCeq[6m]) * ${correction_factor}) > bool on(label) group_left(zone,campname) sound_curfew_limit_dbc",
+            "format": "time_series",
+            "hide": false,
+            "instant": true,
+            "legendFormat": "Status",
+            "range": false,
+            "refId": "D"
+          }
+        ],
+        "title": "Sound camp overview ",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "label",
+                "Device",
+                "zone",
+                "campname"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Difference",
+              "binary": {
+                "left": "Rolling Median",
+                "operator": "-",
+                "right": "Allowed Max"
+              },
+              "mode": "binary",
+              "replaceFields": false
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "__name__": true,
+                "dev_name": true,
+                "label": false
+              },
+              "indexByName": {
+                "Allowed Max": 6,
+                "Campname": 2,
+                "Device": 0,
+                "Difference": 7,
+                "Label": 1,
+                "Last Measured": 4,
+                "Rolling Median": 5,
+                "Status": 8,
+                "Zone": 3
+              },
+              "renameByName": {
+                "campname": "Campname",
+                "label": "Label",
+                "zone": "Zone"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 24,
+          "x": 0,
+          "y": 38
+        },
+        "id": 20,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "| label | Camp name | Zone | Comments |\n| --- | --- | --- | --- |\n| sound_test | na | sound_test |  |\n| camp2 | na | E |  |\n| camp3 | Club SIN | C | Sensor underreporting. Have additional allowance: C-plus with 100db |\n| camp4 | Hyperstition1 | D | Sensor lost.  |\n| camp5 | Black Water Ops | D |  |\n| Grateful Grogg | Grateful Grogg | D | Sensor oversenitive. Building blocks the sound well. |\n| Peacocks | Peacocks | D | Sensor moved to 6m. Previosuly over reporting. Too close to stage |\n| camp8 | Colour Cafe | D |  |\n| camp9 | na | E |  |\n| Foxhole | Foxhole | C |  |\n| camp11 | BigBarn-upper-floor | D |  |\n| camp12 | Hyperstition2 | D |  |\n| camp13 | Camp Ra | D |  |\n| Bambi's Nest | Bambi's Nest | D |  |\n| camp15 | Garage | D |  |\n| camp16 | Royal Snail | C |  |\n| camp17 | Muumimaa | B |  |\n| End of the Rainbow | End of the Rainbow | C |  |\n| camp19 | Hexology | C | Sensor over reporting. +4 dB |\n| camp20 | Glade | B |  |\n| Spaceport | Spaceport | C |  |\n| camp22 | Circus Analogue | C |  |\n| camp23 | Kishmantle | C |  |\n| camp24 | Church | B |  |\n| Mothership | Mothership | B |  |\n| camp26 | Cupids Garden | C |  |\n",
+          "mode": "markdown"
+        },
+        "pluginVersion": "12.0.0",
+        "title": "Camps device mapping",
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "fillOpacity": 70,
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineWidth": 0,
+              "spanNulls": false
+            },
+            "mappings": [],
+            "max": 120,
+            "min": 20,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "text"
+                },
+                {
+                  "color": "super-light-purple",
+                  "value": 40
+                },
+                {
+                  "color": "light-purple",
+                  "value": 60
+                },
+                {
+                  "color": "blue",
+                  "value": 80
+                },
+                {
+                  "color": "super-light-green",
+                  "value": 85
+                },
+                {
+                  "color": "green",
+                  "value": 92
+                },
+                {
+                  "color": "yellow",
+                  "value": 98
+                },
+                {
+                  "color": "orange",
+                  "value": 104
+                },
+                {
+                  "color": "red",
+                  "value": 110
+                },
+                {
+                  "color": "dark-red",
+                  "value": 115
+                }
+              ]
+            },
+            "unit": "dB"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 24,
+          "x": 0,
+          "y": 52
+        },
+        "id": 14,
+        "options": {
+          "alignValue": "left",
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "mergeValues": true,
+          "rowHeight": 0.9,
+          "showValue": "auto",
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "{__name__=\"Milesight_WS302_LCeq\"} * ${correction_factor}",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "{{label}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "LCeq overview",
+        "type": "state-timeline"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "fillOpacity": 70,
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineWidth": 0,
+              "spanNulls": false
+            },
+            "mappings": [],
+            "max": 120,
+            "min": 20,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "text"
+                },
+                {
+                  "color": "super-light-purple",
+                  "value": 40
+                },
+                {
+                  "color": "light-purple",
+                  "value": 60
+                },
+                {
+                  "color": "blue",
+                  "value": 80
+                },
+                {
+                  "color": "super-light-green",
+                  "value": 85
+                },
+                {
+                  "color": "green",
+                  "value": 92
+                },
+                {
+                  "color": "yellow",
+                  "value": 98
+                },
+                {
+                  "color": "orange",
+                  "value": 104
+                },
+                {
+                  "color": "red",
+                  "value": 110
+                },
+                {
+                  "color": "dark-red",
+                  "value": 115
+                }
+              ]
+            },
+            "unit": "dB"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 13,
+          "w": 24,
+          "x": 0,
+          "y": 66
+        },
+        "id": 15,
+        "options": {
+          "alignValue": "left",
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "mergeValues": true,
+          "rowHeight": 0.9,
+          "showValue": "auto",
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "{__name__=\"Milesight_WS302_LCImax\"} * ${correction_factor}",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "{{label}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "LC-max overview",
+        "type": "state-timeline"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "left",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "filterable": false,
+              "inspect": false,
+              "minWidth": 150
+            },
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 20
+                },
+                {
+                  "color": "orange",
+                  "value": 40
+                },
+                {
+                  "color": "yellow",
+                  "value": 60
+                },
+                {
+                  "color": "green",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "battery"
+              },
+              "properties": [
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Label"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 220
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 79
+        },
+        "id": 17,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "enablePagination": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "frameIndex": 0,
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": false,
+              "displayName": "battery"
+            }
+          ]
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "last_over_time(Milesight_WS302_battery[1h])",
+            "hide": false,
+            "instant": true,
+            "legendFormat": "battery",
+            "range": false,
+            "refId": "A"
+          }
+        ],
+        "title": "Battery levels",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "label"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "__name__": true,
+                "dev_name": true
+              },
+              "indexByName": {
+                "Label": 0,
+                "battery": 1
+              },
+              "renameByName": {
+                "Value": "battery",
+                "label": "Label"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "description": "",
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 24,
+          "x": 0,
+          "y": 88
+        },
+        "id": 16,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "---\n---\n\n<h1>--- divider ---</h1>\n\nEverything below is just sandbox stuff\n\n---\n---\n\n",
+          "mode": "markdown"
+        },
+        "pluginVersion": "12.0.0",
+        "title": "",
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "max": 120,
+            "min": 20,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "dB"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 93
+        },
+        "id": 8,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max",
+              "median"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "{__name__=\"Milesight_WS302_LCeq\"} * ${correction_factor}",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "{{label}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "LCeq timeline",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "victoriametrics"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "max": 120,
+            "min": 20,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "dB"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 24,
+          "x": 0,
+          "y": 102
+        },
+        "id": 6,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "Milesight_WS302_LCImax{label=\"sound_test\"} * ${correction_factor}",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "LCImax",
+            "range": true,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "victoriametrics"
+            },
+            "editorMode": "code",
+            "expr": "avg_over_time(Milesight_WS302_LCImax{label=\"sound_test\"}[5m]) * ${correction_factor}",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "LCImax_rolling5m",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Sound levels (LCmax with rolling mean)",
+        "type": "timeseries"
+      }
+    ],
+    "preload": false,
+    "refresh": "1m",
+    "schemaVersion": 41,
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "text": "1.05",
+            "value": "1.05"
+          },
+          "description": "Calibration correction factor for WS302 to match pro debive",
+          "hide": 2,
+          "name": "correction_factor",
+          "query": "1.05",
+          "skipUrlSync": true,
+          "type": "constant"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Sound: Overview",
+    "uid": "d14e5569-635d-4dae-b122-90ee8d74c84f",
+    "version": 3
+  }

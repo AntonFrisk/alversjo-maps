@@ -5,6 +5,8 @@ function absMin(H, Min = 0) {
   return (24 - 9 + H) * 60 + Min;
 }
 
+// Grafana/dashboard zone-letter mapping (note: letters run OPPOSITE to loudness):
+//   A = wild, B = eveningParty, C = dayFestive, D = mellow, E = chill, F = quiet
 export const ZONES = [
   { id: 'quiet', label: 'Quiet', description: 'Strict limit to both experience and production of sound.', color: 'quiet' },
   { id: 'chill', label: 'Chill', description: 'Limit to production of sound, but not to how sound is experienced.', color: 'chill' },
