@@ -1,0 +1,352 @@
+{
+  "datasource": {
+    "type": "victoriametrics-metrics-datasource",
+    "uid": "victoriametrics"
+  },
+  "description": "Per-camp sound overview. LCmax and LCeq are the last measured values; LCmax_r3m is the rolling mean of LCmax over the last 3 minutes; ts_updated is the timestamp of the last received sample; LCeq trend is a sparkline of LCeq over the panel time range. All dB values include the ${correction_factor} calibration factor.",
+  "fieldConfig": {
+    "defaults": {
+      "color": {
+        "mode": "thresholds"
+      },
+      "custom": {
+        "align": "left",
+        "cellOptions": {
+          "type": "auto"
+        },
+        "filterable": true,
+        "inspect": false
+      },
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "color": "green"
+          },
+          {
+            "color": "red",
+            "value": 80
+          }
+        ]
+      },
+      "unit": "dB"
+    },
+    "overrides": [
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "id"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "short"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "auto"
+            }
+          },
+          {
+            "id": "color",
+            "value": {
+              "mode": "fixed",
+              "fixedColor": "text"
+            }
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "label"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "short"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "auto"
+            }
+          },
+          {
+            "id": "color",
+            "value": {
+              "mode": "fixed",
+              "fixedColor": "text"
+            }
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "LCmax"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "dB"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "color-text"
+            }
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "LCeq"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "dB"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "color-text"
+            }
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "LCmax_r3m"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "dB"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "color-text"
+            }
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "ts_updated"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "dateTimeFromNow"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "color-text"
+            }
+          },
+          {
+            "id": "color",
+            "value": {
+              "mode": "fixed",
+              "fixedColor": "text"
+            }
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "id": "byName",
+          "options": "LCeq trend"
+        },
+        "properties": [
+          {
+            "id": "unit",
+            "value": "dB"
+          },
+          {
+            "id": "custom.cellOptions",
+            "value": {
+              "type": "sparkline"
+            }
+          },
+          {
+            "id": "color",
+            "value": {
+              "mode": "fixed",
+              "fixedColor": "green"
+            }
+          },
+          {
+            "id": "custom.width",
+            "value": 240
+          }
+        ]
+      }
+    ]
+  },
+  "gridPos": {
+    "h": 30,
+    "w": 24,
+    "x": 0,
+    "y": 0
+  },
+  "id": 100,
+  "options": {
+    "cellHeight": "md",
+    "footer": {
+      "countRows": false,
+      "fields": "",
+      "reducer": [
+        "sum"
+      ],
+      "show": false
+    },
+    "frameIndex": 0,
+    "showHeader": true,
+    "sortBy": [
+      {
+        "desc": false,
+        "displayName": "label"
+      }
+    ]
+  },
+  "pluginVersion": "12.0.0",
+  "targets": [
+    {
+      "datasource": {
+        "type": "victoriametrics-metrics-datasource",
+        "uid": "victoriametrics"
+      },
+      "editorMode": "code",
+      "expr": "last_over_time(sensor_sound_LCImax[1h]) * ${correction_factor}",
+      "format": "time_series",
+      "hide": false,
+      "instant": true,
+      "legendFormat": "LCmax",
+      "range": false,
+      "refId": "A"
+    },
+    {
+      "datasource": {
+        "type": "victoriametrics-metrics-datasource",
+        "uid": "victoriametrics"
+      },
+      "editorMode": "code",
+      "expr": "last_over_time(sensor_sound_LCeq[1h]) * ${correction_factor}",
+      "format": "time_series",
+      "hide": false,
+      "instant": true,
+      "legendFormat": "LCeq",
+      "range": false,
+      "refId": "B"
+    },
+    {
+      "datasource": {
+        "type": "victoriametrics-metrics-datasource",
+        "uid": "victoriametrics"
+      },
+      "editorMode": "code",
+      "expr": "avg_over_time(sensor_sound_LCImax[3m]) * ${correction_factor}",
+      "format": "time_series",
+      "hide": false,
+      "instant": true,
+      "legendFormat": "LCmax_r3m",
+      "range": false,
+      "refId": "C"
+    },
+    {
+      "datasource": {
+        "type": "victoriametrics-metrics-datasource",
+        "uid": "victoriametrics"
+      },
+      "editorMode": "code",
+      "expr": "timestamp(last_over_time(sensor_sound_LCImax[1h])) * 1000",
+      "format": "time_series",
+      "hide": false,
+      "instant": true,
+      "legendFormat": "ts_updated",
+      "range": false,
+      "refId": "D"
+    },
+    {
+      "datasource": {
+        "type": "victoriametrics-metrics-datasource",
+        "uid": "victoriametrics"
+      },
+      "editorMode": "code",
+      "expr": "sensor_sound_LCeq * ${correction_factor}",
+      "format": "time_series",
+      "hide": false,
+      "instant": false,
+      "legendFormat": "LCeq trend",
+      "range": true,
+      "refId": "E"
+    }
+  ],
+  "title": "Sound camp overview (v3)",
+  "transformations": [
+    {
+      "id": "timeSeriesTable",
+      "options": {
+        "A": {
+          "stat": "lastNotNull"
+        },
+        "B": {
+          "stat": "lastNotNull"
+        },
+        "C": {
+          "stat": "lastNotNull"
+        },
+        "D": {
+          "stat": "lastNotNull"
+        },
+        "E": {
+          "stat": "lastNotNull"
+        }
+      }
+    },
+    {
+      "id": "merge",
+      "options": {}
+    },
+    {
+      "id": "organize",
+      "options": {
+        "excludeByName": {
+          "Time": true,
+          "__name__": true,
+          "dev_name": true,
+          "device_stream": true,
+          "stream_id": true
+        },
+        "indexByName": {
+          "device_id": 0,
+          "label": 1,
+          "Trend #A": 2,
+          "Trend #B": 3,
+          "Trend #C": 4,
+          "Trend #D": 5,
+          "Trend #E": 6
+        },
+        "renameByName": {
+          "device_id": "id",
+          "Trend #A": "LCmax",
+          "Trend #B": "LCeq",
+          "Trend #C": "LCmax_r3m",
+          "Trend #D": "ts_updated",
+          "Trend #E": "LCeq trend"
+        }
+      }
+    }
+  ],
+  "type": "table"
+}
