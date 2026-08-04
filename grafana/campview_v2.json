@@ -1,0 +1,537 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 23,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "LCmax_r3m (median LCImax over 3 min, incl. correction_factor + dbc_diff_abs) vs the current limit (max_dbc from the sheet), with the same status coding as the overview: OK (<=limit), ! (0-5 dB over), !!! (>5 dB over).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dB"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LCmax_r3m"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dB"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#c9c9c9",
+                      "value": null
+                    },
+                    {
+                      "color": "#dfe0a3",
+                      "value": 70
+                    },
+                    {
+                      "color": "#f2e02a",
+                      "value": 80
+                    },
+                    {
+                      "color": "#f7b733",
+                      "value": 86
+                    },
+                    {
+                      "color": "#f28e2b",
+                      "value": 92
+                    },
+                    {
+                      "color": "#dd5b0c",
+                      "value": 98
+                    },
+                    {
+                      "color": "#e03b1c",
+                      "value": 104
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max_dbc"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dB"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "status"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": -100000,
+                      "to": 0,
+                      "result": {
+                        "text": "OK",
+                        "color": "green",
+                        "index": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": 0.0001,
+                      "to": 5,
+                      "result": {
+                        "text": "!",
+                        "color": "orange",
+                        "index": 1
+                      }
+                    }
+                  },
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": 5.0001,
+                      "to": 100000,
+                      "result": {
+                        "text": "!!!",
+                        "color": "red",
+                        "index": 2
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "victoriametrics-metrics-datasource",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "median_over_time(sensor_sound_LCImax{device_id=\"$camp\"}[3m]) * ${correction_factor}",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "LCmax_r3m",
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "ce19flpfolkowa"
+          },
+          "refId": "F",
+          "type": "csv",
+          "source": "url",
+          "format": "table",
+          "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vScZYHeWCrTqEvRE-x7Wkq2GvtzqYte7xM14M9yPipOeLzpX80kgGE0sqZlkzPEogQvZHjEKZccad7u/pub?gid=1709736396&single=true&output=csv",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "parser": "uql",
+          "uql": "parse-csv\n| where \"device_id\" == '${camp}'\n| project \"device_id\", \"max_dbc_now\", \"dbc_diff_abs\"",
+          "root_selector": "",
+          "columns": [],
+          "filters": [],
+          "global_query_id": ""
+        }
+      ],
+      "title": "Now: ${camp}",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "max_dbc_now",
+                "destinationType": "number"
+              },
+              {
+                "targetField": "dbc_diff_abs",
+                "destinationType": "number"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "binary",
+            "binary": {
+              "left": "Value",
+              "operator": "+",
+              "right": "dbc_diff_abs"
+            },
+            "alias": "LCmax_r3m",
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "binary",
+            "binary": {
+              "left": "LCmax_r3m",
+              "operator": "-",
+              "right": "max_dbc_now"
+            },
+            "alias": "status",
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "LCmax_r3m",
+                "max_dbc_now",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "LCmax_r3m": 0,
+              "max_dbc_now": 1,
+              "status": 2
+            },
+            "renameByName": {
+              "max_dbc_now": "max_dbc"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "victoriametrics-metrics-datasource",
+        "uid": "victoriametrics"
+      },
+      "description": "LCmax_r3m (median LCImax over 3 min, solid) and LCmax (raw LCImax, dashed) for the selected camp. Both include the correction_factor; the per-sensor dbc_diff_abs offset is not applied here (a constant shift).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 130,
+          "min": 60,
+          "unit": "dB"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LCmax_r3m"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#3274D9"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LCmax"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#FF9830"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "victoriametrics-metrics-datasource",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "median_over_time(sensor_sound_LCImax{device_id=\"$camp\"}[3m]) * ${correction_factor}",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "LCmax_r3m",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-metrics-datasource",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sensor_sound_LCImax{device_id=\"$camp\"} * ${correction_factor}",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "LCmax",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "LCmax_r3m (solid) & LCmax (dashed): ${camp}",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "1m",
+  "schemaVersion": 41,
+  "tags": [
+    "sound",
+    "camp"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "ce19flpfolkowa"
+        },
+        "definition": "Infinity- sensors CSV: campname (text) -> device_id (value)",
+        "description": "Sound camp name. Only camps with a designated campname are listed; the selected value is the sensor's device_id.",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sound camp name",
+        "name": "camp",
+        "options": [],
+        "query": {
+          "queryType": "infinity",
+          "infinityQuery": {
+            "refId": "variable",
+            "type": "csv",
+            "source": "url",
+            "format": "table",
+            "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vScZYHeWCrTqEvRE-x7Wkq2GvtzqYte7xM14M9yPipOeLzpX80kgGE0sqZlkzPEogQvZHjEKZccad7u/pub?gid=1709736396&single=true&output=csv",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "parser": "uql",
+            "uql": "parse-csv\n| where \"Campname\" != ''\n| project \"__text\"=\"Campname\", \"__value\"=\"device_id\"\n| order by \"__text\" asc",
+            "root_selector": "",
+            "columns": [],
+            "filters": []
+          }
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "1.05",
+          "value": "1.05"
+        },
+        "description": "The correction factor to calibrate WS302 devices to pro dB meter. Based on calibration tests",
+        "hide": 2,
+        "name": "correction_factor",
+        "query": "1.05",
+        "skipUrlSync": true,
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Sound: Camp",
+  "uid": "61092161-7b32-4823-8a59-94391fc46517",
+  "version": 6
+}
