@@ -1724,10 +1724,10 @@
             "id": "011a6288-7813-4dbe-b86f-91bd9ca0ba4d",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 5,
+                "sound-class-num": 6,
                 "sound-class": "B",
-                "marker-color": "#fdd835",
-                "fill": "#fdd835",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "title": "slope-times p2 p2",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
