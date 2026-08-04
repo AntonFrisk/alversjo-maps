@@ -1671,10 +1671,10 @@
             "id": "47e90f05-dfdf-4a08-b1a4-31465b84a95a",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#cddc39",
-                "fill": "#cddc39",
+                "sound-class-num": 6,
+                "sound-class": "B",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "title": "slope-times p2 p1",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
@@ -1724,10 +1724,10 @@
             "id": "011a6288-7813-4dbe-b86f-91bd9ca0ba4d",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 4,
-                "sound-class": "C",
-                "marker-color": "#cddc39",
-                "fill": "#cddc39",
+                "sound-class-num": 6,
+                "sound-class": "B",
+                "marker-color": "#ffc107",
+                "fill": "#ffc107",
                 "title": "slope-times p2 p2",
                 "sound-direction-azimuth": 255,
                 "sound-direction-azimuth-from": 225,
@@ -1977,10 +1977,10 @@
             "id": "8aad1e46-2109-4677-b881-4ccae8146463",
             "type": "Feature",
             "properties": {
-                "sound-class-num": 3,
-                "sound-class": "C",
-                "marker-color": "#4caf50",
-                "fill": "#4caf50",
+                "sound-class-num": 2,
+                "sound-class": "D",
+                "marker-color": "#00bcd4",
+                "fill": "#00bcd4",
                 "title": "cottage"
             },
             "geometry": {
@@ -2054,10 +2054,10 @@
             "type": "Feature",
             "properties": {
                 "title": "artctic-chill p2",
-                "sound-class-num": 4,
+                "sound-class-num": 3,
                 "sound-class": "C",
-                "marker-color": "#cddc39",
-                "fill": "#cddc39"
+                "marker-color": "#4caf50",
+                "fill": "#4caf50"
             },
             "geometry": {
                 "coordinates": [
@@ -4792,10 +4792,10 @@
             "type": "Feature",
             "id": "5ba552da-e3ba-4735-8f9d-3f4b56f734a5",
             "properties": {
-                "sound-class-num": 4,
+                "sound-class-num": 5,
                 "sound-class": "B",
-                "marker-color": "#cddc39",
-                "fill": "#cddc39",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
                 "title": "sunny-hill-824-swan"
             },
             "geometry": {
@@ -4978,10 +4978,10 @@
             "type": "Feature",
             "id": "85e24c69-f2bb-4e41-be86-d31c94eb285f",
             "properties": {
-                "sound-class": "C",
-                "marker-color": "#cddc39",
-                "fill": "#cddc39",
-                "sound-class-num": 4,
+                "sound-class": "B",
+                "marker-color": "#fdd835",
+                "fill": "#fdd835",
+                "sound-class-num": 5,
                 "title": "cottage-871-owl"
             },
             "geometry": {
