@@ -1,25 +1,19 @@
 import { NextResponse } from 'next/server';
-import { readJson, readJsonForWrite, writeJsonWithBlobs, blobConfigured } from '@/lib/blob-json';
+import { readJson, readJsonFresh, writeJson, s3Configured } from '@/lib/s3-json';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const PREFIX = 'visible-camps/data';
+const KEY = 'visible-camps.json';
 
 // Persistent, shared set of non-sound camp ids that everyone should see with names.
-async function readIds() {
-  const data = await readJson(PREFIX, []);
-  return Array.isArray(data) ? data.map(Number) : [];
-}
-
-async function readIdsForWrite() {
-  const { data, blobs } = await readJsonForWrite(PREFIX, []);
-  return { ids: Array.isArray(data) ? data.map(Number) : [], blobs };
-}
+const toIds = (data) => (Array.isArray(data) ? data.map(Number) : []);
+const readIds = async () => toIds(await readJson(KEY, []));
+const readIdsForWrite = async () => toIds(await readJsonFresh(KEY, []));
 
 function storeGuard() {
-  if (!blobConfigured()) {
-    return NextResponse.json({ error: 'Storage is not configured (BLOB_READ_WRITE_TOKEN).' }, { status: 503 });
+  if (!s3Configured()) {
+    return NextResponse.json({ error: 'Storage is not configured (S3_* env vars).' }, { status: 503 });
   }
   return null;
 }
@@ -39,9 +33,9 @@ export async function POST(request) {
     const { id } = await request.json();
     const n = Number(id);
     if (!Number.isFinite(n)) return NextResponse.json({ error: 'valid id required' }, { status: 400 });
-    const { ids, blobs } = await readIdsForWrite();
+    const ids = await readIdsForWrite();
     if (!ids.includes(n)) ids.push(n);
-    await writeJsonWithBlobs(PREFIX, ids, blobs);
+    await writeJson(KEY, ids);
     return NextResponse.json({ ids });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -54,9 +48,8 @@ export async function DELETE(request) {
   try {
     const n = Number(new URL(request.url).searchParams.get('id'));
     if (!Number.isFinite(n)) return NextResponse.json({ error: 'valid id required' }, { status: 400 });
-    const { ids: existing, blobs } = await readIdsForWrite();
-    const ids = existing.filter((x) => x !== n);
-    await writeJsonWithBlobs(PREFIX, ids, blobs);
+    const ids = (await readIdsForWrite()).filter((x) => x !== n);
+    await writeJson(KEY, ids);
     return NextResponse.json({ ids });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

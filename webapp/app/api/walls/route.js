@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { readWalls, createWall, updateWall, deleteWall, blobConfigured } from '@/lib/walls-store';
+import { readWalls, createWall, updateWall, deleteWall, s3Configured } from '@/lib/walls-store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 function storeGuard() {
-  if (!blobConfigured()) {
+  if (!s3Configured()) {
     return NextResponse.json(
-      { error: 'Wall storage is not configured. Enable a Vercel Blob store (BLOB_READ_WRITE_TOKEN).' },
+      { error: 'Wall storage is not configured. Set the S3_* environment variables.' },
       { status: 503 },
     );
   }
